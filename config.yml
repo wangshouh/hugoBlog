@@ -71,7 +71,7 @@ params:
       - name: Rss
         url: "index.xml"
       - name: Email
-        url: "wongshouhao@outlook.com"
+        url: "mailto:wongshouhao@outlook.com"
   
   profileMode:
     enabled: false
