@@ -18,17 +18,40 @@ outputs:
         - RSS
         - JSON
 
-menu:
-    main:
-        - name: Archive
-          url: archives
-          weight: 5
-        - name: Search
-          url: search/
-          weight: 10
-        - name: Tags
-          url: tags/
-          weight: 10
+languages:
+    zh-cn:
+      languageName: "中文"
+      weight: 1
+      menu:
+          main:
+              - name: 归档
+                url: archives
+                weight: 5
+              - name: 搜索
+                url: search/
+                weight: 10
+              - name: 标签
+                url: tags/
+                weight: 10
+    en:
+      languageName: ":en:"
+      languageAltTitle: English
+      weight: 2
+      taxonomies:
+          category: categories
+          tag: tags
+          series: series
+      menu:
+          main:
+              - name: Archive
+                url: archives
+                weight: 5
+              - name: Search
+                url: search/
+                weight: 10
+              - name: Tags
+                url: tags/
+                weight: 10
 
 params:
   env: production
