@@ -21,7 +21,7 @@ outputs:
 languages:
     zh:
       languageName: "中文"
-      weight: 10
+      weight: 1
       menu:
           main:
               - name: 归档
@@ -36,7 +36,7 @@ languages:
     en:
       languageName: ":en:"
       languageAltTitle: English
-      weight: 1
+      weight: 2
       taxonomies:
           category: categories
           tag: tags
