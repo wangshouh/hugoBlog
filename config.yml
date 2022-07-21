@@ -60,3 +60,16 @@ params:
         url: "index.xml"
       - name: Email
         url: "wongshouhao@outlook.com"
+  
+  profileMode:
+    enabled: false
+    title: WongSSH blog
+    # imageUrl: "#"
+    # imageTitle: my image
+    # imageWidth: 120
+    # imageHeight: 120
+    buttons:
+        - name: Archives
+          url: archives
+        - name: Tags
+          url: tags
