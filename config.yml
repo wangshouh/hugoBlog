@@ -49,8 +49,8 @@ params:
   homeInfoParams:
       Title: "WongSSH's Blog"
       Content: >
-          Welcome to my blog.
-          You can find web3, smart contract, golang, python and many other interesting contents
+          - Welcome to my blog.
+          - You can find web3, smart contract, golang, python and many other interesting contents
   socialIcons:
       - name: github
         url: "https://github.com/wangshouh"
