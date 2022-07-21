@@ -46,15 +46,15 @@ params:
   showtoc: true
   tocopen: true
 
-homeInfoParams:
-    Title: "WongSSH's Blog"
-    Content: >
-        Welcome to my blog.
-        You can find web3, smart contract, golang, python and many other interesting contents
-socialIcons:
-    - name: github
-      url: "https://github.com/wangshouh"
-    - name: Rss
-      url: "index.xml"
-    - name: Email
-      url: "wongshouhao@outlook.com"
+  homeInfoParams:
+      Title: "WongSSH's Blog"
+      Content: >
+          Welcome to my blog.
+          You can find web3, smart contract, golang, python and many other interesting contents
+  socialIcons:
+      - name: github
+        url: "https://github.com/wangshouh"
+      - name: Rss
+        url: "index.xml"
+      - name: Email
+        url: "wongshouhao@outlook.com"
