@@ -20,7 +20,7 @@ outputs:
 
 languages:
     zh:
-      languageName: ":zh:"3
+      languageName: ":zh:"
       languageAltTitle: 中文
       weight: 1
       menu:
