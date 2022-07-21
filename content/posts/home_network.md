@@ -1,6 +1,6 @@
 ---
 title: 以Openwrt路由器为核心的家庭网络构建
-date: 2022-02-1T13:53:00Z
+date: 2022-02-01T13:53:00Z
 tags: [Network,OpenWrt]
 aliases: ["/2022/02/14/home_network/"]
 ---
