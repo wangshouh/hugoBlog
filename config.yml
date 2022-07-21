@@ -19,9 +19,9 @@ outputs:
         - JSON
 
 languages:
-    zh-cn:
+    zh:
       languageName: "中文"
-      weight: 1
+      weight: 10
       menu:
           main:
               - name: 归档
@@ -36,7 +36,7 @@ languages:
     en:
       languageName: ":en:"
       languageAltTitle: English
-      weight: 2
+      weight: 1
       taxonomies:
           category: categories
           tag: tags
