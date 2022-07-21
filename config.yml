@@ -1,4 +1,4 @@
-baseURL: 'http://hugo.wongssh.cf/'
+baseURL: 'https://hugo.wongssh.cf/'
 languageCode: 'en-us'
 title: "Wong's Blog"
 theme: PaperMod
@@ -7,6 +7,7 @@ enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
 buildExpired: false
+hasCJKLanguage: true
 
 minify:
   disableXML: true
