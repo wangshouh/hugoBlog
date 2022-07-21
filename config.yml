@@ -20,7 +20,8 @@ outputs:
 
 languages:
     zh:
-      languageName: "中文"
+      languageName: ":zh:"3
+      languageAltTitle: 中文
       weight: 1
       menu:
           main:
@@ -33,6 +34,7 @@ languages:
               - name: 标签
                 url: tags/
                 weight: 10
+
     en:
       languageName: ":en:"
       languageAltTitle: English
