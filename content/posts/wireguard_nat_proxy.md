@@ -1,7 +1,7 @@
 ---
 title: 基于wireguard与NAT实现windows10代理服务器
 date: 2022-02-11T09:50:30Z
-tags: [WireGuard]
+tags: [WireGuard,Network]
 aliases: ["/2022/02/11/wireguard_nat_proxy/"]
 ---
 
