@@ -1,0 +1,24 @@
+baseURL: 'http://hugo.wongssh.cf/'
+languageCode: 'en-us'
+title: "Wong's Blog"
+theme: PaperMod
+
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+minify:
+  disableXML: true
+  minifyOutput: true 
+
+params:
+  env: production
+  title: Wong's Blog
+  description: A blog about python, JavaScript, front-end, web3 and back-end
+  keywords: [python, javascript, front-end, back-end, web3, blockchain]
+  author: WongSSH
+  images: https://ae01.alicdn.com/kf/H60a2fb584e4a4e7f8a7c727d55647953Q.jpg
+  DateFormat: "January 2, 2006"
+  defaultTheme: auto
+  disableThemeToggle: false
