@@ -1,5 +1,5 @@
 ---
-title: Foundry教程：使用多种方式编写可升级的智能合约(上)
+title: "Foundry教程：使用多种方式编写可升级的智能合约(上)"
 date: 2022-07-26T21:27:17Z
 tags: [EternalStorage,EIP897,EIP1822,solidity]
 aliases: ["/2022/07/18/foundry-contract-upgrade-part1"]
