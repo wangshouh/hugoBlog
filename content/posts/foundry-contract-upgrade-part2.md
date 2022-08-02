@@ -1,5 +1,5 @@
 ---
-title: "Foundry教程：使用多种方式编写可升级的智能合约(上)"
+title: "Foundry教程：使用多种方式编写可升级的智能合约(下)"
 date: 2022-07-30T21:27:17Z
 tags: [EIP-1967,EIP-2535,solidity]
 aliases: ["/2022/07/24/foundry-contract-upgrade-part2"]
