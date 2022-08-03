@@ -325,7 +325,7 @@ window.ethereum.request({ method: 'eth_requestAccounts' }).then(
 
 `domain`字段中需要包含以下内容：
 
-- `chainId`，该字段由[EIP-155](https://eips.ethereum.org/EIPS/eip-155)规定，您可以前往[此网站](https://chainlist.org/浏览更多关于`chainId`的信息，在代码实现中我们将直接使用`window.ethereum.chainId`属性
+- `chainId`，该字段由[EIP-155](https://eips.ethereum.org/EIPS/eip-155)规定，您可以前往[此网站](https://chainlist.org/)浏览更多关于`chainId`的信息，在代码实现中我们将直接使用`window.ethereum.chainId`属性
 
 - `name`，该字段为增强人类的可读性而设计，我们简单的将其定义为`Login`，您可以根据自己的网站进行命名
 
