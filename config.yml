@@ -74,3 +74,5 @@ params:
         url: "index.xml"
       - name: Email
         url: "mailto:wongshouhao@outlook.com"
+      - name: Telegram
+        url: "https://t.me/web3list"
