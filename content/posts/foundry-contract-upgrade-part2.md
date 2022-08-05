@@ -742,7 +742,7 @@ enum FacetCutAction {Add, Replace, Remove}
 
 `removeFunctions`所需要的参数与`addFunctions`相同，该函数的核心是它迭代调用的另一个函数`removeFunction`。`removeFunction`的作用原理如下:
 
-![removeFunction](https://s-bj-3358-blog.oss.dogecdn.com/svg/metamask-login.svg)
+![removeFunction](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-30-212724.svg)
 
 总体而言，代码复杂的地方在于多映射关系之间的互相关系。我们首先通过`selectorToFacetAndPosition`获得需要删除的函数的位置，然后通过`facetFunctionSelectors`获得此地址下`functionSelectors`集合最后的索引位置。由于`solidity`没有提供按索引删除集合元素的功能，我们只能使用`pop`函数删除最后一个元素。如果需要删除的函数就在对应`functionSelectors`的最后，我们可以直接使用`pop`删除。如果不在最后，我们需要使用其他手段。在代码实现中，作者通过将原来的最后函数先提取出来，使用原最后一个函数覆盖需要替换的函数。这样的话需要删除的函数就被原最后一个函数覆盖了，就可以使用`pop`删除。
 
