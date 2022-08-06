@@ -1,7 +1,7 @@
 ---
 title: MetaMask一键登录设计
 date: 2022-06-06T22:52:13Z
-tags: [Vue,MetaMask,Web3,CloudflareWorker]
+tags: [Vue,MetaMask,Web3,CloudflareWorker,EIP-712]
 aliases: ["/2022/06/06/metamask-login/"]
 ---
 
