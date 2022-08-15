@@ -22,24 +22,24 @@ aliases: ["/2022/08/02/ecsda-sign-chain"]
 
 在椭圆密码学中，许多不同种类的曲线都可以用于生成公钥。以太坊选择了与比特币相同的曲线类型，形式为`y² = x³ + 7`，被称为`secp256k1`。具体的图像如下图:
 
-![secp256k1 Img](https://wkphoto.cdn.bcebos.com/dc54564e9258d109c89586d5c158ccbf6c814d66.jpg)
+![secp256k1 Img](https://img.wang.232232.xyz/img/2022/08/15/rGv48gca4b516a4994fc8f.jpg)
 
 在此图像上，我们可以选择一个点作为生成点`G`，使用`陷门函数`计算获得公钥。陷门函数特点是正向计算简单，我们可以快速从私钥求出公钥，而逆向计算难度巨大。
 
 比特币与以太坊均选择了一种被称为`点倍增`的陷门函数。如下图为我们选择的生成点`G`：
-![G point](https://wkphoto.cdn.bcebos.com/4610b912c8fcc3ce63ade6548245d688d43f2063.jpg)
+![G point](https://img.wang.232232.xyz/img/2022/08/15/n7jg2Qa3eda935ae1d924b.jpg)
 
 我们画出过点`G`的切线与曲线交与一点，我们选择此点关于`x`轴的对称点作为`2G`点。下图展示了进行第一次点倍增后的结果`2G`:
 
-![2G point](https://wkphoto.cdn.bcebos.com/c9fcc3cec3fdfc033015ccdfc43f8794a4c22663.jpg)
+![2G point](https://img.wang.232232.xyz/img/2022/08/15/DiglQw30e2fb984acc31e3.jpg)
 
 连结`G`与`2G`与曲线交与一点，我们选择与此点关于x轴对称的点作为`3G`。如下图:
 
-![3G point](https://wkphoto.cdn.bcebos.com/b812c8fcc3cec3fd5d538812c688d43f87942763.jpg)
+![3G point](https://img.wang.232232.xyz/img/2022/08/15/elbrtQ04528b18e77aa66c.jpg)
 
 依次类推，我们可以得到`4G`的图像如下:
 
-![4G point](https://wkphoto.cdn.bcebos.com/d31b0ef41bd5ad6e71744b8d91cb39dbb7fd3cc3.jpg)
+![4G point](https://img.wang.232232.xyz/img/2022/08/15/jlNwag7e27300948e58efc.jpg)
 
 显然上述操作是直觉上是无法逆向的，关于严格的数学证明，读者可以自行查阅相关论文。以上过程可以进行算法上的优化，读者可以自行阅读[noble-secp256k1](https://github.com/paulmillr/noble-secp256k1)的开发者的写的关于加速`secp256k1`计算的[博客](https://paulmillr.com/posts/noble-secp256k1-fast-ecc/)。
 
@@ -729,7 +729,7 @@ contract ProductTest is Test {
 上述合约主要为我们提供一些必要的参数，主要是`verifyingContract`参数。当然，在此处，我们使用`vm.chainId(4);`将链ID改为了`4`，即`Rinkeby`网络。
 
 在终端内使用`forge test -vvv`，获得以下输出:
-![Contract Address](https://wkphoto.cdn.bcebos.com/f31fbe096b63f624958d35649744ebf81b4ca381.jpg)
+![Contract Address](https://img.wang.232232.xyz/img/2022/08/15/verifyContractba8deb0427d1b34b.png)
 
 前往[此网页](https://metamask.github.io/test-dapp/)，首先点击`Connected`链接钱包，然后点击`ETH_ACCOUNTS`查看地址是否正确。按下`F12`打开开发者工具，进入`Console`终端。
 
@@ -821,7 +821,7 @@ function testVerify() public {
 其中，`vm.prank(address)`用于切换地址。
 
 最后，在终端内输入`forge test`，结果如下:
-![signTestResult.png](https://wkphoto.cdn.bcebos.com/a8773912b31bb051398ebf4f267adab44aede02b.jpg)
+![signTestResult.png](https://img.wang.232232.xyz/img/2022/08/15/signTestResult0019f7aabd49eab5.png)
 
 ## 总结
 
