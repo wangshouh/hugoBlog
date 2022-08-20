@@ -219,9 +219,9 @@ function _msgSender() internal view virtual returns (address ret) {
 ```
 
 其中的核心代码为汇编代码部分`ret := shr(96, calldataload(sub(calldatasize(), 20)))`。此代码的作用原理如下图:
-![msgaddress.drawio.png](https://img.gejiba.com/images/3b3676fcd7299731ca4855302ba3bcb5.png)
+![msgaddress.drawio.png](https://img.gejiba.com/images/2e1344ef594b2f7fc681469601018fe9.png)
 
-简单来说，可以将`calldata`视为一个长度为`calldatasize()`的列表。我们需要获得此列表中最后`20 byte`的数据，即用户地址。已知`calldataload(i)`会加载`calldata[i, -1]`的数据。我们通过`sub(calldatasize(), 20)`获得了`calldata`中用户地址的起始索引，并进一步使用`calldataload`将其加载到内存中。但在`EVM`中，一个标准不可变变量应占用`32 byte`的完整地址槽，而此处获得用户地址作为`address`类型变量占用的内存长度与规定不符。为了符合变量标准，我们使用`shr`操作码将`20 byte`的用户地址向左移`96 bit`(即 12 byte)实现了用户地址占用`32 byte`的条件，保证了在后期读取用户地址时不会出现错误。
+简单来说，可以将`calldata`视为一个长度为`calldatasize()`的列表。我们需要获得此列表中最后`20 byte`的数据，即用户地址。已知`calldataload(i)`会加载`calldata[i, -1]`的数据。我们通过`sub(calldatasize(), 20)`获得了`calldata`中用户地址的起始索引，并进一步使用`calldataload`将其加载到内存中。但在`EVM`中，一个标准不可变变量应占用`32 byte`的完整地址槽，而此处获得用户地址作为`address`类型变量占用的内存长度与规定不符。为了符合变量标准，我们使用`shr`操作码将`20 byte`的用户地址向右移`96 bit`(即 12 byte)实现了用户地址占用`32 byte`的条件，保证了在后期读取用户地址时不会出现错误。
 
 如果你无法理解上述内容，建议参考:
 
