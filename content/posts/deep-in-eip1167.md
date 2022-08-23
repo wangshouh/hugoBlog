@@ -1,7 +1,8 @@
 ---
-title: EVM底层探索:字节码级分析最小化代理标准EIP1167
-date: 2022-08-22 11:02:00
-tags: [[EIP-1167],[solidity],[EVM]]
+title: "EVM底层探索:字节码级分析最小化代理标准EIP1167"
+date: 2022-08-22T11:47:33Z
+tags: [EIP-1167,solidity,EVM]
+aliases: ["/2022/08/22/deep-in-eip1167"]
 ---
 
 ## 概述
