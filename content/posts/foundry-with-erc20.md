@@ -85,9 +85,11 @@ forge -h
 
 在初始化开发环境前，请确认你有以太坊钱包。由于下文存在导出以太坊账户私钥的敏感操作，所以这里建议你重新创建一个用于代码开发的以太坊账户。
 
-在下文中，我主要使用MetaMask作为钱包，同时主要使用`Ropsten TestNet`。当然，你的账户中需要一些测试用ETH，可以前往这个[水龙头](https://faucet.egorfine.com/)获取。
+以太坊提供了[测试网络](https://ethereum.org/en/developers/docs/networks/#ethereum-testnets)供开发者使用。
 
-> `Ropsten TestNet`将在2022年内关闭，如果你希望合约长时间存在，请使用其他测试网络，并自行查找水龙头(faucet)，在Google中直接搜索测试网络的名称+faucet就可以得到对应网络的水龙头。
+在下文中，我主要使用MetaMask作为钱包，同时主要使用`Goerli TestNet`。当然，你的账户中需要一些测试用ETH，可以前往这个[水龙头](https://goerlifaucet.com/)获取。注意，此水龙头要求您注册`Alchemy`账号。
+
+> 由于此文编写时`Ropsten TestNet`仍未废弃，所以后文采用了此测试网络。
 
 本节内容主要参考了官方教程的[First Steps with Foundry](https://book.getfoundry.sh/getting-started/first-steps)
 
