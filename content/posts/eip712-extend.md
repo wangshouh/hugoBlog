@@ -199,7 +199,7 @@ function execute(ForwardRequest calldata req, bytes calldata signature)
 
 此处在合约运行失败后使用了内联汇编的方式处理错误，核心为`revert(offset, size)`。此函数可以返回错误，但不消耗所有`gas`，由`EIP140`引入，可以参考[EVM Codes](https://www.evm.codes/#fd)。
 
-此处较难理解的为`assert(gasleft() > req.gas / 63);`，此函代码涉及到`gas`的一些复杂机制，具体可以参考[Ethereum, The Concept of Gas and its Dangers](https://ronan.eth.link/blog/ethereum-gas-dangers/)。总结来说，正如上文所述，此操作为了在`call`运行后需要在本地留下`1/64`的`gas`费以保证转发合约抛出可能异常。
+此处较难理解的为`assert(gasleft() > req.gas / 63);`，此函代码涉及到`gas`的一些复杂机制，具体可以参考[Ethereum, The Concept of Gas and its Dangers](https://ronan.eth.limo/blog/ethereum-gas-dangers/)。总结来说，正如上文所述，此操作为了在`call`运行后需要在本地留下`1/64`的`gas`费以保证转发合约抛出可能异常。
 
 完整代码可以参考[我的仓库](https://github.com/wangshouh/upgradeContractLearn/blob/master/src/metatx/Forwarder.sol)，生产级代码可以参考[GSN](https://github.com/opengsn/gsn/blob/master/packages/contracts/src/forwarder/Forwarder.sol)的转发合约。
 
