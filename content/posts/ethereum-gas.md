@@ -43,6 +43,105 @@ aliases: ["/2022/08/24/ethereum-gas"]
 但`gas`并不代表着进行这一操作所消耗的ETH数量。以太坊中存在大量的交易，我们需要根据网络情况调整手续费，为了有效调整手续费，以太坊引入了`gas price`价值作为计算手续费的单位，具体计算公式为
 `Transaction Fee = Gas * Gas Price`，其中`Transaction Fee`就是交易手续费的意思。在后文中，我们会详细分析`gas price`的计算方法。
 
+## Gas Limit 的获取
+
+对于Gas Limit的获取，以太坊客户端给出了一个专用的RPC API，被称为`eth_estimateGas`。
+
+此API调用所需要的参数其实就是交易所需要的参数，我们在此处直接给出两个示例帮助大家使用。
+
+在后文中，我们主要使用Cloudflare提供的公用以太坊网关作为RPC API服务商，其地址为`https://cloudflare-eth.com/v1/mainnet`。
+
+为了方便读者学习，此处我们使用[以太坊官方文档](https://ethereum.github.io/execution-apis/api-documentation/)提供的线上测试功能。读者可以通过以下方法打开测试功能:
+
+![Test Console](https://img.gejiba.com/images/7c5f169a91a6e6f6292382d3901df6ef.png)
+
+首先，我们尝试获取转账交易的Gas消耗，在上图给出的测试栏的的左侧输入以下内容:
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "eth_estimateGas",
+    "params": [
+        {
+            "from": "0x8D97689C9818892B700e27F316cc3E41e17fBeb9",
+            "to": "0xd3CdA913deB6f67967B99D67aCDFa1712C293601",
+            "value": "0x186a0"
+        }
+    ],
+    "id": 0
+}
+```
+输入完成后点击运行按钮，我们可以在右侧获得以下返回:
+```json
+{
+    "jsonrpc": "2.0",
+    "result": "0x5208",
+    "id": 0
+}
+```
+其中，`result`就是此交易的`gas`，将其转为十进制，结果恰好为`21000`，与上文给出的结果相符。
+
+当然，更常见的Gas估计是估计合约操作所消耗的Gas值，我们在此处以WETH合约(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)为例获取存储`deposit()`操作的Gas消耗。
+
+使用此API的具体参数可以参考以下
+```json
+{
+    "jsonrpc": "2.0",
+    "method": "eth_estimateGas",
+    "params": [
+        {
+            "type": "2",
+            "from": "0x8D97689C9818892B700e27F316cc3E41e17fBeb9",
+            "to": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "value": "0x186a0",
+            "input": "0xd0e30db0"
+        }
+    ],
+    "id": 0
+}
+```
+其中各个参数意义如下:
+
+- from 调用合约的用户地址
+- to 目标合约地址
+- value 在调用合约时发送的ETH
+- input 调用合约时发送的Calldata
+
+`input`可以在[此网站](https://abi.hashex.org/)获得。获得`deposit()`函数调用Calldata的形式如下图:
+
+![deposit CallData](https://img.gejiba.com/images/e63757e270f78ea02c0221a08fad722c.png)
+
+> 由于此处`deposit()`没有参数，所以我们没有在此处使用`Add argument`增加参数。
+
+发送上述请求，我们可以获得以下返回值:
+```json
+{
+    "jsonrpc": "2.0",
+    "result": "0xafee",
+    "id": 0
+}
+```
+
+将`result`转换为十进制得到`45038`，这与我们在[此页面](https://etherscan.io/tx/0xe433968b74209376c301904cd4c3bdb80afd11f59aa3322db548ae50374656c6)查询得到的结果一致。
+
+对于获取`gas`的估计值，我们也可以使用`cast`获得，在此处，我们仍使用WETH合约。
+
+在终端内输入
+
+```bash
+cast estimate 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \
+	--value 1.1ether "deposit()" \
+	--rpc-url https://cloudflare-eth.com/v1/mainnet
+```
+
+我们可以获得返回值为`27938`。读者可以发现[此交易](https://etherscan.io/tx/0x5b9b37e98571cf609858be986934f23e495f7766255ec39d9b6a88230e25c01d)的`gas`正是`27938`。
+
+上述两者的不同原因是在[EIP2929](https://eips.ethereum.org/EIPS/eip-2929)。简单来说，`SSTORE`操作符的`gas`决定方式较为特殊。此操作符用于向合约特定的存储槽内写入数据。其`gas`决定方法如下:
+
+- 当写入存储槽本来无数据时，使用`SSTORE`写入数据消耗`22100`。如果读者的地址未持有`WETH`时，我们需要消耗此数值的`gas`
+- 当写入存储槽内存在非零数据时，使用`SSTORE`写入数据消耗`5000`。
+
+当我们使用`cast estimate`评估`gas`时，默认使用的地址内存在WETH，而在我们上文使用的 RPC API 时，使用的地址内不持有WETH。更加详细的Gas分析我们会在后面几篇内给出。
+
 ## Gas Price计算
 
 我们主要考虑在London升级后的符合`EIP1559`标准的交易，这些交易均被标记为`type 2`。
