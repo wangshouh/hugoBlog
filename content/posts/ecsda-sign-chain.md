@@ -1,7 +1,7 @@
 ---
 title: "基于链下链上双视角深入解析以太坊签名与验证"
 date: 2022-08-08T11:27:17Z
-tags: [ECDSA,secp256k1,EIP-712,solidity]
+tags: [ECDSA,secp256k1,EIP-712,solidity,EIP-1271]
 aliases: ["/2022/08/02/ecsda-sign-chain"]
 ---
 
@@ -822,6 +822,51 @@ function testVerify() public {
 
 最后，在终端内输入`forge test`，结果如下:
 ![signTestResult.png](https://img.wang.232232.xyz/img/2022/08/15/signTestResult0019f7aabd49eab5.png)
+
+## EIP-1271
+
+我们在上文给出的签名方式都是由用户使用私钥进行签名的情况。在智能合约日益发展的今天，我们需要有一种方式实现合约签名。但众所周知，智能合约没有自己的私钥，我们只能通过一些特殊的方式实现类似签名的效果。这一方式已经被`EIP1271`进行了相关的规范化。当然，`EIP1271`仍依赖于用户私钥进行签名的步骤。
+
+为了方便读者后文理解代码，我们在此处首先给出使用`EIP1271`的流程:
+
+1. 合约钱包拥有者使用自己的私钥进行签名;
+1. 向目标合约提交合约钱包拥有者的签名
+1. 目标合约使用此签名向合约钱包进行`isValidSignature`方法。
+1. 合约钱包中的`isValidSignature`方法会检查签名是否属于合约拥有者。如果属于，合约钱包返回`0x1626ba7e`，否则返回`0xffffffff`
+1. 目标合约接受返回值，通过签名正误决定下一步操作
+
+> 在上述过程中，谁可以使用私钥进行签名代表合约签名是可以通过合约编程修改确定的。上述流程的实质是合约将签名权委托授权给用户，由用户代表合约进行签名。
+
+在此过程中，我们可以看到最重要的就是`isValidSignature`方法，其定义如下:
+```solidity
+function isValidSignature(
+	bytes32 _hash,
+	bytes calldata _signature
+) external override view returns (bytes4) {
+	// Validate signatures
+	if (recoverSigner(_hash, _signature) == owner) {
+		return 0x1626ba7e;
+	} else {
+		return 0xffffffff;
+	}
+}
+```
+
+对于`recoverSigner`需要根据具体的签名类型由用户自行编写，较为简单的方法是使用`ecrecover`。
+
+而在目标合约中，我们需要实现调用`isValidSignature`的函数如下:
+```solidity
+function callERC1271isValidSignature(
+	address _addr,
+	bytes32 _hash,
+	bytes calldata _signature
+) external view {
+	bytes4 result = IERC1271Wallet(_addr).isValidSignature(_hash, _signature);
+	require(result == 0x1626ba7e, "INVALID_SIGNATURE");
+}
+```
+
+通过上述步骤，我们就可以实现对合约签名进行校验。一个具体的例子是`GnosisSafe`支持`EIP1271`标准的合约签名，具体代码可以参考[这里](https://github.com/safe-global/safe-contracts/blob/main/contracts/GnosisSafe.sol#L240)。
 
 ## 总结
 
