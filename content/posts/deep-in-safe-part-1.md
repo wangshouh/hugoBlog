@@ -62,7 +62,8 @@ aliases: ["/2022/08/27/deep-in-safe-part-1"]
 在此处，我们给出在`Etherscan`网站中的各个合约地址:
 
 1. [Proxy Factory](https://etherscan.io/address/0xa6b71e26c5e0845f74c812102ca7114b6a896ab2) 
-1. [GnosisSafeProxy](https://etherscan.io/address/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552)
+2. [GnosisSafeProxy](https://etherscan.io/address/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552)
+3. [Gnosis Safe: Relay service - Transactions](https://etherscan.io/address/0x4d953115678b15ce0b0396bcf95db68003f86fb5)
 
 ## 代理工厂合约
 
@@ -570,6 +571,10 @@ if (gasPrice > 0) {
 }
 ```
 当交易设置的`gasPrice`大于`0`时，我们通过`handlePayment`函数计算中继商手续费数量并将其返回给中继商。我们会在后文详细介绍`handlePayment`函数。
+
+手续费提取的具体交易可以参考[这个交易](https://etherscan.io/tx/0x2cf86cdeb052d0accb71711edd0225c192765c9ac8b86e6ad1adc1d556b216ae)，如下图:
+
+![Relay Tx](https://img.gejiba.com/images/ae44573b77a595cbad95fca045b3781d.png)
 
 在交易的最后代码，我们进行了抛出事件和调用`Guard`合约中的`checkAfterTransaction`进行监控。
 
