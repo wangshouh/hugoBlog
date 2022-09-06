@@ -185,7 +185,7 @@ constructor(address _singleton) {
 获得关键的`deploymentData`参数后，我们可以非常简单的实现`create2`。此处基本与上一节给出的`call`类似，我们在此处不再赘述。对于最后结果使用了`require`进行断言。
 
 在目前，我们不建议仍使用此方法进行`create2`。我个人更建议大家使用由`solidity`抽象的`create`语法。即下述语法:
-```
+```solidity
 proxy = new GnosisSafeProxy{salt: salt}(_singleton)
 ```
 显然，只是用`solidity`抽象语法更加简洁易懂。
@@ -196,7 +196,7 @@ proxy = new GnosisSafeProxy{salt: salt}(_singleton)
 
 ![More createProxyWithNonce](https://img.gejiba.com/images/ad20d43e5be9a1adf7abc42b2183f429.png)
 
-最后，在`createProxyWithNonce`基础上通过了一个极其不常见的函数`createProxyWithCallback`。简单来说，此函数的作用是在创建完成代理合约后会向指定的合约地址进行`proxyCreated`请求。
+`createProxyWithCallback`是在`createProxyWithNonce`基础上实现的一个极其不常见的函数。简单来说，此函数的作用是在创建完成代理合约后会向指定的合约地址进行`proxyCreated`请求。
 
 其核心代码如下:
 ```solidity
