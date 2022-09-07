@@ -296,7 +296,7 @@ cast --calldata-decode "setup(address[],uint256,address,bytes,address,address,ui
 
 - `to` 用于初始化模块的地址
 - `data` 用于初始化模块的`calldata`
-- `fallbackHandler` 应对`fallback`情况的合约地址
+- `fallbackHandler` 应对`fallback`情况的合约地址，可以设置为[此地址](https://etherscan.io/address/0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4)
 - `payment`和`paymentReceiver` 此参数是为中继器等机构设计的参数
 
 我们接下来逐行介绍`setUp`函数代码及功能:
