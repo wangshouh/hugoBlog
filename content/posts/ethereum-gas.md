@@ -1,5 +1,5 @@
 ---
-title: "以太坊交易机制详解:Gas Price计算"
+title: "以太坊机制详解:Gas Price计算"
 date: 2022-08-24T15:47:33Z
 tags: [ethereum,GAS,EIP-1559]
 aliases: ["/2022/08/24/ethereum-gas"]
