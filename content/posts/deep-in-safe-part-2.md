@@ -230,7 +230,7 @@ C => 0x1
 
 此函数是这一模块中最重要的函数，为主合约通过`fallback`的功能。此函数的主体使用了一个较为简单的代理合约。
 
-我们首先`iszero`判断`handler`是否为全0地址，确定`handler`存在后，我们使用`calldatacopy(0, 0, calldatasize())`将`calldata`从EVM的`call data`区域读出，所以此处将前两个参数设置为`0`，表示不从内存中读取`calldata`。
+我们首先`iszero`判断`handler`是否为全0地址，确定`handler`存在后，我们使用`calldatacopy(0, 0, calldatasize())`将`calldata`从EVM的`call data`区域读出。
 
 为了方便调用的`fallback`合约识别请求者的地址，我们使用了类似`Meta-transactions`的处理方式，即在原来的`calldata`后拼接`caller`的地址。
 
