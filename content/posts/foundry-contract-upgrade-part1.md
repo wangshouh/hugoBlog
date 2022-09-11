@@ -383,7 +383,7 @@ contract ProxyEasy {
 
 `let ptr := mload(0x40)`该指令从`0x40`位置获得一个空闲内存块的指针。该内容可以参见[英文文档](https://docs.soliditylang.org/en/v0.8.15/internals/layout_in_memory.html#layout-in-memory)。
 
-`calldatacopy(ptr, 0, calldatasize())`指令主要使用了`calldatacopy`操作码，该操作码的形式为`calldatacopy(t, f, s)`，功能是从调用数据的位置 f 的拷贝 s 个字节到内存的位置 t。在此处的功能是将所有的`calldata`复制到上文所述的`ptr`指针中。
+`calldatacopy(ptr, 0, calldatasize())`指令主要使用了`calldatacopy`操作码，该操作码的形式为`calldatacopy(t, f, s)`，功能是从调用数据(即EVM中特殊的[The call data](https://www.evm.codes/about#calldata)区域)的位置 f 的拷贝 s 个字节到内存的位置 t。在此处的功能是将所有的`calldata`复制到上文所述的`ptr`指针中。
 
 `let result := delegatecall(gas(), _impl, ptr, calldatasize(), 0, 0)`指令主要使用了`delegatecall`，该操作码的形式和功能已在上文给出。此处将`out`与`outsize`设置为0的原因是我们暂时不知道返回值大小，所以将其统一放在暂存区(即`return data`，具体可以参考[这里](https://www.evm.codes/about#returndata))，，后续过程中我们可以通过`returndata`和`returndatasize`访问这两个数据。`let size := returndatasize()`获得`returndata`的字节长度，`returndatacopy(ptr, 0, size)`此指令将`returndata`从暂存区复制出来。`switch`代码块实现错误处理。
 
