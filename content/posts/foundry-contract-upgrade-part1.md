@@ -343,6 +343,7 @@ EIP-897是由`openzeppelin-labs`提出一种可更新合约的编写方式。它
 
 - [Solidity汇编 中文文档](https://solidity-cn.readthedocs.io/zh/develop/assembly.html#id4)，可以以此文档作为参考，随时查阅。
 
+- [EVM Codes](https://www.evm.codes/)，给出了比文档更加详细的操作码介绍
 
 通过上文给出的思路，我们发现对于代理合约最重要的应该是`delegatecall`函数，我们上文中给出的`delegatecall`或者`call`函数都使用了`abi.encodeWithSignature()`函数对函数名进行编码然后调用。显然在无法知道具体函数名的代理合约中，我们无法使用此方法。我们只能考虑使用最底层的`delegatecall`的汇编形式，具体如下`delegatecall(g, a, in, insize, out, outsize)`，其中`g`为`gas`费用、`a`为调用函数的地址、`in`表示输入内存的开始地址、`insize`表示输入内存的长度。`out`与`outsize`表示输出的地址和长度。我们自然可以想到可以通过直接将用户发送`calldata`转移给`delegatecall`函数实现对合约代理。
 
