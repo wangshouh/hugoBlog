@@ -10,6 +10,8 @@ buildExpired: false
 hasCJKLanguage: true
 paginate: 5
 
+enableInlineShortcodes: true
+
 minify:
   disableXML: true
   minifyOutput: true 
