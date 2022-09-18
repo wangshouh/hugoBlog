@@ -1,5 +1,5 @@
 ---
-title: "EVM底层探索:字节码级分析最小化代理标准EIP1167"
+title: "以太坊机制详解:执行层P2P网络架构与设计"
 date: 2022-09-11T11:47:33Z
 tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
 ---
