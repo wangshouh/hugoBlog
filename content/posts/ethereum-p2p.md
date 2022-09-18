@@ -1,25 +1,10 @@
 ---
 title: "以太坊机制详解:执行层P2P网络架构与设计"
 date: 2022-09-11T11:47:33Z
-math: true
 tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
 ---
 
-## 概述
-
-关于以太坊的`P2P`网络问题，目前的资料较为零散，本文尝试结合具体的`go-ethereum`源代码，尽可能为读者完整介绍以太坊所使用的`ÐΞVp2p`(`devp2p`)网络架构和运转流程。
-
-`devp2p`各协议栈之间的关系可以参考下图:
-
-![DevP2P stack](https://img.gejiba.com/images/3e5fc2a35dc6d8d523de04a9500a8df5.png)
-
-其中，`Node Discovery Protocol v5`运行在`UDP`上，其余均运行在`TCP`协议上。
-## 前置知识
-
-此文介绍的部分组件均位于`rlpx`内，顾名思义，这些协议都强依赖于`RLP`编码，所以我们首先介绍了`RLP`编码的规则。
-
 {{< math.inline >}}
-{{ if or .Page.Params.math .Site.Params.math }}
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css" integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X" crossorigin="anonymous">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js" integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz" crossorigin="anonymous"></script>
@@ -41,18 +26,20 @@ tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
     });
 </script>
 
-{{ end }}
 {{</ math.inline >}}
 
-{{< math.inline >}}
-<p>
-Inline math: \(\varphi = \dfrac{1+\sqrt5}{2}= 1.6180339887…\)
-</p>
-{{</ math.inline >}}
+## 概述
 
-$$ a = b $$
+关于以太坊的`P2P`网络问题，目前的资料较为零散，本文尝试结合具体的`go-ethereum`源代码，尽可能为读者完整介绍以太坊所使用的`ÐΞVp2p`(`devp2p`)网络架构和运转流程。
 
-$ a = b $
+`devp2p`各协议栈之间的关系可以参考下图:
+
+![DevP2P stack](https://img.gejiba.com/images/3e5fc2a35dc6d8d523de04a9500a8df5.png)
+
+其中，`Node Discovery Protocol v5`运行在`UDP`上，其余均运行在`TCP`协议上。
+## 前置知识
+
+此文介绍的部分组件均位于`rlpx`内，顾名思义，这些协议都强依赖于`RLP`编码，所以我们首先介绍了`RLP`编码的规则。
 
 ### RLP 编码
 
