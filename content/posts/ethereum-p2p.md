@@ -13,6 +13,7 @@ tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
     onload="renderMathInElement(document.body);"></script>
 {{ end }}
 {{</ math.inline >}}
+
 ## 概述
 
 关于以太坊的`P2P`网络问题，目前的资料较为零散，本文尝试结合具体的`go-ethereum`源代码，尽可能为读者完整介绍以太坊所使用的`ÐΞVp2p`(`devp2p`)网络架构和运转流程。
@@ -32,6 +33,7 @@ tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
 Inline math: \(\varphi = \dfrac{1+\sqrt5}{2}= 1.6180339887…\)
 </p>
 {{</ math.inline >}}
+
 
 ### RLP 编码
 
