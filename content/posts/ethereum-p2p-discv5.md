@@ -2,7 +2,7 @@
 title: "以太坊执行层P2P网络架构与设计:Discv5"
 date: 2022-09-11T11:47:33Z
 tags: [P2P,RLP,ethereum,EIP-778,EIP-1459,Kademlia]
-alias: ["/2022/09/11/ethereum-p2p-discv5/"]
+aliases: ["/2022/09/11/ethereum-p2p-discv5/"]
 ---
 
 {{< math.inline >}}
