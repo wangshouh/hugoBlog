@@ -1040,7 +1040,7 @@ message-data = [request-id, [distance₁, distance₂, ..., distanceₙ]]
 message-type = 0x03
 distanceₙ    = requested log2 distance, a positive integer
 ```
-在此数据包内，`request-id`是一个RLP数组，此参数由请求者进行分配，数据包接受者当收到此数据包后，需要在返回的数据包内包含请求的`request-id`。
+在此数据包内，`request-id`是一个RLP数组，此参数由请求者进行分配，数据包接受者当收到此数据包后，需要在返回的数据包内包含请求的`request-id`。此处`[request-id, [distance₁, distance₂, ..., distanceₙ]]`表示使用`RLP`进行编码。
 
 正如上文所述，节点第一次启动时一般仅与初始化节点`bootnodes`进行通信，此时的节点中的桶基本都是空的。我们需要向`bootnodes`发起`FINDNODED`请求获得节点填充自己的桶。但需要注意，我们只能查询到对方节点指定距离的桶内的节点。
 
