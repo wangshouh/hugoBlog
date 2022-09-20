@@ -1,7 +1,7 @@
 ---
-title: "以太坊机制详解:执行层P2P网络架构与设计"
+title: "以太坊执行层P2P网络架构与设计:Discv5"
 date: 2022-09-11T11:47:33Z
-tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
+tags: [P2P,RLP,ethereum,EIP-778,EIP-1459,Kademlia]
 ---
 
 {{< math.inline >}}
@@ -37,6 +37,9 @@ tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
 ![DevP2P stack](https://img.gejiba.com/images/3e5fc2a35dc6d8d523de04a9500a8df5.png)
 
 其中，`Node Discovery Protocol v5`运行在`UDP`上，其余均运行在`TCP`协议上。
+
+本文会以节点第一次进入以太坊P2P网络的流程为主线，介绍`Node Discovery Protocol v5`中各个模块的构成和作用。
+
 ## 前置知识
 
 此文介绍的部分组件均位于`rlpx`内，顾名思义，这些协议都强依赖于`RLP`编码，所以我们首先介绍了`RLP`编码的规则。
@@ -124,6 +127,37 @@ tags: [P2P,RLP,ethereum,EIP-778,EIP-1459]
 节点B生成的密钥为 $d_B\cdot Q_A = d_B\cdot d_A\cdot G$
 
 显然，生成的密钥是相同的，完成了密钥的交换。
+
+### HKDF
+
+`HKDF`是一种基于`HMAC`的密钥推导算法，由[RFC5869](https://www.rfc-editor.org/rfc/rfc5869)进行了相关定义。其功能为给定随机密钥生成材料(如上文获得的`ECDH`对称密钥)，经过`HKDF`函数可以获得给定长度的具有高密码学强度的密钥。简单来说，可以将此算法看作密钥长度转换算法。
+
+在了解`HKDF`前，我们首先需要知道`HMAC`的运作原理，如下图:
+
+![HMAC](https://img.gejiba.com/images/f985b7b869e9affca43d6beff3384f62.png)
+
+我们在此处不详细介绍具体流程。读者若感兴趣，建议阅读[《图解密码技术》 第三版](https://book.douban.com/subject/26822106/)的 194 页部分，非常详细介绍了相关的计算流程。上图即来自此书。
+
+在了解了`HMAC`流程后，我们就可以介绍`HKDF`的相关流程。我们以上文生成的密钥作为基础材料，记为`secret`，并使用 SHA256 作为哈希算法，目标是获得长度为 256 位的标准密钥。
+
+第一步，将`secret`作为信息，使用给定或随机生成的`salt`作为密钥进行`HMAC`计算获得`MAC`值
+第二步，我们需要获得 256 位的密钥，计算密钥长度与哈希算法输出值之间的比值并向上取整，此数值记为`n`。由于此处我们选择的哈希算法与密钥长度正好相同，所以计算结果为`n = 1`。接下来，我们进行以下计算:
+```
+T(0) = empty string (zero length)
+T(1) = HMAC-Hash(PRK, T(0) | info | 0x01)
+T(2) = HMAC-Hash(PRK, T(1) | info | 0x02)
+T(3) = HMAC-Hash(PRK, T(2) | info | 0x03)
+...
+T(n) = HMAC-Hash(PRK, T(n-1) | info | hex(n))
+```
+将上述结果进行拼接`T = T(1) | T(2) | T(3) | ... | T(N)`，最后选择`T`的前 256 位作为密钥。
+
+在`Go`语言中，我们可以使用以下`golang.org/x/crypto`中的官方实现:
+```
+func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
+```
+具体文档可参考[这里](https://pkg.go.dev/golang.org/x/crypto/hkdf#New)
+
 ## Node Discovery Protocol v5
 
 作为一个全新的节点，加入以太坊网络最重要的一步就是尽可能与其他节点建立链接，完善自己的节点列表。下图表示了发现以太坊网络节点的流程:
@@ -433,7 +467,7 @@ enr:-Je4QONq94Aa-VkvtRb0klXhGpVGW4mH1BwrfJU9chEjpSviCq8YThCiAD5oZz4UCdexfhLMXMV4
 
 当节点获得对等节点后，向节点发送任何信息都需要经过此握手阶段，所以在此处，我们首先介绍如何进行节点之间的握手操作。此处涉及到一系列的数据包格式定义和具体的数据交换流程。
 
-我们会先介绍不同数据包的格式，再介绍具体的握手流程。
+我们会先介绍不同数据包的格式，再介绍具体的握手流程。此处，我们对一些不是非常重要的定义问题进行省略，如果读者对此感兴趣，可以自行阅读[官方文档](https://github.com/ethereum/devp2p/blob/master/discv5/discv5-theory.md)。
 
 #### 数据包格式
 
@@ -873,34 +907,212 @@ func (c *Codec) decodeHandshake(fromAddr string, head *Header) (n *enode.Node, a
 }
 ```
 
-node ID - keecak(uncompressed pk)
-enode - uncompressed pk
+第四步，节点B收到握手后返回信息。
 
+![Step4 Flow](https://s-bj-3358-blog.oss.dogecdn.com/svg/step4.drawio.svg)
+
+当节点B收到节点A发送的握手包后，首先加载之前存储的`WHOAREYOU`数据包内容，并对握手包的头部进行解密。如果握手包内存在`record`记录，则节点B根据握手包中的`record`字段更新对A节点的记录。对`id-signature`字段进行提取公钥操作，将获得公钥与`ephemeral-pubkey`字段的记录进行比较。
+
+经过上述测试后，节点B使用`ECDH`算法基于自身私钥与对方的短暂公钥`ephemeral-pubkey`进行计算通信使用的会话密钥并对`message`进行解密。如果`message`可以顺利解密，节点B会对`message`中的请求进行响应，在此处为对`FINDNODED`的响应，即返回节点信息。
+
+这里有一点比较神奇的是，我们在上文给出了`writeKey`和`readKey`作为密钥，根据名称，我们可以判断出`writeKey`用于向对方发送数据时加密，`readKey`用于解密对方的数据包。但`ECDH`会输出一个相同的密钥，在对称加密的情况下，我们使用相同的密钥对数据进行加密或解密，但显然`writeKey`与`readKey`是不同的。为解决这一问题，以太坊使用了一种较为简单的方案，即收到握手包的节点B会对`ECDH`产生的密钥进行调换，实现自身`readKey`与节点A的`writeKey`相同的条件。
+
+上述过程的具体代码如下:
 ```go
-// Authdata layouts.
-type (
-	whoareyouAuthData struct {
-		IDNonce   [16]byte // ID proof data
-		RecordSeq uint64   // highest known ENR sequence of requester
+func (c *Codec) decodeHandshake(fromAddr string, head *Header) (n *enode.Node, auth handshakeAuthData, s *session, err error) {
+	if auth, err = c.decodeHandshakeAuthData(head); err != nil {
+		return nil, auth, nil, err
 	}
 
-	handshakeAuthData struct {
-		h struct {
-			SrcID      enode.ID
-			SigSize    byte // ignature data
-			PubkeySize byte // offset of
-		}
-		// Trailing variable-size data.
-		signature, pubkey, record []byte
+	// Verify against our last WHOAREYOU.
+	challenge := c.sc.getHandshake(auth.h.SrcID, fromAddr)
+	if challenge == nil {
+		return nil, auth, nil, errUnexpectedHandshake
 	}
-
-	messageAuthData struct {
-		SrcID enode.ID
+	// Get node record.
+	n, err = c.decodeHandshakeRecord(challenge.Node, auth.h.SrcID, auth.record)
+	if err != nil {
+		return nil, auth, nil, err
 	}
-)
-
-type Node struct {
-	r  enr.Record
-	id ID
+	// Verify ID nonce signature.
+	sig := auth.signature
+	cdata := challenge.ChallengeData
+	err = verifyIDSignature(c.sha256, sig, n, cdata, auth.pubkey, c.localnode.ID())
+	if err != nil {
+		return nil, auth, nil, err
+	}
+	// Verify ephemeral key is on curve.
+	ephkey, err := DecodePubkey(c.privkey.Curve, auth.pubkey)
+	if err != nil {
+		return nil, auth, nil, errInvalidAuthKey
+	}
+	// Derive sesssion keys.
+	session := deriveKeys(sha256.New, c.privkey, ephkey, auth.h.SrcID, c.localnode.ID(), cdata)
+	session = session.keysFlipped()
+	return n, auth, session, nil
 }
 ```
+
+### 节点查询
+
+此节主要介绍节点在进行握手之后，如果通过`FINDNODED`初始化节点列表。为了达成此目标，此节介绍了节点的存储方式和`FINDNODED`查询节点的基本原理。
+
+#### 存储
+
+关于节点存储的源代码位于[Table.go](https://github.com/ethereum/go-ethereum/blob/master/p2p/discover/table.go)内，本文对其部分内容进行介绍。
+
+在介绍具体的节点存储前，我们需要了解一个比较重要的概念——`距离`。与我们认为的物理距离不同，使用`Kademlia`算法的以太坊使用了两个节点的`NodeID`进行`XOR`的结果并进行一些其他计算作为最终的距离。计算方法如下:
+```go
+func LogDist(a, b ID) int {
+	lz := 0
+	for i := range a {
+		x := a[i] ^ b[i]
+		if x == 0 {
+			lz += 8
+		} else {
+			lz += bits.LeadingZeros8(x)
+			break
+		}
+	}
+	return len(a)*8 - lz
+}
+```
+当我们计算出与其他节点的距离后，我们需要将其划分到`k-buckets`中，每个桶包含 16 个节点。我们通过计算`LogDist(self, other) = i`将`other`节点分配到第`i`个桶。理论上，我们需要 256 个桶。但在实际情况中，由于我们计算距离的算法问题和节点`NodeID`充分的随机性，我们选择不可能发现距离小于`LogDist(self, other) < 239`的情况，所以在实际情况中，我们规定节点被分配到第`LogDist(self, other) - 239`个桶，这样的话，我们仅需要`17`个桶。
+
+在每一个桶中，我们将节点按活跃频率进行排序，最不活跃的节点位于桶的最后，最活跃的节点防止桶的最前面。
+
+当我们发现一个新的节点后，我们需要计算此节点应该被分配的桶的序号，并将其推入桶中。在此过程中分为以下两种情况:
+
+1. 被分配的桶没有满则直接将其推入桶的末尾
+1. 被分配的桶已经满了，我们需要对桶的最后节点进行有效性检测(即`PING`)，如果没有收到回复则删除此节点并将其替换为新节点
+
+我们主要关注第二种情况，此情况更具有技术复杂性。如果我们每次找到一个新节点就对桶中16个节点均进行`PING`，会出现`DoS`攻击的效果，以太坊网络可能因为过量的有效性检测请求而变得十分低效。
+
+一种较好的解决方案是在进行异步的检测，我们将新发现的节点放入对应桶的替换缓存(缓存最多 10 个节点)中。节点会每隔 10 秒钟就对随机桶中的所有节点进行`PING`操作，将进行响应的节点排序到桶的最前方。如果发现节点失效，我们可以直接使用替换缓存中的节点对其进行替换。此流程代码如下:
+```go
+func (tab *Table) doRevalidate(done chan<- struct{}) {
+	defer func() { done <- struct{}{} }()
+
+	last, bi := tab.nodeToRevalidate()
+	if last == nil {
+		// No non-empty bucket found.
+		return
+	}
+
+	// Ping the selected node and wait for a pong.
+	remoteSeq, err := tab.net.ping(unwrapNode(last))
+
+	// Also fetch record if the node replied and returned a higher sequence number.
+	if last.Seq() < remoteSeq {
+		n, err := tab.net.RequestENR(unwrapNode(last))
+		if err != nil {
+			tab.log.Debug("ENR request failed", "id", last.ID(), "addr", last.addr(), "err", err)
+		} else {
+			last = &node{Node: *n, addedAt: last.addedAt, livenessChecks: last.livenessChecks}
+		}
+	}
+
+	tab.mutex.Lock()
+	defer tab.mutex.Unlock()
+	b := tab.buckets[bi]
+	if err == nil {
+		// The node responded, move it to the front.
+		last.livenessChecks++
+		tab.log.Debug("Revalidated node", "b", bi, "id", last.ID(), "checks", last.livenessChecks)
+		tab.bumpInBucket(b, last)
+		return
+	}
+	// No reply received, pick a replacement or delete the node if there aren't
+	// any replacements.
+	if r := tab.replace(b, last); r != nil {
+		tab.log.Debug("Replaced dead node", "b", bi, "id", last.ID(), "ip", last.IP(), "checks", last.livenessChecks, "r", r.ID(), "rip", r.IP())
+	} else {
+		tab.log.Debug("Removed dead node", "b", bi, "id", last.ID(), "ip", last.IP(), "checks", last.livenessChecks)
+	}
+}
+```
+
+#### 查询
+
+在介绍具体的查找之前，我们首先介绍当节点收到`FINDNODED`数据包后的操作流程。`FINDNODED`数据包由以下部分构成:
+```
+message-data = [request-id, [distance₁, distance₂, ..., distanceₙ]]
+message-type = 0x03
+distanceₙ    = requested log2 distance, a positive integer
+```
+在此数据包内，`request-id`是一个RLP数组，此参数由请求者进行分配，数据包接受者当收到此数据包后，需要在返回的数据包内包含请求的`request-id`。
+
+正如上文所述，节点第一次启动时一般仅与初始化节点`bootnodes`进行通信，此时的节点中的桶基本都是空的。我们需要向`bootnodes`发起`FINDNODED`请求获得节点填充自己的桶。但需要注意，我们只能查询到对方节点指定距离的桶内的节点。
+
+当我们需要填充节点的桶时，我们会使用`lookupRandom()`函数，此函数会随机在目前的以太坊P2P网络中进行随机搜索以达到快速填充桶的目的。我们首先需要了解如何在以太坊中进行搜索操作，当我们开始搜索时，我们会在桶内随机筛选最多 3 个与目标节点距离最近的节点，对这些节点发起`FINDNODED`请求。当获得发送节点的反馈后，节点再次挑选 3 个节点进行`FINDNODED`查询。部分代码如下:
+```go
+func (t *UDPv5) newRandomLookup(ctx context.Context) *lookup {
+	var target enode.ID
+	crand.Read(target[:])
+	return t.newLookup(ctx, target)
+}
+
+func (t *UDPv5) newLookup(ctx context.Context, target enode.ID) *lookup {
+	return newLookup(ctx, t.tab, target, func(n *node) ([]*node, error) {
+		return t.lookupWorker(n, target)
+	})
+}
+```
+关于递归查询的代码逻辑位于`lookup.go`内部，此部分代码较难理解，涉及部分`go`的通道等特性，为了方便读者阅读，此处不再给出代码。
+
+当接受查询的节点收到`FINDNODED`后，节点需要返回符合距离条件的节点。此处的距离指节点与自己的距离而不是节点与请求者的距离。具体代码如下:
+```go
+func (t *UDPv5) collectTableNodes(rip net.IP, distances []uint, limit int) []*enode.Node {
+	var nodes []*enode.Node
+	var processed = make(map[uint]struct{})
+	for _, dist := range distances {
+		// Reject duplicate / invalid distances.
+		_, seen := processed[dist]
+		if seen || dist > 256 {
+			continue
+		}
+
+		// Get the nodes.
+		var bn []*enode.Node
+		if dist == 0 {
+			bn = []*enode.Node{t.Self()}
+		} else if dist <= 256 {
+			t.tab.mutex.Lock()
+			bn = unwrapNodes(t.tab.bucketAtDistance(int(dist)).entries)
+			t.tab.mutex.Unlock()
+		}
+		processed[dist] = struct{}{}
+
+		// Apply some pre-checks to avoid sending invalid nodes.
+		for _, n := range bn {
+			// TODO livenessChecks > 1
+			if netutil.CheckRelayIP(rip, n.IP()) != nil {
+				continue
+			}
+			nodes = append(nodes, n)
+			if len(nodes) >= limit {
+				return nodes
+			}
+		}
+	}
+	return nodes
+}
+```
+我们使用了`bucketAtDistance`函数直接查询在桶内满足条件的节点并进行返回。
+
+### 主题检索
+
+此部分的主要功能为节点可以为自己设定一个特殊的关键词帮助其他节点进行检索。一个节点可以为自己设置多个或不设定关键词。参与网络的每一个节点都可以响应根据主题的检索请求。当然，此部分似乎仍属于建设阶段，为了优化读者阅读体验，我们对此模块不进行深入研究。如果读者对其感兴趣，可以自行阅读[文档](https://github.com/ethereum/devp2p/blob/master/discv5/discv5-theory.md#topic-advertisement)了解相关知识。
+
+## 总结
+
+本文基本介绍了P2P网络初次进入的基本流程，包含以下内容:
+
+1. `ENR`、`Encode`等以太坊节点表示格式和`DNSDisc`查询节点的方式
+1. `Discv5`中`Ordinary Message Packet`、`WHOAREYOU Packet`、`Handshake Message Packet`等数据包的构成和对应的加密算法
+1. `Discv5`规定的繁琐的握手流程和加密流程(`ECDH`、`HKDF`)
+1. 基于`Kademlia`节点信息的存储方式和查询方式
+
+由于我本人并不是P2P网络方面的研究人员，而且对于以太坊P2P源代码并未进行深入探索，如果读者发现本文出现的任何问题，可以随时通过[我的博客](https://hugo.wongssh.cf/)中提供的邮件与我联系交流。
+
+对于下篇，可能会在不久后推出。
