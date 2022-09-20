@@ -1,7 +1,9 @@
 ---
 title: "NutShell Test"
 date: 2022-09-15T11:47:33Z
+tags: [nutshell]
 ---
+
 {{< nutshell.inline >}}
 
 <script src="https://cdn.jsdelivr.net/gh/ncase/nutshell@1.0.2/nutshell.js"></script>
