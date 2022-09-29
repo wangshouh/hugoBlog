@@ -213,7 +213,15 @@ func CalcBaseFee(config *params.ChainConfig, parent *types.Header) *big.Int {
 }
 ```
 
-其中`parent`为上一区块的区块头。我们在此处不再详细解释此结构体内的变量，读者可自行查找对应源代码。此处用到的一个重要参数为`parent.GasLimit`，含义为区块内各个交易的Gas累加最大值，读者可以通过[此网站](https://www.etherchain.org/charts/blockGasLimit)查看历史上的`GasLimit`变化。目前(2022年8月)，此值大概为3千万。此值的计算函数在`go-ethereum`中定义在[这里](https://github.com/ethereum/go-ethereum/blob/master/core/block_validator.go#L108)，读者有兴趣可以自行研究。
+其中`parent`为上一区块的区块头。我们在此处不再详细解释此结构体内的变量，读者可自行查找对应源代码。此处用到的一个重要参数为`parent.GasLimit`，含义为区块内各个交易的Gas累加最大值，读者可以通过[此网站](https://www.etherchain.org/charts/blockGasLimit)查看历史上的`GasLimit`变化。目前(2022年8月)，此值大概为3千万。
+```go
+Miner: miner.Config{
+        GasCeil:  30000000,
+        GasPrice: big.NewInt(params.GWei),
+        Recommit: 3 * time.Second,
+    }
+```
+当然，区块的`GasLimit`并不是固定不变的，会在小范围内波动，具体的计算逻辑位于`go-ethereum`内的[CalcGasLimit(parentGasLimit, desiredLimit uint64)](https://github.com/ethereum/go-ethereum/blob/master/core/block_validator.go#L108)函数，此函数使用的参数`desiredLimit`即为 3千万 。限于篇幅且此计算函数较为简单，我们不对计算函数进行详细解释，读者有兴趣可以自行研究此函数。
 
 `params.ElasticityMultiplier`值已经在源代码进行了硬编码为`2`。通过`parentGasTarget := parent.GasLimit / params.ElasticityMultiplier`代码，我们可以计算出目前目标区块容量为1.5千万。
 
