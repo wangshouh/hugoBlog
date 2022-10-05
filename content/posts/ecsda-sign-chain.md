@@ -131,7 +131,9 @@ function kmdToSig(kBytes: Uint8Array, m: bigint, d: bigint): RecoveredSig | unde
 ```
 [R][S][V]
 ```
-其中增加了变量`v`，此值已在上文的代码中给出，为`recovery`值。但与尚未给出的通用`recover`不同，以太坊交易签名中的`v`为`27`或`28`，分别对应`0`和`1`。这个奇怪的增加`27`的规则是从比特币的设计中继承来的。此值可以保证在从签名中恢复密钥时尽可以获得一个正确的公钥。如果不包含此值，可以恢复出两个公钥，需要程序通过其他方式判断。
+其中增加了变量`v`，此值已在上文的代码中给出，为`recovery`值。但与尚未给出的通用`recover`不同，以太坊交易签名中的`v`为`CHAIN_ID * 2 + 35`或`CHAIN_ID * 2 + 36`，分别对应`v=0`和`v=1`。此过程由[EIP155](https://eips.ethereum.org/EIPS/eip-155)规定，目的是为了防止签名层面的重放攻击。
+
+> `CHAIN_ID`即每一条区块链的专属ID，具体可参考[ChianList](https://chainlist.org/)
 
 ### 验证签名
 
