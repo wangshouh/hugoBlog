@@ -230,7 +230,7 @@ func MakeSigner(config *params.ChainConfig, blockNumber *big.Int) Signer {
 
 由于我们没有必要使用以前`Signer`，在此处我们仅介绍最新的实现`londonSigner`。此签名器满足以下标准:
 
-- EIP-1599，详情参看[以太坊文档 Gas和费用](https://ethereum.org/zh/developers/docs/gas/#post-london)
+- EIP-1599，详情参看[以太坊机制详解:Gas Price计算](https://hugo.wongssh.cf/posts/ethereum-gas)
 - EIP-2930，增加了`accessList`参数，预支付存储费用
 - EIP-155，增加`CHAIN_ID`参数，防止重放攻击
 
