@@ -283,7 +283,7 @@ rlp([chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit, dest
 ```
 最后进行哈希计算。
 
-> `rlp`编码相对复杂，此处不再解释。一个较好的学习材料是[Ethereum Doc](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp)，它的源代码位于[这里](https://github.com/ethereum/go-ethereum/tree/master/rlp)
+> `rlp`编码相对复杂，此处不再解释。读者可以阅读我个人写的对于[RLP 编码](https://hugo.wongssh.cf/posts/ethereum-p2p-discv5#rlp-%E7%BC%96%E7%A0%81)的解释文章。当然，读者也可以直接阅读它的[源代码](https://github.com/ethereum/go-ethereum/tree/master/rlp)
 
 获得符合要求的哈希值后，我们只需要对此哈希值按照上述方法进行签名即可，注意我们需要`V`、`R`、`S`依次进行编码加入交易数据即可。其中， `V`和`R`长度为32 bytes, `S`长度为1 bytes.
 
