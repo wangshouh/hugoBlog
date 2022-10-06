@@ -1316,24 +1316,3 @@ pool.pendingNonces.setAll(nonces)
 1. `runReorg`在新区块到达情况下重置交易池状态的情况
 
 本文的一大弱点是知识较为分散，虽然逻辑上一脉相承，但笔者深挖了部分函数的实现，可能导致主线不明。笔者可能会在不久的未来给出更多流程图帮助各位读者更加方便地理解主线。
-
-https://sourcegraph.com/github.com/ethereum/go-ethereum/-/blob/core/types/transaction.go?L525
-
-https://sourcegraph.com/github.com/ethereum/go-ethereum/-/blob/core/vm/evm.go?L168:17
-
-https://sourcegraph.com/github.com/ethereum/go-ethereum/-/blob/miner/worker.go?L1150
-
-commitWork
-https://sourcegraph.com/github.com/ethereum/go-ethereum/-/blob/miner/worker.go?L1092
-
-fillTranscation 获取交易打包区块
-https://sourcegraph.com/github.com/ethereum/go-ethereum/-/blob/miner/worker.go?L1050
-
-promoteExecutables 交易提权
-https://sourcegraph.com/github.com/ethereum/go-ethereum@052c634917127b76e9089088860df27598c7ebad/-/blob/core/tx_pool.go?L1312:21
-
-add 增加交易至交易池
-https://sourcegraph.com/github.com/ethereum/go-ethereum@052c634917127b76e9089088860df27598c7ebad/-/blob/core/tx_pool.go?L655
-
-scheduleReorgLoop 定期更新
-https://sourcegraph.com/github.com/ethereum/go-ethereum@052c634917127b76e9089088860df27598c7ebad/-/blob/core/tx_pool.go?L1072
