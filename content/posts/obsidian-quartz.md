@@ -1,6 +1,6 @@
 ---
 title: "使用Quartz部署Obsidian笔记网站"
-date: 2022-10-07T11:47:33Z
+date: 2022-10-06T11:47:33Z
 tags: [hugo,obsidian]
 aliases: ["/2022/10/07/obsidian-quartz"]
 ---
