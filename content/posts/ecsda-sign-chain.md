@@ -141,7 +141,7 @@ function kmdToSig(kBytes: Uint8Array, m: bigint, d: bigint): RecoveredSig | unde
 
 1. 计算签名信息的哈希值`m`
 1. 计算点`R = (x, y)`。其中，当`v=0`时，`x=r`; 当`v=1`时，`x=r+n`
-1. 计算`u1 = hs^-1 mod n`，其中`h`为经过调整的哈希值，调整算法参考[truncateHash](https://github.com/paulmillr/noble-secp256k1/blob/main/index.ts#L882)
+1. 计算`u1 = hs^-1 mod n`，其中`h`为经过调整的哈希值，调整算法参考[truncateHash](https://github.com/paulmillr/noble-secp256k1/blob/main/index.ts#L898)
 1. 计算`u2 = sr^-1 mod n`
 1. 计算`Q = u1 * G + u2 * R`，`Q`即签名者的公钥。
 
