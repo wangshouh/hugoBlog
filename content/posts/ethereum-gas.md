@@ -365,4 +365,8 @@ Max Fee = (2 * Base Fee) + Max Priority Fee
 - 以太坊中的`Gas`、`Gas Price`、`Transaction Fee`之间的区别
 - EIP1559 中各个参数的计算方法和功能
 
-本篇较为简单，我们会在未来几篇中介绍一些更加复杂的概念。
+我们可以通过下图简单总结本文:
+
+![Gas Picture](https://s-bj-3358-blog.oss.dogecdn.com/svg/gas.drawio.svg)
+
+如果读者可以很好的理解本篇文章，且想进一步了解以太坊交易，可以参考[以太坊机制详解:交易与交易池](https://hugo.wongssh.cf/posts/ethereum-transcation/)
