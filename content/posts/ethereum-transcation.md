@@ -97,9 +97,9 @@ var DefaultTxPoolConfig = TxPoolConfig{
 
 在此处也出现了两种交易类型，如下:
 1. 可执行交易(executable transaction)，此交易位于`pending`队列中，极有可能被节点封装进入下一个区块
-1. 不可执行交易(non-executable transaction)，此交易位于`queued`队列中，不太可能被节点打包进入下一个区块
+1. 不可执行交易(non-executable transaction)，此交易位于`queued`队列中，不太可能被节点封装进入下一个区块
 
-> 封装`seal`是目前以太坊对于区块打包的描述
+> 封装(`seal`)是目前以太坊对于区块打包的描述
 
 我们通过[NewTxPool](https://github.com/ethereum/go-ethereum/blob/052c634/core/tx_pool.go#L279)函数使用上述初始化配置实现交易池的初始化。由于篇幅限制，我们不对其进行详细介绍。
 
@@ -152,11 +152,17 @@ const txHash = await ethereum.request({
 
 > 如果读者需要设置`gas`、`value`等参数，需要注意这些参数均使用`wei`作为单位，同时使用 16 进制进行编码。1 wei 为 `0.000000000000000001 eth`。
 
-更加详细的对于此API的说明，读者可以自行参考[文档](https://docs.metamask.io/guide/sending-transactions.html)
+更加详细的对于此API的说明，读者可以自行参考[文档](https://docs.metamask.io/guide/sending-transactions.html)或者前往[MetaMask JSON-RPC API Reference](https://metamask.github.io/api-playground/api-documentation/)
 
 值得注意的是，大部分RPC服务商均不支持此API。读者可以发现上述交易中不包含签名，但由于RPC服务商不托管用户私钥，不能对交易进行签名，所以不能进行交易提交。`MetaMask`钱包中包含用户私钥所以可以调用此函数。
 
 > RPC服务商一般允许使用`eth_sendRawTransaction`接口，此接口需要提交已经完成签名的并使用RLP编码的交易。本质上，`MetaMask`也调用了此接口。
+
+如果读者希望通过命令行提交交易，可以使用`Foundry`提供的`cast`命令，具体可以参考[cast send](https://book.getfoundry.sh/reference/cast/cast-send)命令，支持上述所有参数。一个最简单的案例如下:
+```bash
+cast send 0x11475691C2CAA465E19F99c445abB31A4a64955C --value 0.001ether --gas-limit 21000 --gas-price 5gwei --priority-gas-price 1.5gwei --private-key $pk --rpc-url https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161
+```
+其中`$pk`需要替换为用户自己的私钥。`--gas-price`的含义为`Max Fee`，`--priority-gas-price`含义为`Max priority fee`，详细介绍请参考上文给出的[文档](https://book.getfoundry.sh/reference/cast/cast-send)。
 
 由于后文会使用到以太坊内的交易类型，在此处，我们一并给出交易在`go-ethereum`中的接口，如下:
 ```go
