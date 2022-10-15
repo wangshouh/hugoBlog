@@ -28,3 +28,21 @@ aliases: ["/2022/06/27/cloudflare-hexo/"]
 设置完以上内容后，直接点击`Save and Deploy`即可完成在cloudflare pages上的部署。如果您选择了和我一样使用github仓库，当你每向你选定的分支进行一次推送后，cloudflare pages将自动进行部署，实现优雅的自动化部署，如下图：
 
 ![cloudflareshow.png](https://img.wang.232232.xyz/img/2022/06/27/cloudflareshow.png)
+
+## 环境变量设置
+
+由于 CloudFlare 默认使用的`npm`和`nodejs`版本较低，在部署时可能出现如下错误:
+```log
+ERROR ReferenceError: /opt/buildhome/repo/node_modules/hexo-theme-keep/layout/page.ejs:11
+```
+
+如果出现这种错误，我们可以通过设置`Cloudflare`环境变量的方法进行解决，打开部署详情页，在`settings`栏目中的`Environment Variables`选项内增加以下内容:
+
+| Variable name | Value |
+| -- | -- |
+| NODE_VERSION | 16.17.1 |
+| NPM_VERSION | 8.15.0 |
+
+最终结果如图:
+
+![Cloudflare Env](https://img.gejiba.com/images/b4d57882ecdaf309f843912aa9d864bf.png)
