@@ -1,7 +1,7 @@
 ---
 title: "以太坊机制详解:交易与交易池"
-date: 2022-10-05T23:47:33Z
-tags: [ethereum]
+date: 2022-10-14T23:47:33Z
+tags: [ethereum,geth]
 aliases: ["/2022/09/26/ethereum-transcation/"]
 ---
 
@@ -266,14 +266,14 @@ if err := pool.validateTx(tx, isLocal); err != nil {
 1. 交易的`Max Fee`和`Max Priority Fee`不大于`2 ^ 256`
 1. 交易的`Max Priority Fee`小于`Max Fee`
 1. 交易签名正确
-1. 交易的`Max Priority Fee`大于**交易池**设置的`GasLimit`
+1. 交易的`Max Priority Fee`大于**交易池**设置的`PriceLimit`
 1. 交易的`nonce`大于交易者当前的`nonce`
 1. 交易者账户余额可以支付交易的`Gas`费用
 1. 满足`AccessList`的一些`gas`要求
 
 如果用户提交给节点的交易无法满足上述条件，则直接被丢弃。
 
-当交易经过校验后，交易或被纳入`queued`或`pending`队列中，这一部分逻辑较为复杂，我们会选择流程图与文字描述两者方式进行解读。
+当交易经过校验后，交易或被纳入`queued`或`pending`队列中，这一部分逻辑较为复杂。
 
 首先，我们分析交易池容量已满的情况，我们使用以下的代码判定此情况:
 ```go
@@ -544,6 +544,10 @@ func (pool *TxPool) addTxs(txs []*types.Transaction, local, sync bool) []error
 
 > 正如前文所述，一般来说交易会被直接推入`queue`队列内，而函数`runReorg`会定期运行对交易进行提权至`pending`队列内。如果将`addTxs`中的`sync`设置为`True`，则意味着在下一次`runReorg`运行时会直接进行提权
 
+此函数的流程图如下:
+
+![AddTxs](https://s-bj-3358-blog.oss.dogecdn.com/svg/addTxs.drawio.svg)
+
 `addTxs`函数首先对交易进行了一个简单的验证，具体代码如下:
 ```go
 var (
@@ -620,7 +624,7 @@ func (pool *TxPool) requestPromoteExecutables(set *accountSet) chan struct{} {
 ```go
 go pool.scheduleReorgLoop()
 ```
-而在`scheduleReorgLoop`函数内，我们可以看到大量的`channel`的使用。本文的作者对于`golang`语言中的`channel`使用并不是非常熟悉。所以在后文内可能出现错误，发现错误的读者可以通过[我的博客](https://hugo.wongssh.cf)中给出的邮箱地址向我反馈。
+而在`scheduleReorgLoop`函数内，我们可以看到大量的`channel`的使用。我对于`golang`语言中的`channel`使用并不是非常熟悉。所以在后文内可能出现错误，发现错误的读者可以通过[我的博客](https://hugo.wongssh.cf)中给出的邮箱地址向我反馈。
 
 我们首先给出一系列的`channel`定义:
 ```go
@@ -637,6 +641,10 @@ reorgShutdownCh chan struct{}  // requests shutdown of scheduleReorgLoop
 - `queueTxEventCh` 传输用于加入`queued`队列交易的信息
 - `reorgDoneCh` 传输由空结构体构成的`channel`
 - `reorgShutdownCh` 传输`reorg`停止信号
+
+一个简单的示例图，如下:
+
+![scheduleReorgLoop](https://s-bj-3358-blog.oss.dogecdn.com/svg/scheduleReorgLoop.drawio.svg)
 
 在这些`channel`中，较难理解的是`reorgDoneCh`和`reorgShutdownCh`，这两个变量的设计是为了保证并发的正确性。我们首先介绍`reorgDoneCh`变量，此变量非常奇怪属于`chan chan struct{}`类型。
 
@@ -686,9 +694,14 @@ func (pool *TxPool) requestPromoteExecutables(set *accountSet) chan struct{} {
 	}
 }
 ```
-这些接收函数均直接选择将`pool.reorgDoneCh`内的空`channel`作为`return`返回，如果读者进一步研究这两个函数的应用会发现函数的`return`值并没有被使用。
+这些接收函数均直接选择将`pool.reorgDoneCh`内的空`channel`作为`return`返回，如果读者进一步研究这两个函数的应用会发现函数的`return`值并没有被具体的运行逻辑使用。
 
-造成这种情况的原因是`reorgDoneCh`的目的仅是保证`reqResetCh`和`reqPromoteCh`函数发送给`reqResetCh`和`reqPromoteCh`的数据会被`scheduleReorgLoop`正确处理后关闭。更加详细的解释是当我们通过`return <-pool.reorgDoneCh`获得一个`channel`(`nextDone`)时，由于`channel`自身具有阻塞性，主函数只有在`scheduleReorgLoop`进行完数据处理(即上文给出的`case`块)运行后退出。这一行为有效保障函数运行的同步。
+造成这种情况的原因是`reorgDoneCh`的目的仅是保证`reqResetCh`和`reqPromoteCh`函数发送给`reqResetCh`和`reqPromoteCh`的数据会被`scheduleReorgLoop`正确处理后关闭。更加详细的解释是当我们通过`return <-pool.reorgDoneCh`获得一个`channel`(即`nextDone`)时，由于`channel`自身具有阻塞性，主函数只有在`scheduleReorgLoop`进行完数据处理(即上文给出的`case`块)运行后退出。这一行为有效保障函数运行的同步。这种运行逻辑与`async/await`类似，在`golang`中，类似`reorgDoneCh`的`chan chan struct{}`是一种重要的无锁队列结构，
+
+> 假如我们不进行`reorgDoneCh`队列操作，那么使用`requestPromoteExecutables`的`addTxs`函数就可以无视`scheduleReorgLoop`的数据处理流程而自行工作，这可能导致数据在`scheduleReorgLoop`进行数据处理操作时被推入函数，造成并发冲突。
+
+> `reorgDoneCh`代表的`chan chan struct{}`是 无锁 Channel 的重要实现方式，其他实现方式可以参考[Go channels on steroids](https://docs.google.com/document/d/1yIAYmbvL3JxOKOjuCyon7JhW4cSv1wy5hC0ApeGMV9s/pub)。如果读者想进一步深入学习，建议阅读[Go语言设计与实现](https://draveness.me/golang/docs/part3-runtime/ch06-concurrency/golang-channel/#%E6%97%A0%E9%94%81%E7%AE%A1%E9%81%93)。
+
 
 当然，读者可以分析`nextDone`也是一个`channel`，在`addTxs`函数中，我们使用了以下代码:
 ```go
@@ -921,7 +934,7 @@ if env.gasPool == nil {
 ```
 其中，函数`AddGas`的功能是提供`gas`限额。关于区块的`GasLimit`的讨论，可以参考[以太坊机制详解:Gas Price计算](https://hugo.wongssh.cf/posts/ethereum-gas#base-fee)中的内容。
 
-接下来，我们会进入到一个`for`循环，此循环没有限定·条件，仅能依靠循环体内的`break`跳出。
+接下来，我们会进入到一个`for`循环，此循环没有限定条件，仅能依靠循环体内的`break`跳出。
 
 在此循环内首先检查了`interrupt`变量，我们跳过此部分。然后，检查了`gasPool`的余额，代码如下:
 ```go
@@ -1321,4 +1334,6 @@ pool.pendingNonces.setAll(nonces)
 1. 交易打包和执行的基本情况
 1. `runReorg`在新区块到达情况下重置交易池状态的情况
 
-本文的一大弱点是知识较为分散，虽然逻辑上一脉相承，但笔者深挖了部分函数的实现，可能导致主线不明。笔者可能会在不久的未来给出更多流程图帮助各位读者更加方便地理解主线。
+考虑到读者可以希望自己阅读源代码，此处给出关于交易的核心函数流程图，为了简单，此流程图省略了部分数据结构，如下:
+
+![Tx Function Flow](https://s-bj-3358-blog.oss.dogecdn.com/svg/txFunction.drawio.svg)
