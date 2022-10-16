@@ -361,23 +361,19 @@ $$  0 + \frac{0.3929}{80\%} \times 0.04 = 0.019645$$
 
 固定利率的基础利率计算公式如下:
 
-
-
 $$
 R_{base} = \begin{cases}
    R_0 + \frac{U_t}{U_{optimal}} \times R_{slope1} &\text{if } U < U_{optimal} \\
-   R_0 + R_{slope1} + \frac{U_t-U_{optimal}}{1-U_{optimal}} \times R_{slope2} &\text{if } U \geq U_{optimal}
+   R_0 + R_{slope1} + \frac{U_t-U_{optimal}}{1-U_{optimal}} \times R_{slope2} &\text{if } U \geq U_{optimal} \\
 \end{cases}
 $$
-
-
 
 当获得基础利率 $R_{base}$ 后，我们考虑 最佳固定利率负债总负债比率常数 $O_{ratio}$ 的影响，公式如下:
 
 $$
 R_t = \begin{cases}
    R_{base} &\text{if } ratio < O_{ratio} \\
-   R_{base} + \frac{ratio - O_{ratio}}{1 - O_{ratio}} \times offset &\text{if } ratio \geq O_{ratio}
+   R_{base} + \frac{ratio - O_{ratio}}{1 - O_{ratio}} \times offset &\text{if } ratio \geq O_{ratio} \\
 \end{cases}
 $$
 
