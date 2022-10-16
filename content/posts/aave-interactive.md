@@ -1,6 +1,6 @@
 ---
 title: "AAVE交互指南"
-date: 2022-09-11T11:47:33Z
+date: 2022-10-15T11:47:33Z
 tags: [aave,defi]
 aliases: ["/2022/10/09/aave-interactive/"]
 ---
