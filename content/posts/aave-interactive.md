@@ -377,6 +377,13 @@ R_t = \begin{cases}
 \end{cases}
 $$
 
+$$
+\begin{rcases}
+   a &\text{if } b \\
+   c &\text{if } d
+\end{rcases}⇒…
+$$
+
 其中，各参数可通过与合约交互获得，对应如下:
 
 - $ratio$ 固定利率负债与浮动利率负债之比，获取方法稍后给出
