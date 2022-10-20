@@ -74,6 +74,7 @@ aliases: ["/2022/10/09/aave-interactive/"]
 由于`AAVE`属于纯粹的`DeFi`，所有贷款获得盈利将完全分配给存款用户，所以我们可以通过以下公式进行计算:
 
 $$ {LR}_t = \bar{R_t}{U_t} $$
+
 $$ 
 \bar{R_t} = \frac{variable/ debt}{total/ debt} * {R_{variable}} + \frac{stable\ debt}{total/ debt} * {R_{stable}}
 $$
