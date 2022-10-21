@@ -3,6 +3,8 @@ languageCode: 'en-us'
 title: "Wong's Blog"
 theme: PaperMod
 
+googleAnalytics: G-JL04FF8DWE
+
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
