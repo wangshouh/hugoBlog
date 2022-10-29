@@ -344,7 +344,7 @@ $$R_t = R_0 + R_{slope1} + \frac{U_t-U_{optimal}}{1-U_{optimal}} \times R_{slope
 
 首先我们计算 $R_t$ 将数据代入后，结果如下:
 
-$$0 + \frac{0.3929}{80\%} \times 0.04 = 0.019645$$
+$$0 + \frac{0.3929}{80\\%} \times 0.04 = 0.019645$$
 
 这与此时页面显示的`variable APY`是一致的，如下图:
 
