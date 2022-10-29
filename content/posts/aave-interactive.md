@@ -76,7 +76,7 @@ aliases: ["/2022/10/09/aave-interactive/"]
 $$ {LR}_t = \bar{R_t}{U_t} $$
 
 $$ 
-\bar{R_t} = \frac{variable/ debt}{total/ debt} * {R_{variable}} + \frac{stable\ debt}{total/ debt} * {R_{stable}}
+\bar{R_t} = \frac{variable\\ debt}{total\\ debt} * {R_{variable}} + \frac{stable\\ debt}{total\\ debt} * {R_{stable}}
 $$
 
 其中，各参数含义如下:
