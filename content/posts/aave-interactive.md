@@ -71,7 +71,7 @@ aliases: ["/2022/10/09/aave-interactive/"]
 
 ### 存款利率计算
 
-由于`AAVE`属于纯粹的`DeFi`，所有贷款获得盈利将完全分配给存款用户，所以我们可以通过以下公式进行计算:
+由于`AAVE`属于纯粹的`DeFi`，所有贷款获得盈利将分配给存款用户，所以我们可以通过以下公式进行计算:
 
 $$ {LR}_t = \bar{R_t}{U_t} $$
 
@@ -91,6 +91,8 @@ $$Actual\ APY = (1+Theoretical\ APY/secsperyear)^{secsperyear}-1$$
 
 > 如果读者具有金融背景，可以将此按秒复利的方法近似于`连续复利`，通过 
 $e ^ {Theoretical\ APY} - 1$ 获得近似值。
+
+> 事实上，贷款收益并不会完全分配给用户，有少部分的利息收入会被计入风险储备金，此部分比例一般较少，在上文中并没有给出相关参数。
 
 事实上，我们可以通过与`AaveProtocolDataProvider`合约中的`getReserveData`函数获得相关数据，具体函数参数和返回值可参考[文档](https://docs.aave.com/developers/core-contracts/aaveprotocoldataprovider#getreservedata)。这里以`Arbitrum`上的`DAI`资产为例介绍参数获得。
 
