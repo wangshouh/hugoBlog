@@ -166,11 +166,54 @@ $$H_f = \frac{\sum({Collateral_i\ in\ ETH} \times {Liquidation\ Threshold}_i)}{T
 
 > 清算人只能使用被清算人的贷出资产类别进行清算购买
 
-> 贷款人也可以自己赎回质押品，但最多赎回 50%
+清算资产的具体规则如下:
 
-假如某用户拥有质押资产`10 X`，贷出代币`5 Y`，当前贷款的`Health factor`已经小于`1`，进入清算阶段。假设当前有`1Y = 5X`且`Liquidation penalty`为`5%`，某清算人想购入该用户全部质押资产`X`，其需要支付`10 / 5 * (1 - 5%)`单位`Y`，而该用户需要支付`(1 - 5%)`单位`Y`的清算手续费。值得注意的是，清算人必须以被清算人贷出资产类别(即`Y`)支付购买费用。
+1. 当贷款的`Health factor`小于 1 时，清算启动，但此时清算人只能最多清算 50% 的贷款
+1. 当贷款的`Health factor`小于 0.95 时，清算人可以清算贷款人 100% 的贷款
 
-在上述案例中，假设清算人决定购买 50% 抵押品。那么清算人需要支付等同于 50% 质押品价值的 95% 的`USDT`(减免的 5% 即`Liquidation penalty`，由质押者支付)。
+清算人清算后会获得质押物的`aToken`。
+
+总结来说，清算人单次清算的贷款金额可以通过以下公式计算:
+
+$$
+debtToCover = \begin{cases}
+   (userStableDebt + userVariableDebt) \times 50\\% &\text{if } 0.95 < H_f < 1 \\\
+   (userStableDebt + userVariableDebt) \times 100\\% &\text{if } H_f \leq 0.95\\
+\end{cases}
+$$
+
+其中，各参数含义如下:
+- $debtToCover$ 代表可偿还贷款金额
+- $userStableDebt$ 代表被清算人的固定利率贷款金额
+- $userVariableDebt$ 代表被清算人的浮动利率贷款金额
+- $H_f$ 健康因子，即`Health factor`
+
+最大可清算质押品数量可以通过以下公式计算:
+
+$$
+maxAmountOfCollateralToLiquidate = \frac{debtAssetPrice \times debtToCover \times liquidationBonus}{collateralPrice}
+$$
+
+其中，各参数含义如下:
+- $maxAmountOfCollateralToLiquidate$ 最大可清算质押品数量
+- $debtAssetPrice$ 贷出资产的价值(以ETH计)
+- $debtToCover$ 可偿还贷款金额
+- $liquidationBonus$ 等于 `1 - Liquidation penalty`
+- $collateralPrice$ 质押资产价值(以ETH计)
+
+> 在下文中，我们不会使用此公式，但如果读者意图开发清算MEV机器人需要使用此公式计算
+
+清算者在清算过程中需要清偿贷款，清偿所需要的输入的资产如下:
+
+$$
+debtLiquidate = debtAssetPrice \times debtToCover \times liquidationBonus
+$$
+
+经过简单的数学推导，我们可以得到清算人在清算过程中获得清算奖励:
+
+$$
+maxCollateralBonus = maxAmountOfCollateralToLiquidate \times (1- liquidationBonus) \times collateralPrice
+$$
 
 我们看一笔发生在真实世界的[交易](https://etherscan.io/tx/0x11d0050b5040438b8f95b4a6d07b31656242f30405e5e931d75b2cca19dfc94e)，更加详细的交易调用可以参考[此网站](https://tx.eth.samczsun.com/ethereum/0x11d0050b5040438b8f95b4a6d07b31656242f30405e5e931d75b2cca19dfc94e)。简单来说，质押者在过去以`383.4730870573113 REN`以及其他资产作为质押品贷出了`114.5628671559096 DAI`。但目前，这笔交易已经到达清算阶段。上面给出的交易正是此交易的清算交易之一。清算人决定质押品内所有的`REN`代币，总计`383.4730870573113`。由于被清算人贷出了`DAI`，所以清算人需要支付`DAI`作为代币，且仅需要支付`383.4730870573113 * (1 - 0.075) REN`的`DAI`。
 
@@ -187,7 +230,7 @@ $$H_f = \frac{\sum({Collateral_i\ in\ ETH} \times {Liquidation\ Threshold}_i)}{T
 ```
 计算结果为`44.61103223941377`，基本与交易输入的`44.86338878495268 DAI`。
 
-> 上述误差可能来自浮点数计算以及结算手续费等问题
+> 上述误差可能来自浮点数计算以及结算手续费等问题。如果读者想更加详细了解此部分或者构造清算机器人，请一定阅读[AAVE liquidations](https://docs.aave.com/developers/guides/liquidations)
 
 读者可以在[eigenphi](https://eigenphi.io/ethereum/liquidation)网站内找到更多清算实例。如下图:
 
