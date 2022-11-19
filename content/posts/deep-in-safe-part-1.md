@@ -4,7 +4,6 @@ date: 2022-08-27T16:47:33Z
 tags: [Safe,solidity,EIP-712,EIP-1271]
 aliases: ["/2022/08/27/deep-in-safe-part-1"]
 ---
-
 ## 概述
 
 `Safe`(或称`Gnosis Safe`)是目前在以太坊中使用最为广泛的多签钱包。本文主要解析此钱包的逻辑设计和代码编写。
@@ -43,7 +42,7 @@ aliases: ["/2022/08/27/deep-in-safe-part-1"]
 
 我们会在后文向读者介绍`Gnosis Safe`的多签钱包的构造逻辑和代码。
 
-![Multisig Wallet](https://img.gejiba.com/images/e581928ae548dc61b05db4e3eb36ce3a.png)
+![Multisig Wallet](https://img-blog.csdnimg.cn/img_convert/bca754a66e1bf112f355b0330c963743.png)
 
 ### 中继商
 
@@ -62,14 +61,14 @@ aliases: ["/2022/08/27/deep-in-safe-part-1"]
 在此处，我们给出在`Etherscan`网站中的各个合约地址:
 
 1. [Proxy Factory](https://etherscan.io/address/0xa6b71e26c5e0845f74c812102ca7114b6a896ab2) 
-2. [GnosisSafeProxy](https://etherscan.io/address/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552)
-3. [Gnosis Safe: Relay service - Transactions](https://etherscan.io/address/0x4d953115678b15ce0b0396bcf95db68003f86fb5)
+1. [GnosisSafeProxy](https://etherscan.io/address/0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552)
+1. [Gnosis Safe: Relay service - Transactions](https://etherscan.io/address/0x4d953115678b15ce0b0396bcf95db68003f86fb5)
 
 ## 代理工厂合约
 
 当我们获取代码后，我们先研究合约的部署过程。参见下图:
 
-![Proxy Deploy](https://img.gejiba.com/images/4ab785c630b3af1c6909a13305d0ce91.png)
+![Proxy Deploy](https://img-blog.csdnimg.cn/img_convert/dc4d5feae8270428f7d075347774dec9.png)
 
 这一部分的代码主要参考`src/proxies/GnosisSafeProxyFactory.sol`合约。为了方便研究合约，我们也给出此合约在以太坊主网中的[地址](https://etherscan.io/address/0xa6b71e26c5e0845f74c812102ca7114b6a896ab2)。
 
@@ -195,7 +194,7 @@ proxy = new GnosisSafeProxy{salt: salt}(_singleton)
 
 `createProxyWithNonce`是目前使用最为广泛的创建代理合约的函数。读者可前往[此网页](https://etherscan.io/address/0xa6b71e26c5e0845f74c812102ca7114b6a896ab2#events)查看。
 
-![More createProxyWithNonce](https://img.gejiba.com/images/ad20d43e5be9a1adf7abc42b2183f429.png)
+![More createProxyWithNonce](https://img-blog.csdnimg.cn/img_convert/2e2bb7003c524cdded7828231354ae50.png)
 
 `createProxyWithCallback`是在`createProxyWithNonce`基础上实现的一个极其不常见的函数。简单来说，此函数的作用是在创建完成代理合约后会向指定的合约地址进行`proxyCreated`请求。
 
@@ -266,7 +265,7 @@ interface IProxy {
 
 我们在此节会进入核心代码`GnosisSafe.sol`。此代码串联了各个模块，结构具有一定的复杂性。
 
-![Gnosis Safe Inherit](https://img.gejiba.com/images/3097ec492fc1eb1ef12d12f7d8fda2e8.png)
+![Gnosis Safe Inherit](https://img-blog.csdnimg.cn/img_convert/4f518f9a9081454eca15f26c13f3f929.png)
 
 由于此处涉及到大量外部模块，我们在此处不会详细介绍模块的实现仅会提及模块的功能，具体实现会在后文提及。
 ### Setup
@@ -281,7 +280,7 @@ cast --calldata-decode "setup(address[],uint256,address,bytes,address,address,ui
 ```
 
 运行截图如下:
-![Cast Calldata decode](https://img.gejiba.com/images/c6fd9f764ac6bd98160a90ae06682ade.png)
+![Cast Calldata decode](https://img-blog.csdnimg.cn/img_convert/d753678677e246dcf3f6a03567c42c4e.png)
 
 此交易进行了最简单的初始化，仅初始化了`_owners`和`_threshold`。这两个参数的含义如下:
 
@@ -574,7 +573,7 @@ if (gasPrice > 0) {
 
 手续费提取的具体交易可以参考[这个交易](https://etherscan.io/tx/0x2cf86cdeb052d0accb71711edd0225c192765c9ac8b86e6ad1adc1d556b216ae)，如下图:
 
-![Relay Tx](https://img.gejiba.com/images/ae44573b77a595cbad95fca045b3781d.png)
+![Relay Tx](https://img-blog.csdnimg.cn/img_convert/33d01e84ea053610cc1313469369fbd4.png)
 
 在交易的最后代码，我们进行了抛出事件和调用`Guard`合约中的`checkAfterTransaction`进行监控。
 
