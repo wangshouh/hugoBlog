@@ -14,7 +14,7 @@ aliases: ["/2022/09/26/ethereum-transcation/"]
 
 本文以一笔交易的生命周期为主线安排全文，从交易池初始化、交易构造到交易执行，尽可能为读者全景展示以太坊中的交易所涉及的方方面面。
 
-![State with Tx](https://img.gejiba.com/images/3cf30c9764d5209801178e963e1f5ff7.png)
+![State with Tx](https://img-blog.csdnimg.cn/img_convert/1186f0862f7dfe370a4f20b152a472e4.png)
 
 对于交易的打包涉及状态树、数据库等内容，为强化文章专题性，我们将这一部分内容放到下一篇文章内。
 
