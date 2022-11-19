@@ -4,7 +4,6 @@ date: 2022-08-22T11:47:33Z
 tags: [EIP-1167,solidity,EVM]
 aliases: ["/2022/08/22/deep-in-eip1167"]
 ---
-
 ## 概述
 
 本文主要介绍最小化代理合约`EIP1167`的相关内容。为了实现最小化，`EIP1167`使用了`bytecode`(字节码)作为主要编码方式，即直接使`EVM`汇编指令进行编写。本文将在`openzeppelin`提供的[合约](https://docs.openzeppelin.com/contracts/4.x/api/proxy#Clones)基础上，为读者逐个字节码的解析`EIP1167`，帮助读者理解`EVM`底层汇编和`EIP1167`的实现原理。
@@ -90,7 +89,7 @@ mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000
 关于此此字节码的作用，我们会在下文进行解释。
 
 上述流程可以用下图进行概括:
-![EIP1167 Memory](https://img.gejiba.com/images/d2242462d9a2b0834ee49137ee92e4fa.png)
+![EIP1167 Memory](https://img-blog.csdnimg.cn/img_convert/5c6f421ab4744d28565ae9c9dd2ef223.png)
 
 此图展示了上述汇编代码对内存的修改情况。其中最上方的`ptr`、`ptr + 0x14`、`ptr + 0x28`等值表示当前的内存地址，`0x14`等值的单位均为`byte`。
 
@@ -283,7 +282,7 @@ ret, err := evm.interpreter.Run(contract, nil, false)
 
 另一点需要注意的是栈属于后进先出(`LIFO`)的数据类型，所以我们需要先推入`size`参数再推入`offset`最后推入`destOffset`参数。
 
-![Stack Picture](https://img.gejiba.com/images/1fdb103df145333ed968714379188f9b.png)
+![Stack Picture](https://img-blog.csdnimg.cn/img_convert/ee7d508ecf8ff49a803500cdf9a28dfa.png)
 
 经过以上流程，我们成功把`calldata`复制到内存中，下一步则需要使用`calldata`进行`delegatecall`
 
