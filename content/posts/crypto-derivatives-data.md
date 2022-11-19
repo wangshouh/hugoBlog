@@ -25,7 +25,7 @@ ETH现货价格是可以非常方便的获得基础数据。在此处，我们�
 
 前往[ethereumprice](https://ethereumprice.org/history/)，读者可以下载ETH价格历史价格数据。
 
-![EthereumPrice](https://img-blog.csdnimg.cn/img_convert/a5de2751c6a720bd8290b8b7dddc0980.png)
+![EthereumPrice](https://acjgpfqbqr.cloudimg.io/_csdn_/a5de2751c6a720bd8290b8b7dddc0980.png)
 
 从网站最大可下载 2015 年 8 月 7 日(August 7, 2015)至今的ETH价格历史数据，数据样例如下:
 
@@ -107,7 +107,7 @@ ethereum_price["open"].plot()
 
 如果读者较为在意数据来源，`investing`提供了各交易所的数据来源接口，读者可前往[ETH USD Historical Data](https://www.investing.com/crypto/ethereum/eth-usd-historical-data)网页，如下图:
 
-![Eth Cex Source](https://img.gejiba.com/images/13fb113570cbc4ff734e3892e0563d74.gif)
+![Eth Cex Source](https://img-blog.csdnimg.cn/img_convert/290945885035a025d5659ebb1f8fdf91.gif)
 
 使用`Pandas`进行数据清洗的流程如下:
 
@@ -229,13 +229,13 @@ Binance 交易所作为全球最大的加密货币交易所提供的数据具有
 
 下载源代码，如下图:
 
-![Binance Code Save](https://img.gejiba.com/images/78ad95889f9024c9fb060bf1403c52aa.gif)
+![Binance Code Save](https://img-blog.csdnimg.cn/img_convert/2daed6cdc8686d9f07f29d30e3865c01.gif)
 
 > 读者也可通过点击[此链接](https://codeload.github.com/binance/binance-public-data/zip/refs/heads/master)下载`zip`压缩的源代码
 
 将压缩包内的`python`文件夹解压缩到您的数据工作目录，此工具需要`pandas`库支持，但相信读者都已经安装了相关库，所以此处我们不再安装依赖库。打开`cmd`命令行:
 
-![Cmd Open](https://img.gejiba.com/images/a1b01aa5e3304fa883ce74da6b7be46c.gif)
+![Cmd Open](https://img-blog.csdnimg.cn/img_convert/c1fe238ce5e25cfd4509765b9d7fe80b.gif)
 
 在`cmd`内键入以下命令:
 ```bash
