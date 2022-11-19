@@ -28,7 +28,6 @@ aliases: ["/2022/10/09/aave-interactive/"]
 </script>
 
 {{</ math.inline >}}
-
 ## 概述
 
 本文主要介绍如何在`AAVE`内进行质押、借贷等基本操作，为读者进一步研究`AAVE`源代码奠定坚实的基础。
@@ -46,7 +45,7 @@ aliases: ["/2022/10/09/aave-interactive/"]
 
 前往[AAVE DApp](https://app.aave.com/)官网，连结并授权钱包，点击右上角的齿轮符号，开启`Testnet mode`。如下图:
 
-![AAVE Setting](https://img.gejiba.com/images/146138118a3f82db3195f20271276c41.png)
+![AAVE Setting](https://img-blog.csdnimg.cn/img_convert/2be9e1afe114c7e6f7ece272f4e72d0b.png)
 
 然后，进入[Faucet](https://app.aave.com/faucet/)页面，铸造一部分`Test Assets`，建议铸造`USDC`资产。
 
@@ -55,19 +54,19 @@ aliases: ["/2022/10/09/aave-interactive/"]
 ### 存入步骤
 完成初始测试资产的铸造后，我们返回到[Dashboard](https://app.aave.com/)页面，在`Assets to supply`栏目内选择`USDC`资产进行`Supply`操作，如图:
 
-![USDC approve](https://img.gejiba.com/images/7e6b3ef60bf541f56e4dc4d6a1ea1ea8.png)
+![USDC approve](https://img-blog.csdnimg.cn/img_convert/67ce40dcf773a400c03ad5e84eb82d29.png)
 
 > 点[此](https://goerli.etherscan.io/tx/0xb998288a6d5f9c39d522f449e553fbac1736d39037c6228f32aa09a5f2a55a9c)查看我的交易
 
 点击`Approve to continue`按钮，并在钱包内批准交易。值得注意的是，此笔交易完成后，并不以为这我们完成了`Supply`操作，这仅仅表示我们完成了`ERC-20`的`Approve`操作。我们需要再次点击`Supply USDC`，如图:
 
-![USDC supply](https://img.gejiba.com/images/cdca80c660129dac7ccc92af74b19149.png)
+![USDC supply](https://img-blog.csdnimg.cn/img_convert/1e002fdc1d0794798f47f84c0ecc8f64.png)
 
 > 点[此](https://goerli.etherscan.io/tx/0xf7bc3325b84af8b169167e9c26ab262ddfa34a15c2155f524a155c8ec3dffacc)查看我的交易
 
 最终，完成后会出现以下对话框:
 
-![Supply Finish](https://img.gejiba.com/images/7dbf1379b67fa25acc2049795eda2fb2.png)
+![Supply Finish](https://img-blog.csdnimg.cn/img_convert/50e1fcf7aa1aee91410ee2cf35fed74a.png)
 
 ### 质押利率计算
 
@@ -98,7 +97,7 @@ $e ^ {Theoretical\ APY} - 1$ 获得近似值。
 
 直接前往[Arbiscan相关页面](https://arbiscan.io/address/0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654#readContract#F12)操作，在`asset`内输入`DAI`的地址`0xda10009cbd5d07dd0cecc66161fc93d7c9000da1`，我们就可以索引到相关数据，如下图:
 
-![getReverseData](https://img.gejiba.com/images/15ac4264b04fcd2ccab8d2faee35adb3.png)
+![getReverseData](https://img-blog.csdnimg.cn/img_convert/4d4242692eecdc1035a0e1d98cd54a70.png)
 
 返回的`liquidityRate`就是我们想要的 ${LR}_t$ ，但由于有限精度小数编码的方法，此处获得的数据需要与 ${10}^{27}$ 相除，即`0.00733376`。将此数值带入上文给出的实际利率计算公式，结果为 
 
@@ -108,7 +107,7 @@ $$ (1 + \frac{0.00733376}{31536000}) ^ {31536000} - 1 = 0.007365$$
 
 上述数据与 `DAPP` 详情页显示一致，如下图:
 
-![Supply APY](https://img.gejiba.com/images/e3302b24f635f12125f1c1605dc82cb2.png)
+![Supply APY](https://img-blog.csdnimg.cn/img_convert/ce8d0ed3a934928b02684481c6538b68.png)
 
 ## 贷出资产
 
@@ -135,7 +134,7 @@ $$ (1 + \frac{0.00733376}{31536000}) ^ {31536000} - 1 = 0.007365$$
 
 首先，我们应该点击`Assets to borrow`栏目内的`Details`按钮以查询作为抵押品的`USDC`的相关属性。当然，读者可以通过直接点击[此链接](https://app.aave.com/reserve-overview/?underlyingAsset=0xa2025b15a1757311bfd68cb14eaefcc237af5b43&marketName=proto_goerli_v3)直接访问。如图:
 
-![USDC Collateral](https://img.gejiba.com/images/d32de44af963c6dd56f1c0dfef197626.png)
+![USDC Collateral](https://img-blog.csdnimg.cn/img_convert/2850d20bc46ec3f9886a138f3d79139c.png)
 
 其中，各参数含义如下:
 
@@ -146,7 +145,7 @@ $$ (1 + \frac{0.00733376}{31536000}) ^ {31536000} - 1 = 0.007365$$
 
 在前文中，我们存入了 `1000 USDC` 资产，根据`Max LTV`计算出，我们最多可以贷出 `800` 美元的其他资产。由于`USDC`的`APY`过高，我目前持有`1000.21 USDC`，假如兑换`USDT`，根据`Max LTV`计算得到我可以借出最多`800.168 USDT`，查看[USDT Details](https://app.aave.com/reserve-overview/?underlyingAsset=0xc2c527c0cacf457746bd31b2a698fe89de2b6d49&marketName=proto_goerli_v3)页面，数值恰好相符。
 
-![USDT Borrow](https://img.gejiba.com/images/15bcd4d7dbcccf64b58faa20b8bdef2f.png)
+![USDT Borrow](https://img-blog.csdnimg.cn/img_convert/7c8ecb4f98ed7dc401aba945a2136f95.png)
 
 接下来，我们计算`Health factor`数值，此数值一旦低于`1`，就会触发清算程序。此数值的计算方法为`流动性阈值(Liquidation threshold) / 贷出资产价值与质押品价值比值`。在此处，我们可以计算出`贷出资产价值与质押品价值比值`为`80 %`(此处我们选择全部贷出，故而数值等同于`Max LTV`)，而`USDC`的`流动性阈值`为`85 %`，我们可以通过`85% / 80%`，结果正好为`1.06`。
 
@@ -234,19 +233,19 @@ $$
 
 读者可以在[eigenphi](https://eigenphi.io/ethereum/liquidation)网站内找到更多清算实例。如下图:
 
-![Liquidation Overiew](https://img.gejiba.com/images/fc1e0d5f9da76eb16035646422edc43d.png)
+![Liquidation Overiew](https://img-blog.csdnimg.cn/img_convert/77b9f732ccf915dc636e993c4fa8ccf3.png)
 
 但值得注意的是，此网站展示的结算过程较为会计化和复杂化，可能很难理解具体的清算流程。如下图:
 
-![Tx Token Flow](https://img.gejiba.com/images/a72dd7fb8591ecf6199b09d7450518c1.png)
+![Tx Token Flow](https://img-blog.csdnimg.cn/img_convert/4093b1984ec0148eef488f859031a189.png)
 
 这是因为清算人在清算时往往大量使用`uniswap`等工具进行代币兑换，但此部分展示时并没有给出详细的交易执行顺序而仅仅给出交易运行结束后的代币流向，一个更好的理解清算过程的方法是使用`Etherscan`，如下图:
 
-![Etherscan Liquidation](https://img.gejiba.com/images/f182baac558ad604f6a84faf0e90f49f.png)
+![Etherscan Liquidation](https://img-blog.csdnimg.cn/img_convert/3fefbe3bedee142c18c15902cae02cc6.png)
 
 读者可以通过在`eigenphi`交易详情页的最上方的按钮直接跳转到`Etherscan`，如下图:
 
-![Etherscan Eigenphi](https://img.gejiba.com/images/d30b5fc7d7043692a34a364718fa60c5.png)
+![Etherscan Eigenphi](https://img-blog.csdnimg.cn/img_convert/edfc1eedf7973e0a2b1c5345d0a23672.png)
 
 > 如果您是一位以太坊技术人员，更希望了解交易的本质，我建议您通过[此网站](https://tx.eth.samczsun.com/)查询清算交易的详细的函数调用情况。
 
@@ -254,7 +253,7 @@ $$
 
 在此处我们使用`Arbitrum`网络上的`DAI`流动性池作为案例，页面上的参数如图:
 
-![DAI Args](https://img.gejiba.com/images/f76f7477c7f7c7d50d97da5b524aa3d2.png)
+![DAI Args](https://img-blog.csdnimg.cn/img_convert/44004ffd081068379e3c3aba6468f206.png)
 
 我们可以通过`Pool`合约的`getReserveData`函数获得压缩后的流动性池配置，使用以下命令获得相关数据:
 ```bash
@@ -284,7 +283,7 @@ cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD "getReserveData(address)(ui
 
 此节主要关注于贷款利率的计算方面。在传统金融中，利率往往通过中央银行给出基准，商业银行在此利率基准上根据资金成本和风险等机制调整利率，较为详细的定价机制可以参考下图:
 
-![Bank Interest rate](https://img.gejiba.com/images/b6ff62812bbc8603bee0bd20b416ef57.jpg)
+![Bank Interest rate](https://img-blog.csdnimg.cn/img_convert/98d558e75bb913d4f12c8c6c19bf7182.jpeg)
 
 上图来自`张建波,文竹.利率市场化改革与商业银行定价能力研究[J].金融监管研究,2012,(10):1-13.`
 
@@ -292,7 +291,7 @@ cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD "getReserveData(address)(ui
 
 但与银行的定价方式不同，在`AAVE`内，我们通过流动性池实现借贷等功能，利率需要尽可能调整借贷比例以实现流动性池的稳定。为了尽可能实现这一目的，`AAVE`设计了一个二阶段的利率曲线，具体图像如下:
 
-![Interest Curve](https://img.gejiba.com/images/fd287385369cc076f547790258ce5d89.png)
+![Interest Curve](https://img-blog.csdnimg.cn/img_convert/7f1596278d67d5ac282c25f4accde9fa.png)
 
 在达成流动性池最佳利用率`Optimal`后，借贷利率会迅速上升以避免流动性枯竭。
 
@@ -313,11 +312,11 @@ $$ U = \frac{Total\ borrowed}{Total\ supplied}$$
 
 这些变量的近似值都可以在[资产详情页](https://app.aave.com/reserve-overview/?underlyingAsset=0xda10009cbd5d07dd0cecc66161fc93d7c9000da1&marketName=proto_arbitrum_v3)内获得，如下图:
 
-![DAI Data](https://img.gejiba.com/images/9666f566a15632f2530174f6826bf638.png)
+![DAI Data](https://img-blog.csdnimg.cn/img_convert/1ae1b26c91e08c5840f70209cdedbf11.png)
 
 计算得到的结果为`39.41%`，与页面给出的数据类似:
 
-![DAI Utilization rate](https://img.gejiba.com/images/0a464777646d4b3f5c46eedb75a082c4.png)
+![DAI Utilization rate](https://img-blog.csdnimg.cn/img_convert/0853e3defd835481190d440fdc3ce1dd.png)
 
 此结果误差原因在于页面给出的贷出、存入资产数据精度不足，为了获得更加精确的数据，我们可以通过与合约进行交互。查询文档，我们可以发现`AaveProtocolDataProvider`合约内存在`getATokenTotalSupply`和`getTotalDebt(address)`函数。
 
@@ -368,11 +367,11 @@ $$R_t = R_0 + R_{slope1} + \frac{U_t-U_{optimal}}{1-U_{optimal}} \times R_{slope
 
 首先打开[流动性池详情页](https://app.aave.com/reserve-overview/?underlyingAsset=0xda10009cbd5d07dd0cecc66161fc93d7c9000da1&marketName=proto_arbitrum_v3)，将页面滚动到最下方，点击`Interest rate model`框内的`INTEREST RATE STRATEGY`按钮，如下图:
 
-![INTEREST RATE STRATEGY](https://img.gejiba.com/images/4d31ebda9b1abc1f9b5676abe83a60be.png)
+![INTEREST RATE STRATEGY](https://img-blog.csdnimg.cn/img_convert/eb42d8d06c012737702f82ecf14b0f31.png)
 
 点击后会跳转到`Arbiscan`网站，点击`Contract`内的`Read Contract`，如下图:
 
-![Read the Contract](https://img.gejiba.com/images/63f95365ab33038b6060612172b9e683.png)
+![Read the Contract](https://img-blog.csdnimg.cn/img_convert/c82f746b047d4e578f380cf176187306.png)
 
 我们可以在此页面内自由参考各个参数，对应关系如下:
 
@@ -393,7 +392,7 @@ $$0 + \frac{0.3929}{80\\%} \times 0.04 = 0.019645$$
 
 这与此时页面显示的`variable APY`是一致的，如下图:
 
-![AAVE APY Data](https://img.gejiba.com/images/bedd5d34dde6f9887c013325d09d1821.png)
+![AAVE APY Data](https://img-blog.csdnimg.cn/img_convert/0687bc4693ba15139e2bc26a8dcd9751.png)
 
 读者可以自行验算当 $U > U_{optimal}$ 情况下的`APY`在于曲线数值进行核对，我们此处不再给出计算过程。
 
@@ -436,7 +435,7 @@ $$
 
 直接前往[Arbiscan相关页面](https://arbiscan.io/address/0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654#readContract#F12)操作，在`asset`内输入`DAI`的地址`0xda10009cbd5d07dd0cecc66161fc93d7c9000da1`，我们就可以索引到相关数据，如下图:
 
-![getReverseData](https://img.gejiba.com/images/a7ece3a689482a7af4da6750e7a05694.png)
+![getReverseData](https://img-blog.csdnimg.cn/img_convert/4d4242692eecdc1035a0e1d98cd54a70.png)
 
 > 可以通过`cast call 0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654 "getReserveData(address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40)" 0xda10009cbd5d07dd0cecc66161fc93d7c9000da1 --rpc-url https://rpc.ankr.com/arbitrum` 命令获得相关数据。
 
@@ -446,7 +445,7 @@ $$ 0.05 + \frac{0.3941}{0.8000} \times 0.005 = 0.05246 $$
 
 使用上述 $Actual\ APY$ 公式转换得到 实际利率为 $0.05386$，与页面显示一致，如下图:
 
-![AAVE DAI APY](https://img.gejiba.com/images/5e0f2202f19a34838189b1ea41e4d46b.png)
+![AAVE DAI APY](https://img-blog.csdnimg.cn/img_convert/b7064c11a0570db42019e113e0254160.png)
 
 其实在`getReserveData`函数的返回值内`stableBorrowRate`即代表当前资产流动性池的固定利率，此数值除以 $10^{27}$ 即可获得单利条件下的利率，即`0.05246`，此数值与我们的计算结果一致。同理，`variableBorrowRate`代表浮动利率，也可以通过除以 $10^{27}$ 的方式转换为单利。
 
@@ -458,22 +457,22 @@ $$ 0.05 + \frac{0.3941}{0.8000} \times 0.005 = 0.05246 $$
 任何项目都可以将项目代币申请为`AAVE`交易对的成员，但过去由于所有资产都可以作为质押品贷出资产，这导致`AAVE`治理委员会要求申请`AAVE`交易对的代币必须满足一系列严格的要求。这使得`AAVE`的可交易的资产种类较少。
 
 下图展示了对于一般代币进入`AAVE`的评级方法:
-![Token Table](https://acjgpfqbqr.cloudimg.io/_cat_/hdd852.png)
+![Token Table](https://img-blog.csdnimg.cn/img_convert/1d50c9b01852a09902b40ebb0bc2e47c.png)
 
 为了解决这些问题，`AAVE`引入了`isolation mode`，进入`isolation mode`的代币位于一个特定的流动性池内，仅能用于贷出稳定币且具有债务上限。这使得部分早期项目的代币也可以进入`AAVE`的交易池，比如[这个](https://governance.aave.com/t/arc-add-tryb-to-aave-v3-on-avalanche-network-isolation-mode)。
 
 下图展示了在`isolation mode`下，我们只能使用`$Token2`代币贷出稳定币:
 
-![Isolation Mode Token2](https://img.gejiba.com/images/bf286978893868222a8ebaf4dd020810.png)
+![Isolation Mode Token2](https://img-blog.csdnimg.cn/img_convert/8e590c916666ac3902cb529e9d877b1e.png)
 
 
 为了更加直观地理解此概念，我们为大家在测试网内展示如何使用`isolation mode`。我们首先前往[Faucet](https://app.aave.com/faucet/)领取`EURS`代币。在`EURS`代币内重复上述流程，最终结果如下图:
 
-![AAVE Supply Example](https://img.gejiba.com/images/b46ec1cc28adef92c9ac70b10462b664.png)
+![AAVE Supply Example](https://img-blog.csdnimg.cn/img_convert/b1126aba2d7972f7d0b86b103dc678c8.png)
 
 为了进入`isolation mode`，我们需要首先偿还所有贷出代币，然后关闭`USDC`的`Collateral`功能，然后打开`EURS`的`Collateral`功能。通过上述操作，我们可以进入`isolation mode`，最终结果如下:
 
-![Enter isolation mode](https://img.gejiba.com/images/f4c2fc069e3cef0498c8ed674b6568f0.png)
+![Enter isolation mode](https://img-blog.csdnimg.cn/img_convert/3580ee47abb83d20151efcb256cd7e7b.png)
 
 然后，我们可以贷出稳定币资产。退出`isolation mode`的步骤如下:
 
@@ -495,15 +494,15 @@ $$ 0.05 + \frac{0.3941}{0.8000} \times 0.005 = 0.05246 $$
 
 一个展示普通模式与`E-Mode`差别的示意图如下:
 
-![E-Mode](https://img.gejiba.com/images/84c3e142e3120cd801834b29219b101b.png)
+![E-Mode](https://img-blog.csdnimg.cn/img_convert/c93256742b7017c2bbe8c7edbdfe6c37.png)
 
 启用此模式时，我们需要点击`You Brrows`左侧的`DISABLED`，如下图:
 
-![Enable button](https://img.gejiba.com/images/6284a3330415288f81745b309d499eb0.png)
+![Enable button](https://img-blog.csdnimg.cn/img_convert/14feca5c04caa0020d96dae4b2ca119c.png)
 
 点击后同意交易即可进入`E-Mode`模式享受对部分资产的超高`LTV`。推出此模式只需要在此点击`You Brrows`左侧的按钮即可，但需要注意`Health factor`，如下图:
 
-![E-Mode Disable](https://img.gejiba.com/images/3b4fd2ea43f7196a23f16f90461d58b9.png)
+![E-Mode Disable](https://img-blog.csdnimg.cn/img_convert/7d78ec963862cb268e9b1e32586e3a0e.png)
 
 读者可以注意到此处显示`Health factor`在退出`E-Mode`时已经小于`1`，所以此时如果我们一旦退出`E-Mode`会导致资产被立即清算。读者在退出`E-Mode`时需要注意此数值，可以在偿还部分贷款后再退出。
 
