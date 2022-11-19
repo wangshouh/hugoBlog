@@ -4,7 +4,6 @@ date: 2022-10-14T23:47:33Z
 tags: [ethereum,geth]
 aliases: ["/2022/09/26/ethereum-transcation/"]
 ---
-
 ## 概述
 
 我们在上一篇[以太坊机制详解:Gas Price计算](https://hugo.wongssh.cf/posts/ethereum-gas/)文章内介绍了以太坊中交易的具体`gas`计算相关规则。本篇文章将在此基础上介绍以下内容:
@@ -148,7 +147,7 @@ const txHash = await ethereum.request({
 });
 ```
 如果一切顺利，读者可以看到如下内容:
-![MetaMask API](https://img.gejiba.com/images/62fefc63e6ff21d1a32e1588b27a3861.png)
+![MetaMask API](https://img-blog.csdnimg.cn/img_convert/1ed7d33e2265894d2f788279f8e5432f.png)
 
 > 如果读者需要设置`gas`、`value`等参数，需要注意这些参数均使用`wei`作为单位，同时使用 16 进制进行编码。1 wei 为 `0.000000000000000001 eth`。
 
@@ -199,7 +198,7 @@ type TxData interface {
 
 在以太坊中，我们可以将交易队列使用以下`Venn`图表示:
 
-![Tx Types](https://img.gejiba.com/images/f0f90a3e1b3781c822373519ab230ac5.png)
+![Tx Types](https://img-blog.csdnimg.cn/img_convert/dd54ff2947893c983f275312da54d60f.png)
 
 所有交易可以根据来源首先被划分为两类:
 
@@ -1017,10 +1016,10 @@ uwsc wss://mainnet.infura.io/ws/v3/YOUR_API_KEY
 {"jsonrpc":"2.0", "id": 1, "method": "eth_subscribe", "params": ["newPendingTransactions"]}
 ```
 输入如下图:
-![utws input](https://img.gejiba.com/images/16165ef03287c0a1f62ed2fa56d147ed.png)
+![utws input](https://img-blog.csdnimg.cn/img_convert/6dee06b4b5f8885af55fe2fabd161232.png)
 
 输出如下图:
-![utws output](https://img.gejiba.com/images/546871eeed9c3dc3e6785630836f2156.png)
+![utws output](https://img-blog.csdnimg.cn/img_convert/808ea0caf274fc8f656a7beb9afebbfc.png)
 
 在输出中，`result`代表交易的哈希值，读者可`https://etherscan.io/tx/{result}`形式的网址访问到交易详情。
 
@@ -1051,7 +1050,7 @@ func (w *worker) generateWork(params *generateParams) (*types.Block, error) {
 目前以太坊已经完成了合并，所以此处最终的出块是由`engine`完成，即共识引擎。
 
 简单给出一个当前以太坊的节点架构图:
-![Ethereum Node Chart](https://img.gejiba.com/images/83779fa7aa66b0a16853c39d8cf281a6.png)
+![Ethereum Node Chart](https://img-blog.csdnimg.cn/img_convert/ac760e3c73f36d5a43846526af6f974a.png)
 
 简单来说，当共识客户端(`Consensus Client`)被选为区块提案者(`proposer`)后，会在执行客户端(`Exection Client`)的交易池内筛选交易，并由执行客户端运行交易。最终，共识客户端将打包后的交易进行广播，由其他节点进行投票，最终确定一个区块。
 
