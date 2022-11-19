@@ -4,7 +4,6 @@ date: 2022-08-16T10:27:17Z
 tags: [EIP-2770,EIP-2771,EIP-2612,EIP-712,solidity]
 aliases: ["/2022/08/11/eip712-extend"]
 ---
-
 ## 概述
 
 本文在[上一篇文章](https://hugo.wongssh.cf/posts/ecsda-sign-chain/)介绍的`EIP712`的基础上进一步讨论了`EIP712`结构化哈希的进一步应用:
@@ -30,10 +29,10 @@ aliases: ["/2022/08/11/eip712-extend"]
 
 我们与合约交互需要生成`calldata`数据。此过程是根据我们输入的数据和`abi`进行编码得到的，在`solidity`中，一般使用`abi.encodeWithSignature`得到，我们在[Foundry教程：使用多种方式编写可升级的智能合约(上)](https://hugo.wongssh.cf/posts/foundry-contract-upgrade-part1/)测试中已经多次使用此函数。当然，我们可以使用`Foundry`提供的`cast`完成此步骤，具体可以参考[cast calldata](https://book.getfoundry.sh/reference/cast/cast-calldata)。在下图中，我们给出一个例子。
 
-![castCalldata.png](https://img.gejiba.com/images/37034a598cffe242e7220aa4c0182a14.png)
+![castCalldata.png](https://img-blog.csdnimg.cn/img_convert/41e1bf6f1ee7bc67ad9d8d692e1d0dc4.png)
 
 除此之外，我们也可以在[网页](https://abi.hashex.org/)中进行操作，示意图如下:
-![calldataweb.png](https://img.gejiba.com/images/859a1d3530aa96a81dfe1a4ef7a48784.png)
+![calldataweb.png](https://img-blog.csdnimg.cn/img_convert/03cd47f1c1697388642d4433a4c50965.png)
 
 在`ethers.js`中，此过程在我们进行合约调用时隐形进行。
 
@@ -59,7 +58,7 @@ rlp(
 
 第三步，发送交易至以太坊节点。当交易发送到以太坊节点后，以太坊节点检验交易的有效性。当以太坊节点查询到交易内的`destination`为合约地址后，以太坊节点将`calldata`内的数据发送到`EVM`中。EVM获得`calldata`数据后，会首先提取`calldata`前4 byte(即函数选择器)，并查询本地的函数选择器映射表选择需要运行的堆栈。完整过程见下图:
 
-![EVM Opcodes](https://img.gejiba.com/images/b922b9236e6a25af7d18d568dfb3d0ef.png)
+![EVM Opcodes](https://img-blog.csdnimg.cn/img_convert/a9368cef05dad2aea24df3c1e23e7538.png)
 
 *上图来自[Deconstructing a Solidity Contract — Part III: The Function Selector](https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-iii-the-function-selector-6a9b6886ea49/)
 
@@ -219,7 +218,7 @@ function _msgSender() internal view virtual returns (address ret) {
 ```
 
 其中的核心代码为汇编代码部分`ret := shr(96, calldataload(sub(calldatasize(), 20)))`。此代码的作用原理如下图:
-![msgaddress.drawio.png](https://img.gejiba.com/images/2e1344ef594b2f7fc681469601018fe9.png)
+![msgaddress.drawio.png](https://img-blog.csdnimg.cn/img_convert/ffc3dc11c88b38d5eee4f2178fc4940d.png)
 
 简单来说，可以将`calldata`视为一个长度为`calldatasize()`的列表。我们需要获得此列表中最后`20 byte`的数据，即用户地址。已知`calldataload(i)`会加载`calldata[i, -1]`的数据。我们通过`sub(calldatasize(), 20)`获得了`calldata`中用户地址的起始索引，并进一步使用`calldataload`将其加载到内存中。但在`EVM`中，一个标准不可变变量应占用`32 byte`的完整地址槽，而此处获得用户地址作为`address`类型变量占用的内存长度与规定不符。为了符合变量标准，我们使用`shr`操作码将`20 byte`的用户地址向右移`96 bit`(即 12 byte)实现了用户地址占用`32 byte`的条件，保证了在后期读取用户地址时不会出现错误。
 
