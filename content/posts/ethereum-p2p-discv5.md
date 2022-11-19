@@ -28,14 +28,13 @@ aliases: ["/2022/09/11/ethereum-p2p-discv5/"]
 </script>
 
 {{</ math.inline >}}
-
 ## 概述
 
 关于以太坊的`P2P`网络问题，目前的资料较为零散，本文尝试结合具体的`go-ethereum`源代码，尽可能为读者完整介绍以太坊所使用的`ÐΞVp2p`(`devp2p`)网络架构和运转流程。
 
 `devp2p`各协议栈之间的关系可以参考下图:
 
-![DevP2P stack](https://img.gejiba.com/images/3e5fc2a35dc6d8d523de04a9500a8df5.png)
+![DevP2P stack](https://img-blog.csdnimg.cn/img_convert/7ae6b746c9822e8edfba97202ef66525.png)
 
 其中，`Node Discovery Protocol v5`运行在`UDP`上，其余均运行在`TCP`协议上。
 
@@ -43,7 +42,7 @@ aliases: ["/2022/09/11/ethereum-p2p-discv5/"]
 
 ## 前置知识
 
-本文将介绍的很多组件均依赖于`RLP`，所以在此处我们对其首先进行介绍。
+本文将介绍的很多组件均依赖于RLP，所以在此处我们对其首先进行介绍
 
 ### RLP 编码
 
@@ -135,7 +134,7 @@ aliases: ["/2022/09/11/ethereum-p2p-discv5/"]
 
 在了解`HKDF`前，我们首先需要知道`HMAC`的运作原理，如下图:
 
-![HMAC](https://img.gejiba.com/images/f985b7b869e9affca43d6beff3384f62.png)
+![HMAC](https://img-blog.csdnimg.cn/img_convert/7e1031135ab9ed0bc753d2fc9f866f1a.png)
 
 我们在此处不详细介绍具体流程。读者若感兴趣，建议阅读[《图解密码技术》 第三版](https://book.douban.com/subject/26822106/)的 194 页部分，非常详细介绍了相关的计算流程。上图即来自此书。
 
@@ -218,7 +217,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 
 首先我们需要获得公钥，通过[此网站](https://toolkit.abdk.consulting/ethereum#key-to-address)，我们可以获得压缩公钥为`ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd3138`，未压缩公钥为`ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd31387574077f301b421bc84df7266c44e9e6d569fc56be00812904767bf5ccd1fc7f`
 
-![Private Key to Pk](https://img.gejiba.com/images/aaebfbb9529604cc284cbb59d4de09dd.png)
+![Private Key to Pk](https://img-blog.csdnimg.cn/img_convert/9be49ea2db336c4f8fbbe681929a39e0.png)
 
 > 在此处，我们删去`0x03`和`0x04`是因为此两者仅作为标识符，无实际意义。
 
@@ -243,7 +242,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 ```
 使用私钥对上述结果进行签名，获得签名结果`0x7098ad865b00a582051940cb9cf36836572411a47278783077011599ed5cd16b76f2635f4e234738f30813a89eb9137e3e3df5266e3a1f11df72ecf1145ccb9c27`。
 
-![Recover signature](https://img.gejiba.com/images/283dd0a1d459d4961fd30fd9486608ce.png)
+![Recover signature](https://img-blog.csdnimg.cn/img_convert/e2e3e774006ec355286143763e63602a.png)
 
 > 上图显示了自签名中恢复公钥
 
@@ -267,11 +266,11 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 f884b8407098ad865b00a582051940cb9cf36836572411a47278783077011599ed5cd16b76f2635f4e234738f30813a89eb9137e3e3df5266e3a1f11df72ecf1145ccb9c01826964827634826970847f00000189736563703235366b31a103ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd31388375647082765f
 ```
 
-![RLP Decode](https://img.gejiba.com/images/81d0f1533dfc995889d445855f6718d5.png)
+![RLP Decode](https://img-blog.csdnimg.cn/img_convert/a6a0cb5c310bad15ab61946f65c53946.png)
 
 完成上述任务后，我们需要对最终结果进行`base64`编码，注意此处使用了特殊的`URL and Filename safe`[映射表](https://www.rfc-editor.org/rfc/rfc4648#section-5)，与一般的`base64`编码不同。如在`Python`中，普通的的`base64`使用`base64.b64encode`，而`URL and Filename safe`使用了`base64.urlsafe_b64encode`。
 
-!["URL and Filename safe" Base 64 Alphabet](https://img.gejiba.com/images/360d28bb34f03901b181d5f4ec6caf27.png)
+!["URL and Filename safe" Base 64 Alphabet](https://img-blog.csdnimg.cn/img_convert/cd3fcd3556b794de58a6e4d8dee755cc.png)
 
 使用以下`Python`代码即可实现编码:
 ```python
@@ -415,7 +414,7 @@ struct {
 ```
 我们使用DNS返回的TXT值中的`sig`和其他参数的哈希值进行公钥恢复操作，如果发现恢复出的公钥与`enrtree`中规定的不同，我们则认为此DNS不可信。
 
-![enrtree Verify](https://img.gejiba.com/images/33fb05b4545b09a4c1afd64bd86c5d6d.png)
+![enrtree Verify](https://img-blog.csdnimg.cn/img_convert/9fe28cabc4b6ddf03e0afc85c1050935.png)
 
 > 关于公钥恢复的详细介绍可以参考我写的[基于链下链上双视角深入解析以太坊签名与验证](https://hugo.wongssh.cf/posts/ecsda-sign-chain/#%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D)
 
@@ -597,7 +596,7 @@ authdata      = src-id
 authdata-size = 32
 ```
 包的结构图如下:
-![Message Packet](https://img.gejiba.com/images/7da3a738b8c7477983fff4f30064e447.png)
+![Message Packet](https://img-blog.csdnimg.cn/img_convert/858c50f1af6026431ae5cb0cc0f59400.png)
 
 在此处，我们给出一个`message data`为随机数据的包的代码:
 ```go
@@ -637,7 +636,7 @@ id-nonce      = uint128   -- random bytes
 enr-seq       = uint64    -- ENR sequence number of the requesting node
 ```
 结构图如下:
-![WHOAREYOU Packet](https://img.gejiba.com/images/42092b26c0d31e57709fcac578a3f8ac.png)
+![WHOAREYOU Packet](https://img-blog.csdnimg.cn/img_convert/ed96680762e49b0938c71da5c516ce65.png)
 
 值得注意的是，我们`WHOAREYOU`包的`nonce`与引起握手的数据包的`nonce`是一致的，不可改变的。在下文握手阶段，我们会使用这一知识点。
 
@@ -684,7 +683,7 @@ eph-key-size  = uint8     -- value: 33 for ID scheme "v4"
 
 此处的所有参数的含义及其获得，我们会在下一节进行详细介绍。此处给出其结构图如下:
 
-![Handshake Packet layout](https://img.gejiba.com/images/a65e9ef57db536b080c6d977984a2ddc.png)
+![Handshake Packet layout](https://img-blog.csdnimg.cn/img_convert/ac846f667d43e01a02c6c09bb682157f.png)
 
 代码如下:
 ```go
@@ -1041,7 +1040,7 @@ message-data = [request-id, [distance₁, distance₂, ..., distanceₙ]]
 message-type = 0x03
 distanceₙ    = requested log2 distance, a positive integer
 ```
-在此数据包内，`request-id`是一个RLP数组，此参数由请求者进行分配，数据包接受者当收到此数据包后，需要在返回的数据包内包含请求的`request-id`。此处`[request-id, [distance₁, distance₂, ..., distanceₙ]]`表示使用`RLP`进行编码。
+在此数据包内，`request-id`是一个RLP数组，此参数由请求者进行分配，数据包接受者当收到此数据包后，需要在返回的数据包内包含请求的`request-id`。`[request-id, [distance₁, distance₂, ..., distanceₙ]]`表示使用`RLP`进行数据编码。
 
 正如上文所述，节点第一次启动时一般仅与初始化节点`bootnodes`进行通信，此时的节点中的桶基本都是空的。我们需要向`bootnodes`发起`FINDNODED`请求获得节点填充自己的桶。但需要注意，我们只能查询到对方节点指定距离的桶内的节点。
 
