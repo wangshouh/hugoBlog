@@ -9,3 +9,5 @@ weight: 1
 
 除了推送最新的技术发展外，频道内也涵盖了一系列入门文章(`#turtorial`)、网站推荐(`#website`)、CTF(`#ctf`)、其他信息源(`#rss`、`#newsletter`、`#news`)等内容。
 目前(2022.10.11)，频道内已有390篇文章推送。
+
+如果您不希望访问 Telegram ，您可以直接通过[此链接](https://web3.wongssh.cf/db)访问频道的 Notion 数据库。
