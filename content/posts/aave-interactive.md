@@ -97,7 +97,7 @@ $e ^ {Theoretical\ APY} - 1$ 获得近似值。
 
 直接前往[Arbiscan相关页面](https://arbiscan.io/address/0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654#readContract#F12)操作，在`asset`内输入`DAI`的地址`0xda10009cbd5d07dd0cecc66161fc93d7c9000da1`，我们就可以索引到相关数据，如下图:
 
-![getReverseData](https://img-blog.csdnimg.cn/img_convert/4d4242692eecdc1035a0e1d98cd54a70.png)
+![getReverseData one](https://img-blog.csdnimg.cn/img_convert/4d4242692eecdc1035a0e1d98cd54a70.png)
 
 返回的`liquidityRate`就是我们想要的 ${LR}_t$ ，但由于有限精度小数编码的方法，此处获得的数据需要与 ${10}^{27}$ 相除，即`0.00733376`。将此数值带入上文给出的实际利率计算公式，结果为 
 
@@ -435,7 +435,7 @@ $$
 
 直接前往[Arbiscan相关页面](https://arbiscan.io/address/0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654#readContract#F12)操作，在`asset`内输入`DAI`的地址`0xda10009cbd5d07dd0cecc66161fc93d7c9000da1`，我们就可以索引到相关数据，如下图:
 
-![getReverseData](https://img-blog.csdnimg.cn/img_convert/4d4242692eecdc1035a0e1d98cd54a70.png)
+![getReverseData two](https://img-blog.csdnimg.cn/img_convert/4d4242692eecdc1035a0e1d98cd54a70.png)
 
 > 可以通过`cast call 0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654 "getReserveData(address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40)" 0xda10009cbd5d07dd0cecc66161fc93d7c9000da1 --rpc-url https://rpc.ankr.com/arbitrum` 命令获得相关数据。
 
