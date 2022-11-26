@@ -140,7 +140,7 @@ $$ (1 + \frac{0.00733376}{31536000}) ^ {31536000} - 1 = 0.007365$$
 
 - `APY` 年利率
 - `Max LTV` 贷出资产价值与质押品价值的最大比值
-- `Liquidation threshold` 流动性阈值，如果抵押资产与贷出资产的价值比率低于此值，会触发清算
+- `Liquidation threshold` 清算阈值，如果抵押资产与贷出资产的价值比率低于此值，会触发清算
 - `Liquidation penalty` 资产被清算时，清算人使用被清算人贷出资产购买抵押品的折扣
 
 在前文中，我们存入了 `1000 USDC` 资产，根据`Max LTV`计算出，我们最多可以贷出 `800` 美元的其他资产。由于`USDC`的`APY`过高，我目前持有`1000.21 USDC`，假如兑换`USDT`，根据`Max LTV`计算得到我可以借出最多`800.168 USDT`，查看[USDT Details](https://app.aave.com/reserve-overview/?underlyingAsset=0xc2c527c0cacf457746bd31b2a698fe89de2b6d49&marketName=proto_goerli_v3)页面，数值恰好相符。
