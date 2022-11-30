@@ -147,7 +147,7 @@ $$ (1 + \frac{0.00733376}{31536000}) ^ {31536000} - 1 = 0.007365$$
 
 ![USDT Borrow](https://img-blog.csdnimg.cn/img_convert/7c8ecb4f98ed7dc401aba945a2136f95.png)
 
-接下来，我们计算`Health factor`数值，此数值一旦低于`1`，就会触发清算程序。此数值的计算方法为`流动性阈值(Liquidation threshold) / 贷出资产价值与质押品价值比值`。在此处，我们可以计算出`贷出资产价值与质押品价值比值`为`80 %`(此处我们选择全部贷出，故而数值等同于`Max LTV`)，而`USDC`的`流动性阈值`为`85 %`，我们可以通过`85% / 80%`，结果正好为`1.06`。
+接下来，我们计算`Health factor`数值，此数值一旦低于`1`，就会触发清算程序。此数值的计算方法为`清算阈值(Liquidation threshold) / 贷出资产价值与质押品价值比值`。在此处，我们可以计算出`贷出资产价值与质押品价值比值`为`80 %`(此处我们选择全部贷出，故而数值等同于`Max LTV`)，而`USDC`的`清算阈值`为`85 %`，我们可以通过`85% / 80%`，结果正好为`1.06`。
 
 一个更加权威的且适合于多种资产联合质押情况下`Health factor`计算公式如下:
 $$H_f = \frac{\sum({Collateral_i\ in\ ETH} \times {Liquidation\ Threshold}_i)}{Total\ Borrows\ in\ ETH}$$
@@ -156,7 +156,7 @@ $$H_f = \frac{\sum({Collateral_i\ in\ ETH} \times {Liquidation\ Threshold}_i)}{T
 
 - $H_f$ 健康因子，即`Health factor`
 - $Collateral_i\ in\ ETH$ 资产 $i$ 以`ETH`计价的价值
-- ${Liquidation\ Threshold}_i$ 资产 $i$ 对应的流动性阈值
+- ${Liquidation\ Threshold}_i$ 资产 $i$ 对应的清算阈值
 - $Total\ Borrows$ 用户借出的总资产价值(以`ETH`计价)
 
 上述公式可以计算以资产组合为抵押贷出一系列资产的`Health factor`。
