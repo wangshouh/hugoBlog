@@ -498,11 +498,16 @@ def exact_link(html: str, pattern: re.Pattern):
     return re.search(pattern, html).group(1)
 
 
-async def fetch_url(url: str, s: ClientSession):
-    req = await s.get(url)
-    html = await req.text()
+def consumer(rx: Queue, pattern: re.Pattern):
+    while True:
+        html = rx.get()
 
-    return html
+        if html is None:
+            break
+
+        title = exact_link(html, pattern)
+        print(title)
+
 
 
 async def run_loop(tx: Queue, rx: Queue):
@@ -563,7 +568,7 @@ if __name__ == "__main__":
 
 此代码读取了`url_list`中的数据作为爬虫的数据来源。读者可自行在此文件内填入一些网页的链接，此代码会在指定链接内爬取html标题内容。
 
-此处我们需要向`rx`中推入消费者进程数量的`None`以关闭消费者进程，如此处我们仅开启了一个消费者，所以仅需要推入一个`None`即可。更多关于多进程的内容，读者可自行参考上文给出的链接，或等待笔者编写相关内容。
+此处我们需要向`rx`中推入消费者进程数量的`None`以关闭消费者进程，如此处我们仅开启了一个消费者，所以仅需要推入一个`None`即可。此处的`None`作为信号通知`consumer`函数中止运行。更多关于多进程的内容，读者可自行参考上文给出的链接，或等待笔者编写相关内容。
 
 > 上述代码在笔者使用的 Python 3.11 内可正常运行，暂时未实验其他版本，如果读者发现问题，可通过邮件等方式与我联系
 
