@@ -104,15 +104,15 @@ $$\frac{q}{LI_{t0}} \times LI_{t1}$$
 
 假设用户的存款数量用 ${ScB}_t(x)$ 表示，则用户存入 $m$ 单位质押品后，存款数量为:
 
-$${ScB}_t(x) = {ScB}_{t-1}(x) + \frac{m}{{LI}_t}$$
+$${ScB}\_t(x) = {ScB}_{t-1}(x) + \frac{m}{{LI}\_t}$$
 
 取出 $m$ 单位质押品后，存款数量为:
 
-$${ScB}_t(x) = {ScB}_{t-1}(x) - \frac{m}{{LI}_t}$$
+$${ScB}\_t(x) = {ScB}_{t-1}(x) - \frac{m}{{LI}\_t}$$
 
 总结来说，存款的核心步骤如下:
 
-1. 计算当前的 ${LR}_t{\Delta}_{year} + 1$
+1. 计算当前的 ${LR}\_t{\Delta}\_{year} + 1$
 1. 更新 ${LI}_t$
 1. 计算 ${ScB}_t(x)$
 
@@ -623,7 +623,7 @@ reserveCache.nextVariableBorrowIndex = reserveCache
 
 复习一下 贴现因子 的计算公式，如下:
 
-$${LI}_t=({LR}_t{\Delta}_{year} + 1){LI}_{t-1}$$
+$${LI}\_t=({LR}\_t{\Delta}_{year} + 1){LI}\_{t-1}$$
 
 我们首先使用以下代码:
 ```solidity
@@ -633,7 +633,7 @@ uint256 cumulatedLiquidityInterest = MathUtils
         reserveCache.reserveLastUpdateTimestamp
     );
 ```
-计算 ${LR}_t{\Delta}_{year} + 1$ 的数值，具体的实现读者可以自行阅读`calculateLinearInterest`的代码实现。 
+计算 ${LR}\_t{\Delta}\_{year} + 1$ 的数值，具体的实现读者可以自行阅读`calculateLinearInterest`的代码实现。 
 
 通过以下代码实现完整计算:
 ```solidity
@@ -669,7 +669,7 @@ reserve.liquidityIndex = reserveCache
     
     已知目前贴现后的贷款总量和前贴现因子(`currVariableBorrowIndex`)和现贴现因子(`nextVariableBorrowIndex`)。我们可以通过以下公式进行计算:
 
-    $${VD}_{accrued} = {ScVB}_{t} \times {VI}_{t} - {ScVB}_{t-1} \times {VI}_{t-1} $$
+    $${VD}\_{accrued} = {ScVB}\_{t} \times {VI}\_{t} - {ScVB}\_{t-1} \times {VI}\_{t-1} $$
     
     此公式中，${VD}_{accrued}$ 即表示浮动利率贷款增量，而 $ScVB$ 则表示浮动利率贴现因子
 
