@@ -26,6 +26,13 @@ tags: [aave,defi]
 </script>
 
 {{</ math.inline >}}
+---
+title: 深入解析AAVE智能合约:存款
+date: 2022-10-29 10:47:30
+tags: [[AAVE],[DeFi]]
+mathjax: true
+---
+
 ## 概述
 
 我们在上一篇文章[AAVE交互指南](https://hugo.wongssh.cf/posts/aave-interactive/)中主要介绍了`aave`前端、利率计算等内容，本篇文章
@@ -39,6 +46,8 @@ tags: [aave,defi]
 
 ![AAVE Frame](https://img.gejiba.com/images/fea838adc878cd119c68d4030311dfa6.png)
 
+> 本文使用存款描述用户向流动性池内注入资产的行为，或称`supply`或`deposit`，当然在 V3 版本中，`deposit`已被遗弃。当然，有很多人认为此名词应翻译为**质押**，由于作者的写作习惯，后文统称为**存款**
+
 ## 代码准备
 
 我们在此处仍使用`Foundry`作为开发和测试框架，使用以下命令初始化仓库:
@@ -51,18 +60,18 @@ forge init aave-v3
 .
 ├── foundry.toml
 ├── lib
-│   └── forge-std
+│   └── forge-std
 ├── script
-│   └── Counter.s.sol
+│   └── Counter.s.sol
 ├── src
-│   ├── Counter.sol
-│   ├── dependencies
-│   ├── deployments
-│   ├── flashloan
-│   ├── interfaces
-│   ├── misc
-│   ├── mocks
-│   └── protocol
+│   ├── Counter.sol
+│   ├── dependencies
+│   ├── deployments
+│   ├── flashloan
+│   ├── interfaces
+│   ├── misc
+│   ├── mocks
+│   └── protocol
 └── test
     └── Counter.t.sol
 ```
@@ -92,6 +101,8 @@ forge init aave-v3
 
 > 有读者可能发现 ${LR}\_t{\Delta}\_{year} + 1$ 是以线性利率的形式进行的计算，与我们上一篇文章所说明的存款利率复利计算是不符的，但为什么上一篇文章内使用复利计算的结果与和约相同？ 原因在于此处的单利计算会在用户每一次进行操作时更新，高频率的单利计算与复利计算会渐趋一致
 
+> 在AAVE的设计中，贴现因子的使用具有普遍性，如存款、贷款等情况下均使用了**贴现因子**概念，由于此文主要分析存款，所以若无特殊说明，后文的贴现因子均指存款的贴现因子
+
 假设用户在 $t_0$ 时刻存入资产`Token`的数量为 $q$ ，我们在智能合约中记录的用户存入数值为 
 
 $$\frac{q}{LI_{t0}}$$
@@ -104,11 +115,11 @@ $$\frac{q}{LI_{t0}} \times LI_{t1}$$
 
 假设用户的存款数量用 ${ScB}_t(x)$ 表示，则用户存入 $m$ 单位质押品后，存款数量为:
 
-$${ScB}\_t(x) = {ScB}_{t-1}(x) + \frac{m}{{LI}\_t}$$
+$${ScB}\_t(x) = {ScB}\_{t-1}(x) + \frac{m}{{LI}\_t}$$
 
 取出 $m$ 单位质押品后，存款数量为:
 
-$${ScB}\_t(x) = {ScB}_{t-1}(x) - \frac{m}{{LI}\_t}$$
+$${ScB}\_t(x) = {ScB}\_{t-1}(x) - \frac{m}{{LI}\_t}$$
 
 总结来说，存款的核心步骤如下:
 
@@ -116,7 +127,11 @@ $${ScB}\_t(x) = {ScB}_{t-1}(x) - \frac{m}{{LI}\_t}$$
 1. 更新 ${LI}_t$
 1. 计算 ${ScB}_t(x)$
 
-当然，上述核心步骤会在合约编程中被高度复杂化。
+当然，上述核心步骤会在合约编程中被高度复杂化。总体来说，复杂性主要来源于以下两点:
+
+1. 提高用户体验
+1. 更新数据
+
 ## 入口函数
 
 在此处，我们在上一篇文章内进行存款交易的[EthTx 地址](https://ethtx.info/goerli/0xf7bc3325b84af8b169167e9c26ab262ddfa34a15c2155f524a155c8ec3dffacc/)。如下图:
@@ -176,6 +191,11 @@ function supply(
 
 1. `cache` 将`ReserveData`内部的数据进行缓存以降低 gas 消耗
 1. `updateState` 更新贴现因子(即`Index`系列变量)等变量和准备金余额
+1. `validateSupply` 校验存款限制条件
+1. `updateInterestRates` 更新利率
+1. `validateUseAsCollateral` 验证和设置抵押品
+
+> 我们在后文中使用了**抵押品**，此名词指可以用于作为贷款担保的存款。在AAVE内，资产是否用作贷款担保由用户自己决定。
 
 ## 数据结构
 
@@ -266,7 +286,7 @@ struct ReserveData {
 >
 > 关于此内容，未来会推出专题进行介绍，读者也可以先行阅读`src/protocol/libraries/math/WadRayMath.sol`合约
 
-`Index`系列变量实现了一个极其特殊的功能，即使用统一参数计算所有用户的质押收益或者贷款利息，此变量系列均属于贴现因子。
+`Index`系列变量实现了一个极其特殊的功能，即使用统一参数计算所有用户的质押收益或者贷款利息，此变量系列均属于贴现因子。正如上文所述，在本节内，我们所提及的贴现因子一般指存款的贴现因子。
 
 `UserConfigurationMap`的定义如下:
 ```solidity
@@ -453,7 +473,7 @@ reserveCache.reserveFactor = reserveCache
     .reserveConfiguration
     .getReserveFactor();
 ```
-此处的`reserveFactor`被称为 `储备系数` 。此系数规定将协议中的一部分收益分配给`AAVE`国库，用于支持安全模块，所以波动性越低的资产，储备系数越小。
+此处的`reserveFactor`被称为 `储备系数` 。此系数规定将协议中的一部分收益分配给`AAVE`违约准备金，用于支持安全模块，所以波动性越低的资产，储备系数越小。
 
 > 类似传统金融中的投资者保障基金提取交易手续费的操作
 
@@ -515,7 +535,7 @@ function totalSupply() public view virtual override returns (uint256) {
 其中各参数含义如下:
 
 1. `currPrincipalStableDebt` 当前已固定利率借入的本金
-1. `currTotalStableDebt` 当前以固定利率借出的总资产
+1. `currTotalStableDebt` 当前以固定利率借出的总资产(即本金与利息之和)
 1. `currAvgStableBorrowRate` 平均固定利率
 1. `stableDebtLastUpdateTimestamp` 固定利率更新时间
 
@@ -546,7 +566,7 @@ function getSupplyData()
 
 ![getSupplyData func](https://img.wongssh.cf/file/wongsshblog/contract/getSupplyData.svg)
 
-此函数的`super.totalSupply()`来自`IStableDebtToken`，显然这是一个接口其不存在具体实现，我个人认为此处是此插件的绘图错误，事实上，`totalSupply`被定义在`IncentivizedERC20`中，与常规`ERC-20`的定义一致。
+通过调用图，我们发现`getSupplyData`的`super.totalSupply()`来自`IStableDebtToken`，显然这是一个接口其不存在具体实现，我个人认为此处是此插件的绘图错误。自己查找相关继承关系，我们发现实际上`totalSupply`被定义在`IncentivizedERC20`中，其功能与常规`ERC-20`合约对`totalSupply`的定义一致。
 
 > 不同于上文给出的`scaledTotalSupply`变量，此处的`totalSupply`只是代币发行量而没有放缩
 
@@ -620,6 +640,8 @@ reserveCache.nextVariableBorrowIndex = reserveCache
     .currVariableBorrowIndex;
 ```
 首先初始化 `nextLiquidityIndex` 和 `nextVariableBorrowIndex` 变量，这些变量用于计算新的 存款贴现因子 和 浮动借款贴现因子。
+
+> 在上文进行`cache`缓存操作等行为中，我们没有对这两个变量进行初始化
 
 复习一下 贴现因子 的计算公式，如下:
 
@@ -779,7 +801,34 @@ struct CalculateInterestRatesParams {
 
 > 可能有读者好奇为什么会出现无存入入直接铸造代币的情况？ 此情况发生在跨链时，用户可能在另一区块链内存入了资产而在当前区块链铸造代币的情况
 
-我们可以在`reserveCache`和`reserve`中找到此处使用的大部分变量。为减少本文篇幅，我们将具体的利率计算放在未来介绍。
+我们可以在`reserveCache`和`reserve`中找到此处使用的大部分变量，具体的构造代码如下:
+```solidity
+(
+    vars.nextLiquidityRate,
+    vars.nextStableRate,
+    vars.nextVariableRate
+) = IReserveInterestRateStrategy(reserve.interestRateStrategyAddress)
+    .calculateInterestRates(
+        DataTypes.CalculateInterestRatesParams({
+            unbacked: reserveCache
+                .reserveConfiguration
+                .getUnbackedMintCap() != 0
+                ? reserve.unbacked
+                : 0,
+            liquidityAdded: liquidityAdded,
+            liquidityTaken: liquidityTaken,
+            totalStableDebt: reserveCache.nextTotalStableDebt,
+            totalVariableDebt: vars.totalVariableDebt,
+            averageStableBorrowRate: reserveCache
+                .nextAvgStableBorrowRate,
+            reserveFactor: reserveCache.reserveFactor,
+            reserve: reserveAddress,
+            aToken: reserveCache.aTokenAddress
+        })
+    );
+```
+
+为减少本文篇幅，我们将具体的利率计算放在未来介绍。
 
 在完成具体的利率计算后，我们将这些数据写入`reserve`，代码如下:
 ```solidity
@@ -804,7 +853,7 @@ IERC20(params.asset).safeTransferFrom(
 
 此次的`safeTransferFrom`被定义在`src/dependencies/gnosis/contracts/GPv2SafeERC20.sol`中，主要是用于兼容不同`ERC20`实现，一般来说，ERC20在转账失败后，有以下两者操作:
 
-1. 使用`revert`回退交易
+1. 使用`revert`回退交易和抛出异常
 1. 返回`False`代表交易错误
 
 具体代码如下:
@@ -935,7 +984,7 @@ function _mintScaled(
 
 > 上述流程在真正的计算流程中，我们使用以折现后的代币数量进行计算，但为了抛出相关事件，我们有将折现后的代币数量与贴现因子相乘。这可能是为了一般用户方便查询自己当前的代币数量。但如此操作也增加了合约的复杂性，显然，在合约复杂性和用户体验方面，AAVE 开发者选择了用户体验
 
-### 更新质押品
+### 更新抵押品
 
 此部分主要处理用户质押品情况，正如上一篇文章所述，在AAVE内的存款可以作为贷款抵押品存在也可以单纯作为存款操作，本部分主要处理此情况。
 
@@ -994,4 +1043,5 @@ function validateUseAsCollateral(
 
 ## 总结
 
-终于我们完成了对于AAVE存款部分的描述，可见相对于[Safe](https://hugo.wongssh.cf/posts/deep-in-safe-part-1/)等功能性合约，AAVE作为DeFi合约充分体现了其复杂性。
+终于我们完成了对于AAVE存款部分的描述，可见相对于[Safe](https://hugo.wongssh.cf/posts/deep-in-safe-part-1/)等功能性合约，AAVE作为DeFi合约充分体现了其复杂性。本文是对AAVE V3版本存款的简单描述，由于篇幅和主题限制，本文对于部分函数的深挖不足，读者可根据自身需求在本文基础上继续深挖部分函数。
+
