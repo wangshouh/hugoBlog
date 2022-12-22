@@ -129,8 +129,8 @@ function wadDiv(uint256 a, uint256 b) internal pure returns (uint256 c) {
 具体推导过程如下:
 $$
 \begin{align}
-    \lbrack{a / b}\rbrack &= \lfloor{a / b + \frac{1}{2}}\rfloor \\
-    &= ((a / b) + \frac{1}{2}) // 1 \\
+    \lbrack{a / b}\rbrack &= \lfloor{a / b + \frac{1}{2}}\rfloor \\\
+    &= ((a / b) + \frac{1}{2}) // 1 \\\
     &= (a * 1 + \frac{b}{2}) // b
 \end{align}
 $$
@@ -140,13 +140,17 @@ $$
 从式 $(2)$ 到 式 $(3)$ 进行转化的原因是在`solidity`中不存在正常的除法，仅存在整除，我们只能进行分子分母同乘`b`的操作使除法消失。
 
 通过最后的公式，我们可以得到如下限制条件:
+
 $$
 a * {WAD} + \frac{b}{2} \leqq {MAX}_{uint256}
 $$
+
 上式等同于:
+
 $$
 a \leqq \frac{{MAX}_{uint256} - \frac{b}{2}}{WAD}
 $$
+
 翻译为以下代码:
 ```solidity
 iszero(iszero(gt(a, div(sub(not(0), div(b, 2)), WAD))))
