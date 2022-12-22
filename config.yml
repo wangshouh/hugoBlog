@@ -35,6 +35,9 @@ menu:
           weight: 10
 
 params:
+
+  comments: true
+
   env: production
   title: Wong's Blog
   description: A blog about python, JavaScript, front-end, web3 and back-end
