@@ -27,13 +27,6 @@ tags: [aave,defi]
 
 {{</ math.inline >}}
 
----
-title: 深入解析AAVE智能合约:存款
-date: 2022-10-29 10:47:30
-tags: [[AAVE],[DeFi]]
-mathjax: true
----
-
 ## 概述
 
 我们在上一篇文章[AAVE交互指南](https://hugo.wongssh.cf/posts/aave-interactive/)中主要介绍了`aave`前端、利率计算等内容，本篇文章
