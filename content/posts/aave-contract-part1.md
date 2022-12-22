@@ -27,6 +27,13 @@ tags: [aave,defi]
 
 {{</ math.inline >}}
 
+---
+title: 深入解析AAVE智能合约:存款
+date: 2022-10-29 10:47:30
+tags: [[AAVE],[DeFi]]
+mathjax: true
+---
+
 ## 概述
 
 我们在上一篇文章[AAVE交互指南](https://hugo.wongssh.cf/posts/aave-interactive/)中主要介绍了`aave`前端、利率计算等内容，本篇文章
@@ -278,7 +285,7 @@ struct ReserveData {
 
 > 有读者好奇为什么此处使用 `uint128` 而不是 `uint256` 作为数字的基本类型呢? 原因在于 `AAVE` 在表示浮点数时使用一种较为简单的定点浮点数的表示方法。此处的各种利率均使用了`RAY`表示，其具有固定的 27 位小数，使用 `uint128` 足够进行表示且更节省存储空间。
 >
-> 关于此内容，读者可参考[深入解析AAVE智能合约:计算和利率](https://hugo.wongssh.cf/posts/aave-contract-part2/)。
+> 关于此处数学运算的相关内容，读者可阅读[深入解析AAVE智能合约:计算和利率](https://hugo.wongssh.cf/posts/aave-contract-part2/)。
 
 `Index`系列变量实现了一个极其特殊的功能，即使用统一参数计算所有用户的质押收益或者贷款利息，此变量系列均属于贴现因子。正如上文所述，在本节内，我们所提及的贴现因子一般指存款的贴现因子。
 
@@ -1035,7 +1042,47 @@ function validateUseAsCollateral(
 
 > 显然这也是为了增加用户体验增加代码复杂度的又一案例
 
+## supplyWithPermit
+
+在上文中，我们深挖了在`Pool`合约内的`supply`函数，这也是大部分用户存款时使用的函数，但事实上，`AAVE`也提供了另一个使用体验更好的函数`supplyWithPermit`。此函数的核心在于`Permit`，笔者在之前的文章内讨论过此概念，如果读者不了解此概念，请阅读[EIP712的扩展使用](https://hugo.wongssh.cf/posts/eip712-extend/)，我们在本文的最后讨论了`Permit`这一函数。
+
+在此处，我们给出`supplyWithPermit`的代码:
+```solidity
+function supplyWithPermit(
+    address asset,
+    uint256 amount,
+    address onBehalfOf,
+    uint16 referralCode,
+    uint256 deadline,
+    uint8 permitV,
+    bytes32 permitR,
+    bytes32 permitS
+) public virtual override {
+    IERC20WithPermit(asset).permit(
+        msg.sender,
+        address(this),
+        amount,
+        deadline,
+        permitV,
+        permitR,
+        permitS
+    );
+    SupplyLogic.executeSupply(
+        _reserves,
+        _reservesList,
+        _usersConfig[onBehalfOf],
+        DataTypes.ExecuteSupplyParams({
+            asset: asset,
+            amount: amount,
+            onBehalfOf: onBehalfOf,
+            referralCode: referralCode
+        })
+    );
+}
+```
+
+与正常的`supply`函数相比，此函数增加了`IERC20WithPermit(asset).permit`部分。此部分为`supply`增加了特殊的功能，即调用者不需要在使用此函数前进行`approve`授权操作，该授权操作隐含在`EIP712`签名中。如果读者无法理解此内容，请阅读[基于链下链上双视角深入解析以太坊签名与验证](https://hugo.wongssh.cf/posts/ecsda-sign-chain/)和[EIP712的扩展使用](https://hugo.wongssh.cf/posts/eip712-extend/)。
+
 ## 总结
 
 终于我们完成了对于AAVE存款部分的描述，可见相对于[Safe](https://hugo.wongssh.cf/posts/deep-in-safe-part-1/)等功能性合约，AAVE作为DeFi合约充分体现了其复杂性。本文是对AAVE V3版本存款的简单描述，由于篇幅和主题限制，本文对于部分函数的深挖不足，读者可根据自身需求在本文基础上继续深挖部分函数。
-
