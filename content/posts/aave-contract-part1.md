@@ -26,12 +26,6 @@ tags: [aave,defi]
 </script>
 
 {{</ math.inline >}}
----
-title: 深入解析AAVE智能合约:存款
-date: 2022-10-29 10:47:30
-tags: [[AAVE],[DeFi]]
-mathjax: true
----
 
 ## 概述
 
@@ -284,7 +278,7 @@ struct ReserveData {
 
 > 有读者好奇为什么此处使用 `uint128` 而不是 `uint256` 作为数字的基本类型呢? 原因在于 `AAVE` 在表示浮点数时使用一种较为简单的定点浮点数的表示方法。此处的各种利率均使用了`RAY`表示，其具有固定的 27 位小数，使用 `uint128` 足够进行表示且更节省存储空间。
 >
-> 关于此内容，未来会推出专题进行介绍，读者也可以先行阅读`src/protocol/libraries/math/WadRayMath.sol`合约
+> 关于此内容，读者可参考[深入解析AAVE智能合约:计算和利率](https://hugo.wongssh.cf/posts/aave-contract-part2/)。
 
 `Index`系列变量实现了一个极其特殊的功能，即使用统一参数计算所有用户的质押收益或者贷款利息，此变量系列均属于贴现因子。正如上文所述，在本节内，我们所提及的贴现因子一般指存款的贴现因子。
 
