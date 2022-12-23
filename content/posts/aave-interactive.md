@@ -403,7 +403,7 @@ $$
 
 其中，各参数可通过与合约交互获得，对应如下:
 
-- $ratio$ 固定利率负债与浮动利率负债之比，获取方法稍后给出
+- $ratio$ 固定利率负债与总负债之比，获取方法稍后给出
 - $O_{ratio}$ 最佳比例，通过`OPTIMAL_STABLE_TO_TOTAL_DEBT_RATIO`获得
 - $offset$ 标准偏差，通过`getStableRateExcessOffset`获得
 
@@ -417,7 +417,7 @@ $$
 
 > 可以通过`cast call 0x69FA688f1Dc47d4B5d8029D5a35FB7a548310654 "getReserveData(address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40)" 0xda10009cbd5d07dd0cecc66161fc93d7c9000da1 --rpc-url https://rpc.ankr.com/arbitrum` 命令获得相关数据。
 
-使用`totalStableDebt`(固定利率债务总价值)与`totalVariableDebt`(浮动利率债务总价值)可以计算得到 $ratio$ ，计算结果为`0.01399`，小于 $O_{ratio}$ 的数值`0.2`，故而我们不用考虑 $ratio$ 对于利率的影响，可以直接使用以下公式计算:
+使用`totalStableDebt`(固定利率债务总价值)与`totalDebt`(债务总价值)可以计算得到 $ratio$ ，计算结果为`0.01399`，小于 $O_{ratio}$ 的数值`0.2`，故而我们不用考虑 $ratio$ 对于利率的影响，可以直接使用以下公式计算:
 
 $$ 0.05 + \frac{0.3941}{0.8000} \times 0.005 = 0.05246 $$
 
