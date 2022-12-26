@@ -271,7 +271,7 @@ struct UserConfigurationMap {
 
 ![UserConfig](https://img.gejiba.com/images/44730e1a6fb788ad2d9adf3678e89a39.png)
 
-此数据结构定义了用户所持有及贷出的资产。此 256 bit 数据可用于表示 128 种不同资产的存款和贷款情况，其中低位代表是否存在贷款，而高位代表是否存在抵押物。上图展示了用户持有`Asset 0`和`Asset 2`的抵押物并贷出了`Asset 2`资产。
+此数据结构定义了用户所存入及贷出的资产。此 256 bit 数据可用于表示 128 种不同资产的存款和贷款情况，其中低位代表是否存在贷款，而高位代表是否存在抵押物。上图展示了用户持有`Asset 0`和`Asset 2`的抵押物并贷出了`Asset 2`资产。
 
 > 这是一种在`AAVE`中常用的数据表示方法，将数据编码为纯粹2进制后通过`uint256`保存。
 
@@ -294,7 +294,7 @@ struct UserConfigurationMap {
 | 60 | asset is paused | 资产是否被暂停 |
 | 61 | borrowing in isolation mode is enabled | 资产是否可以在`isolation mode`内使用 |
 | 62-63 | 保留 | 保留位以待后期扩展 |
-| 64-79 | reserve factor | 储备系数，即借款利息中上缴`AAVE`国库的比例 |
+| 64-79 | reserve factor | 储备系数，即借款利息中上缴`AAVE`风险准备金的比例 |
 | 80-115 | borrow cap in whole tokens | 代币贷出上限 |
 | 116-151 | supply cap in whole tokens | 代币存款上限 |
 | 152-167 | liquidation protocol fee | 在清算过程中，`AAVE`收取的费用 |
