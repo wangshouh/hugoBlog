@@ -7,7 +7,7 @@ aliases: ["/2022/09/20/deep-in-safe-part-3/"]
 
 ## 概述
 
-在[深入解析Safe多签钱包智能合约:模块](./deep-in-safe-part-2)中分析`FallbackManager`模块时，限于篇幅限制且`fallback`合约自成一体，所以我们没有介绍具体的`fallback`模块。此篇文章的主要目的是完成这一缺陷，全面介绍`fallback`合约。
+在[深入解析Safe多签钱包智能合约:模块](../deep-in-safe-part-2)中分析`FallbackManager`模块时，限于篇幅限制且`fallback`合约自成一体，所以我们没有介绍具体的`fallback`模块。此篇文章的主要目的是完成这一缺陷，全面介绍`fallback`合约。
 
 本文涉及的代码主要位于`src/handler`内，读者可自行查阅[此仓库](https://github.com/wangshouh/foundry-safe)。
 
@@ -103,7 +103,7 @@ function supportsInterface(bytes4 interfaceId) external view virtual override re
 在此部分，我们会看到一些在 1.2.0 版本`GnosisSafe`主合约中实现的函数，此部分函数很多都已被废弃，我们不建议使用此部分函数用于实际操作。
 #### isValidSignature 1
 
-此函数我们在`GnosisSafe`中介绍[合约签名](./deep-in-safe-part-1#%E5%90%88%E7%BA%A6%E7%AD%BE%E5%90%8Dcontract-signature)曾使用此函数。当合约实现此函数时，就意味着合约可以实现合约签名的特性。该特性由`EIP1271`规定，具体可以参考[基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain#eip-1271)文章。
+此函数我们在`GnosisSafe`中介绍[合约签名](../deep-in-safe-part-1#%E5%90%88%E7%BA%A6%E7%AD%BE%E5%90%8Dcontract-signature)曾使用此函数。当合约实现此函数时，就意味着合约可以实现合约签名的特性。该特性由`EIP1271`规定，具体可以参考[基于链下链上双视角深入解析以太坊签名与验证](../ecsda-sign-chain#eip-1271)文章。
 
 此函数需要以下参数:
 
@@ -152,7 +152,7 @@ function getMessageHashForSafe(GnosisSafe safe, bytes memory message) public vie
 ```
 0x19 || 0x01 || domainSeparator || safeMessageHash
 ```
-此种`hash`值获得的方式类似`EIP712`结构化哈希，具体可以参考[这篇博客](./ecsda-sign-chain#%E7%AD%BE%E5%90%8D-1)。
+此种`hash`值获得的方式类似`EIP712`结构化哈希，具体可以参考[这篇博客](../ecsda-sign-chain#%E7%AD%BE%E5%90%8D-1)。
 
 #### isValidSignature 2
 
@@ -204,7 +204,7 @@ sig(simulate) || args
 ```
 sig(simulateAndRevert) || args
 ```
-> 上述`calldata`中的`sig()`指获得函数签名的方法，即对函数名及参数进行`keccak256`哈希计算，可以使用`cast sig`进行直接调用，详情可参考[此篇博客](./foundry-contract-upgrade-part2#%E5%90%88%E7%BA%A6%E6%B5%8B%E8%AF%95-1)
+> 上述`calldata`中的`sig()`指获得函数签名的方法，即对函数名及参数进行`keccak256`哈希计算，可以使用`cast sig`进行直接调用，详情可参考[此篇博客](../foundry-contract-upgrade-part2#%E5%90%88%E7%BA%A6%E6%B5%8B%E8%AF%95-1)
 
 > 上述`args`指用户输入的参数，由于`simulate` 和`simulateAndRevert`使用参数相同，所以不必继续修改。`||`表示拼接。
 

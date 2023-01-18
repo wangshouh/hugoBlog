@@ -232,7 +232,7 @@ func MakeSigner(config *params.ChainConfig, blockNumber *big.Int) Signer {
 
 由于我们没有必要使用以前`Signer`，在此处我们仅介绍最新的实现`londonSigner`。此签名器满足以下标准:
 
-- EIP-1599，详情参看[以太坊机制详解:Gas Price计算](./ethereum-gas)
+- EIP-1599，详情参看[以太坊机制详解:Gas Price计算](../ethereum-gas)
 - EIP-2930，增加了`accessList`参数，预支付存储费用
 - EIP-155，增加`CHAIN_ID`参数，防止重放攻击
 
@@ -285,7 +285,7 @@ rlp([chain_id, nonce, max_priority_fee_per_gas, max_fee_per_gas, gas_limit, dest
 ```
 最后进行哈希计算。
 
-> `rlp`编码相对复杂，此处不再解释。读者可以阅读我个人写的对于[RLP 编码](./ethereum-p2p-discv5#rlp-%E7%BC%96%E7%A0%81)的解释文章。当然，读者也可以直接阅读它的[源代码](https://github.com/ethereum/go-ethereum/tree/master/rlp)
+> `rlp`编码相对复杂，此处不再解释。读者可以阅读我个人写的对于[RLP 编码](../ethereum-p2p-discv5#rlp-%E7%BC%96%E7%A0%81)的解释文章。当然，读者也可以直接阅读它的[源代码](https://github.com/ethereum/go-ethereum/tree/master/rlp)
 
 获得符合要求的哈希值后，我们只需要对此哈希值按照上述方法进行签名即可，注意我们需要`V`、`R`、`S`依次进行编码加入交易数据即可。其中， `V`和`R`长度为32 bytes, `S`长度为1 bytes.
 
@@ -333,7 +333,7 @@ function recoverSignerFromSignature(uint8 v, bytes32 r, bytes32 s, bytes32 hash)
 
 ## EIP712
 
-对于`DApp`签名相关问题，以太坊标准已经有`EIP712`进行了相关规范。我们之前在[MetaMask一键登录设计](./metamask-login)已经讨论过链下`EIP712`。但其实`EIP712`主要解决了链上智能合约签名与验证的相关问题。
+对于`DApp`签名相关问题，以太坊标准已经有`EIP712`进行了相关规范。我们之前在[MetaMask一键登录设计](../metamask-login)已经讨论过链下`EIP712`。但其实`EIP712`主要解决了链上智能合约签名与验证的相关问题。
 ### 签名
 
 `EIP712`的核心内容是结构化数据的哈希计算，与一般的交易数据不同，`EIP712`主要面向`DApp`等相关产品，如果采用与交易数据相同的签名模式，可能导致在不同`DApp`之间签名被盗用。比如A产品使用一组数据进行哈希签名，而B产品也选择了与A产品相同的数据结构，这意味着你在A产品内进行的非交易签名可以在B产品内使用。这极有可能造成严重的财产问题。
@@ -356,7 +356,7 @@ struct Mail {
 
 下述给出的`‖`代表字节拼接。
 
-`encodeType`要求数据被编码为`type ‖ " " ‖ name`。上述示例应被编码为`Mail(address from,address to,string contents)`，与我们在[使用多种方式编写可升级的智能合约(下)](./foundry-contract-upgrade-part2)中讨论的函数选择器字符串编码的规则类似。此处应该注意`type`必须是`solidity`规定的[数据类型](https://docs.soliditylang.org/en/latest/types.html)。
+`encodeType`要求数据被编码为`type ‖ " " ‖ name`。上述示例应被编码为`Mail(address from,address to,string contents)`，与我们在[使用多种方式编写可升级的智能合约(下)](../foundry-contract-upgrade-part2)中讨论的函数选择器字符串编码的规则类似。此处应该注意`type`必须是`solidity`规定的[数据类型](https://docs.soliditylang.org/en/latest/types.html)。
 
 > 上述对`type`的描述较为简陋，但一般情况下可以理解为就是`solidity`中的数据类型，实际上，不是所有的数据类型都可以编码在`EIP712`中，具体情况可以参考[标准定义](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md#definition-of-typed-structured-data-%F0%9D%95%8A)
 
@@ -500,7 +500,7 @@ domainSeparator = hashStruct(eip712Domain)
 }
 ```
 
-另一个示例可以参考我之前的博客[MetaMask一键登录设计](./metamask-login)。此博客使用了`EIP712`开发了一个链下登陆系统。
+另一个示例可以参考我之前的博客[MetaMask一键登录设计](../metamask-login)。此博客使用了`EIP712`开发了一个链下登陆系统。
 
 对于`EIP712`标准，大多数钱包都进行了实现，此处我们主要介绍`MetaMask`钱包。该钱包提供了`signTypedData_v4`方法以支持`EIP712`，读者可自行阅读(文档)[https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4]
 
