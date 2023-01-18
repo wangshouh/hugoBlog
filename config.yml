@@ -1,4 +1,4 @@
-# baseURL: 'https://hugo.wongssh.cf/'
+baseURL: 'https://blog.wssh.trade/'
 languageCode: 'en-us'
 title: "Wong's Blog"
 theme: PaperMod
