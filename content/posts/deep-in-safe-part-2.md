@@ -7,7 +7,7 @@ aliases: ["/2022/08/27/deep-in-safe-part-2"]
 
 ## 概述
 
-在上一篇[博客](../deep-in-safe-part-1)中，我们已经讨论了`safe`合约的代理部署和核心的`GnosisSafe`合约。在此博客内，我们主要讨论在上一篇文章内没有介绍的`safe`合约内各个模块的概念和代码。我们会按照各模块在`GnosisSafe`合约内出现的顺序进行解释。
+在上一篇[博客](./deep-in-safe-part-1)中，我们已经讨论了`safe`合约的代理部署和核心的`GnosisSafe`合约。在此博客内，我们主要讨论在上一篇文章内没有介绍的`safe`合约内各个模块的概念和代码。我们会按照各模块在`GnosisSafe`合约内出现的顺序进行解释。
 
 ## OwnerManager
 
@@ -212,7 +212,7 @@ C => 0x1
 
 ## FallbackManager
 
-此模块主要用于管理`fallback`函数，使用了`EIP-1822 UUPS`可升级合约架构，如果读者对此标准不熟悉，可阅读[Foundry教程：使用多种方式编写可升级的智能合约(上)](../foundry-contract-upgrade-part1#eip-1822-uups)。
+此模块主要用于管理`fallback`函数，使用了`EIP-1822 UUPS`可升级合约架构，如果读者对此标准不熟悉，可阅读[Foundry教程：使用多种方式编写可升级的智能合约(上)](./foundry-contract-upgrade-part1#eip-1822-uups)。
 
 本模块使用了代理合约架构，其实际逻辑合约位于[此地址](https://etherscan.io/address/0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4)。如果读者观察此逻辑合约的代码会发现其与创建使用的`Singleton`有所不同，后者位于[此地址](https://etherscan.io/address/0xd9db270c1b5e3bd161e8c8503c55ceabee709552)。关于双方的差别，我们会在以后介绍。直观的代码区别可通过[此网页](https://etherscan.io/contractdiffchecker?a2=0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552&a1=0xf48f2b2d2a534e402487b3ee7c18c33aec0fe5e4)查看。
 
@@ -234,7 +234,7 @@ C => 0x1
 
 为了方便调用的`fallback`合约识别请求者的地址，我们使用了类似`Meta-transactions`的处理方式，即在原来的`calldata`后拼接`caller`的地址。
 
-> `Meta-transactions`的详细实现可以参考[此文](../eip712-extend#meta-transactions)
+> `Meta-transactions`的详细实现可以参考[此文](./eip712-extend#meta-transactions)
 
 在此处我们使用了`mstore(calldatasize(), shl(96, caller()))`增加`caller`地址。将`caller()`左移`96 bit`的原因是删去原变量中填充的`0`，或称`padding`。
 
@@ -485,7 +485,7 @@ function requireSelfCall() private view {
 
 此合约仅包含一个变量声明`address private singleton;`，为什么我们需要这一个变量声明？
 
-如果读者记得我们在[这一篇](../foundry-contract-upgrade-part1#%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90)中介绍的通过继承解决存储冲突问题的方案，此合约的作用与之类似，功能是为了保证`singleton`不会被其他变量覆写。
+如果读者记得我们在[这一篇](./foundry-contract-upgrade-part1#%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90)中介绍的通过继承解决存储冲突问题的方案，此合约的作用与之类似，功能是为了保证`singleton`不会被其他变量覆写。
 
 在`GnosisSafe`合约中，我们可以看到:
 ```solidity

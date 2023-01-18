@@ -238,7 +238,7 @@ $$
 cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD "getReserveData(address)(uint256)" 0xda10009cbd5d07dd0cecc66161fc93d7c9000da1 --rpc-url https://rpc.ankr.com/arbitrum
 ```
 
-> `cast`命令为[Foundry](https://book.getfoundry.sh/)框架携带的，具体可参考[Foundry教程：编写测试部署ERC-20代币智能合约](../foundry-with-erc20)。
+> `cast`命令为[Foundry](https://book.getfoundry.sh/)框架携带的，具体可参考[Foundry教程：编写测试部署ERC-20代币智能合约](./foundry-with-erc20)。
 
 获得的结果为`379853576081034459698860574047498960397610237566284`，此`uint256`数字中是由流动性池各个设置压缩产生的，我们在此处目标是提取`LTV`、`Liquidation threshold`和`Liquidation penalty`参数。读者可以打开任一程序语言的交互模式(我个人使用的是`Python`)，键入以下命令:
 ```python
