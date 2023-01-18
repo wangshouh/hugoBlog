@@ -26,7 +26,7 @@ tags: [tld]
 
 就笔者目前的观察来看，该域名注册商的`.stream`和`.cyou`域名续费较为便宜。当然，该域名注册商注册费用也比较低，详细情况可参考[此表](https://tld-list.com/registrars/porkbun/tlds?cr=1)。
 
-使用`AWESOMENESS`可减免 1 美元。下图展示了 2 年的`.stream`的价格:
+点击`Apply Coupon`后输入`AWESOMENESS`可减免 1 美元。下图展示了 2 年的`.stream`的价格:
 
 ![Porkbun Price](https://img.gejiba.com/images/d630cd1cf4b732a9c394c26bf25e69d0.png)
 
