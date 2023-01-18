@@ -6,7 +6,7 @@ aliases: ["/2022/09/26/ethereum-transcation/"]
 ---
 ## 概述
 
-我们在上一篇[以太坊机制详解:Gas Price计算](./ethereum-gas)文章内介绍了以太坊中交易的具体`gas`计算相关规则。本篇文章将在此基础上介绍以下内容:
+我们在上一篇[以太坊机制详解:Gas Price计算](../ethereum-gas)文章内介绍了以太坊中交易的具体`gas`计算相关规则。本篇文章将在此基础上介绍以下内容:
 
 1. 客户端如何构建一笔交易
 1. 服务端如何处理交易并进行打包
@@ -92,7 +92,7 @@ var DefaultTxPoolConfig = TxPoolConfig{
 
 我们使用`RPC API`向节点发送的交易也属于`local transactions`(前提为节点将`NoLocals`设置为`False`)。
 
-> 此处的`PriceLimit`参数对应`EIP1559`交易中的[Max Fee](./ethereum-gas#max-fee)参数，这意味着只要`Max Fee`大于`PriceLimit`即可进入交易池
+> 此处的`PriceLimit`参数对应`EIP1559`交易中的[Max Fee](../ethereum-gas#max-fee)参数，这意味着只要`Max Fee`大于`PriceLimit`即可进入交易池
 
 在此处也出现了两种交易类型，如下:
 1. 可执行交易(executable transaction)，此交易位于`pending`队列中，极有可能被节点封装进入下一个区块
@@ -114,12 +114,12 @@ var DefaultTxPoolConfig = TxPoolConfig{
 - `nonce` 用户的`nonce`，此数值会在用户完成每一笔交易后增加`1`
 - `to` 交易目标地址
 - `from` 交易来源地址
-- `gas` 即`gas limit`，具体参考[Gas Limit 的获取](./ethereum-gas#gas-limit-%E7%9A%84%E8%8E%B7%E5%8F%96)
+- `gas` 即`gas limit`，具体参考[Gas Limit 的获取](../ethereum-gas#gas-limit-%E7%9A%84%E8%8E%B7%E5%8F%96)
 - `value` 交易转账的`ETH`数量(单位为`wei`)
 - `input` 交易包含的合约运行数据，如果交互对象不是合约，可置为`0x`
 - `gasPrice` 如果使用`EIP1559`，此项可置为空
-- `maxPriorityFeePerGas` 设置的[Max Priority Fee](./ethereum-gas#max-priority-fee)
-- `maxFeePerGas` 设置[Max Fee](./ethereum-gas#max-fee)
+- `maxPriorityFeePerGas` 设置的[Max Priority Fee](../ethereum-gas#max-priority-fee)
+- `maxFeePerGas` 设置[Max Fee](../ethereum-gas#max-fee)
 - `accessList` 由`EIP2930`进行了一些规定，由于目前使用较少，我们不进行介绍
 - `chainID` 链ID，可通过[ChainList](https://chainlist.org)获得相关数据
 
@@ -931,7 +931,7 @@ if env.gasPool == nil {
 	env.gasPool = new(core.GasPool).AddGas(gasLimit)
 }
 ```
-其中，函数`AddGas`的功能是提供`gas`限额。关于区块的`GasLimit`的讨论，可以参考[以太坊机制详解:Gas Price计算](./ethereum-gas#base-fee)中的内容。
+其中，函数`AddGas`的功能是提供`gas`限额。关于区块的`GasLimit`的讨论，可以参考[以太坊机制详解:Gas Price计算](../ethereum-gas#base-fee)中的内容。
 
 接下来，我们会进入到一个`for`循环，此循环没有限定条件，仅能依靠循环体内的`break`跳出。
 
@@ -953,7 +953,7 @@ if tx == nil {
 ```
 其中，`tx.Peek()`会返回`TransactionsByPriceAndNonce`堆中的下一个元素，但与`pop`不同的是此操作不会影响堆的结构。
 
-在完成上述步骤后，我们对一项非常重要的参数进行校验，即判断交易的签名是否符合`EIP155`的规定，关于`EIP155`签名的详细内容，可以参考[基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain#%E7%AD%BE%E5%90%8D)。代码如下:
+在完成上述步骤后，我们对一项非常重要的参数进行校验，即判断交易的签名是否符合`EIP155`的规定，关于`EIP155`签名的详细内容，可以参考[基于链下链上双视角深入解析以太坊签名与验证](../ecsda-sign-chain#%E7%AD%BE%E5%90%8D)。代码如下:
 ```go
 if tx.Protected() && !w.chainConfig.IsEIP155(env.header.Number) {
 	log.Trace("Ignoring reply protected transaction", "hash", tx.Hash(), "eip155", w.chainConfig.EIP155Block)

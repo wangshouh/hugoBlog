@@ -10,8 +10,8 @@ aliases: ["/2022/08/22/deep-in-eip1167"]
 
 注意虽然`EIP1167`也实现了代理合约，但其不具有合约升级能力，如果你希望构造可升级合约，请阅读以下文章:
 
-- [Foundry教程：使用多种方式编写可升级的智能合约(上)](./foundry-contract-upgrade-part1)
-- [Foundry教程：使用多种方式编写可升级的智能合约(下)](./foundry-contract-upgrade-part2)
+- [Foundry教程：使用多种方式编写可升级的智能合约(上)](../foundry-contract-upgrade-part1)
+- [Foundry教程：使用多种方式编写可升级的智能合约(下)](../foundry-contract-upgrade-part2)
 
 > 如果读者没有代理合约开发经验，也建议阅读上文获得一些关于代理合约的基本知识。
 

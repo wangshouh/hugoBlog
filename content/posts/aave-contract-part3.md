@@ -9,12 +9,12 @@ math: true
 
 本文主要介绍`AAVE V3`合约中的取款`withdraw`函数。在阅读本文前，请读者确保已经阅读过以下文章:
 
-1. [AAVE交互指南](./aave-interactive/)，本文将大量使用此文中给出的各种数学计算公式
-1. [深入解析AAVE智能合约:存款](./aave-contract-part1/)，此篇文章内给出的部分函数和大部分数据结构在本文内页有所使用，重复部分在本文内不再解释
+1. [AAVE交互指南](../aave-interactive/)，本文将大量使用此文中给出的各种数学计算公式
+1. [深入解析AAVE智能合约:存款](../aave-contract-part1/)，此篇文章内给出的部分函数和大部分数据结构在本文内页有所使用，重复部分在本文内不再解释
 
-读者也可选读[深入解析AAVE智能合约:计算和利率](./aave-contract-part2)，此文介绍了数学计算底层实现逻辑，与代码逻辑关系不大，读者可选读此文。
+读者也可选读[深入解析AAVE智能合约:计算和利率](../aave-contract-part2)，此文介绍了数学计算底层实现逻辑，与代码逻辑关系不大，读者可选读此文。
 
-本文可认为是对[深入解析AAVE智能合约:存款](./aave-contract-part1)的进一步补充，由于取款逻辑较为简单，所以此文的关键在于进一步深挖某些常用函数。这些函数在《存款》一文中虽有提及但未深入探讨的函数，如`updateInterestRates`等。
+本文可认为是对[深入解析AAVE智能合约:存款](../aave-contract-part1)的进一步补充，由于取款逻辑较为简单，所以此文的关键在于进一步深挖某些常用函数。这些函数在《存款》一文中虽有提及但未深入探讨的函数，如`updateInterestRates`等。
 
 ## 代码分析
 
@@ -52,7 +52,7 @@ function withdraw(
 1. `oracle` 预言机地址
 1. `userEModeCategory` 用户启用`E-Mode`的种类
 
-> 此处使用的变量已经在[深入解析AAVE智能合约:存款](./aave-contract-part1#基础数据结构)进行了相关讨论。
+> 此处使用的变量已经在[深入解析AAVE智能合约:存款](../aave-contract-part1#基础数据结构)进行了相关讨论。
 
 使用`Solidity Visual Developer`插件对其进行调用分析，结果如下:
 ```
@@ -98,7 +98,7 @@ DataTypes.ReserveCache memory reserveCache = reserve.cache();
 
 reserve.updateState(reserveCache);
 ```
-此处使用的基本都在[深入解析AAVE智能合约:存款](./aave-contract-part1#数据缓存)内进行了相关介绍和分析。总结来说，`updateState`完成了以下功能:
+此处使用的基本都在[深入解析AAVE智能合约:存款](../aave-contract-part1#数据缓存)内进行了相关介绍和分析。总结来说，`updateState`完成了以下功能:
 
 1. 更新`Index`系列变量
 1. 更新风险准备金
@@ -124,7 +124,7 @@ function scaledBalanceOf(address user)
 ```
 显然，通过此函数，我们可以获得经过**折现后的用户存款数额**。然后，经过`.rayMul(reserveCache.nextLiquidityIndex);`则可以得到当前用户存款的本息和。
 
-> 关于此处为什么获得的是**折现后的用户存款数额**? 请阅读[上一篇文章](./aave-contract-part1#存款代币铸造)内讨论**存款代币的铸造**这一节。简单来说，我们记录用户存款数额时就使用了折现后的数额
+> 关于此处为什么获得的是**折现后的用户存款数额**? 请阅读[上一篇文章](../aave-contract-part1#存款代币铸造)内讨论**存款代币的铸造**这一节。简单来说，我们记录用户存款数额时就使用了折现后的数额
 
 ### 确定取款数额
 
@@ -176,7 +176,7 @@ function validateWithdraw(
 1. 存款池是否属于启用状态`isActive`，如果不属于则报错
 1. 存款池是否被暂停，如果被暂停则报错
 
-> 关于`isActive`、`isPaused`等内容，请阅读上一篇文章中的[特殊数据结构](./aave-contract-part1#特殊数据结构)一节。
+> 关于`isActive`、`isPaused`等内容，请阅读上一篇文章中的[特殊数据结构](../aave-contract-part1#特殊数据结构)一节。
 
 ### 利率更新
 
@@ -190,7 +190,7 @@ reserve.updateInterestRates(
 );
 ```
 
-在上一篇文章中的[更新利率](./aave-contract-part1#更新利率)一节内，我们讨论了`updateInterestRates`中的参数问题而没有讨论具体的`calculateInterestRates`函数的具体实现，我们在本文中将分析此函数。
+在上一篇文章中的[更新利率](../aave-contract-part1#更新利率)一节内，我们讨论了`updateInterestRates`中的参数问题而没有讨论具体的`calculateInterestRates`函数的具体实现，我们在本文中将分析此函数。
 
 在具体分析函数的逻辑代码之前，我们首先给出函数的调用代码:
 ```solidity
@@ -218,9 +218,9 @@ reserve.updateInterestRates(
         })
     );
 ```
-此函数使用的参数含义请参考[上一篇文章](./aave-contract-part1#更新利率)。
+此函数使用的参数含义请参考[上一篇文章](../aave-contract-part1#更新利率)。
 
-在了解具体的输入参数后，我们着手分析函数的逻辑部分。在阅读以下内容前，请读者复习[AAVE交互指南](./aave-interactive)中的[贷款利率计算](./aave-interactive#贷款利率计算)一节。
+在了解具体的输入参数后，我们着手分析函数的逻辑部分。在阅读以下内容前，请读者复习[AAVE交互指南](../aave-interactive)中的[贷款利率计算](../aave-interactive#贷款利率计算)一节。
 
 在`calculateInterestRates`函数内，我们首先定义了一系列初始变量，定义代码如下:
 
@@ -496,7 +496,7 @@ if (userConfig.isUsingAsCollateral(reserve.id)) {
 
 如果取款资产具有质押品属性且用户存在借款行为，则进行`HF`(Health Factor 健康因子)的校验。
 
-> 关于`HF`参数，读者可参考 AAVE 交互指南 中的[贷款参数](./aave-interactive#贷款参数)一节。简单来说，如果`HF < 1`，则用户存在违约风险，需要对用户进行清算
+> 关于`HF`参数，读者可参考 AAVE 交互指南 中的[贷款参数](../aave-interactive#贷款参数)一节。简单来说，如果`HF < 1`，则用户存在违约风险，需要对用户进行清算
 
 此处也进行了质押属性的处理，如果用户取出所有存款，则直接关闭此资产的质押选型。
 
@@ -620,7 +620,7 @@ function calculateUserAccountData(
 
 此处也需要考虑用户的输入，输入依次为:
 
-1. `reservesData` 质押品相关信息，详情参考[基础数据结构](./aave-contract-part1#基础数据结构)一节
+1. `reservesData` 质押品相关信息，详情参考[基础数据结构](../aave-contract-part1#基础数据结构)一节
 1. `reservesList` 资产`id`及其地址之间的对应关系
 1. `eModeCategories` 当前所属的`EMode`类型
 1. `params` 复合参数数据结构，详细分析见下文
@@ -638,7 +638,7 @@ struct CalculateUserAccountDataParams {
 
 该数据结构中，各参数含义如下:
 
-1. `userConfig` 用户持有及贷出资产的压缩列表，详情参考[基础数据结构](./aave-contract-part1#基础数据结构)一节
+1. `userConfig` 用户持有及贷出资产的压缩列表，详情参考[基础数据结构](../aave-contract-part1#基础数据结构)一节
 1. `reservesCount` 流动性池内资产的数量
 1. `user` 用户地址
 1. `oracle` 资产价格预言机地址
@@ -723,7 +723,7 @@ function isUsingAsCollateralOrBorrowing(
 }
 ```
 
-要想了解此代码，读者应了解`UserConfigurationMap`的基本结构，我们在[深入解析AAVE智能合约:存款](./aave-contract-part1#基础数据结构)中进行过讨论，此处我们再次给出相关数据结构，如下图:
+要想了解此代码，读者应了解`UserConfigurationMap`的基本结构，我们在[深入解析AAVE智能合约:存款](../aave-contract-part1#基础数据结构)中进行过讨论，此处我们再次给出相关数据结构，如下图:
 
 ![UserConfigurationMap](https://img.gejiba.com/images/44730e1a6fb788ad2d9adf3678e89a39.png)
 
@@ -760,7 +760,7 @@ unchecked {
 }
 ```
 
-关于`reservesList`、`reservesData`的数据结构问题，请参考本系列第一篇文章中的[基础数据结构](./aave-contract-part1#基础数据结构)。
+关于`reservesList`、`reservesData`的数据结构问题，请参考本系列第一篇文章中的[基础数据结构](../aave-contract-part1#基础数据结构)。
 
 上述代码中使用的核心函数`getParams`定义如下:
 ```solidity
@@ -788,7 +788,7 @@ function getParams(DataTypes.ReserveConfigurationMap memory self)
     );
 }
 ```
-我们在[特殊数据结构](./aave-contract-part1#特殊数据结构)一节讨论过此函数的基本原理。此函数的返回值依次为`ltv`、`Liquidation threshold`、`Liquidation bonus`、`Decimals`、`reserve factor`、`eMode category`，这些名词的具体含义请自行查询[特殊数据结构](./aave-contract-part1#特殊数据结构)一节。
+我们在[特殊数据结构](../aave-contract-part1#特殊数据结构)一节讨论过此函数的基本原理。此函数的返回值依次为`ltv`、`Liquidation threshold`、`Liquidation bonus`、`Decimals`、`reserve factor`、`eMode category`，这些名词的具体含义请自行查询[特殊数据结构](../aave-contract-part1#特殊数据结构)一节。
 
 在查询完资产的基本情况后，我们继续查询资产的当前价格，代码如下:
 ```solidity
@@ -883,7 +883,7 @@ function isInEModeCategory(
 
 该函数仅通过判断用户当前启用的`EMode`资产类型与当前资产的`EMode`类型是否相同实现判断匹配的目的。
 
-> 读者如果无法理解为什么需要匹配，请参考 AAVE交互指南 中 [EMode](./aave-interactive#e-mode) 一节。
+> 读者如果无法理解为什么需要匹配，请参考 AAVE交互指南 中 [EMode](../aave-interactive#e-mode) 一节。
 
 通过上述代码，我们可以获得用户质押品的相关情况。同时，我们也需要获得用户借款情况，获取方法如下:
 
