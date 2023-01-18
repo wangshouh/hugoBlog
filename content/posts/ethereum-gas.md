@@ -368,5 +368,5 @@ Max Fee = (2 * Base Fee) + Max Priority Fee
 
 ![Gas Picture](https://s-bj-3358-blog.oss.dogecdn.com/svg/gas.drawio.svg)
 
-如果读者可以很好的理解本篇文章，且想进一步了解以太坊交易，可以参考[以太坊机制详解:交易与交易池](./ethereum-transcation/)
+如果读者可以很好的理解本篇文章，且想进一步了解以太坊交易，可以参考[以太坊机制详解:交易与交易池](./ethereum-transcation)
 

@@ -7,7 +7,7 @@ aliases: ["/2022/09/20/deep-in-safe-part-3/"]
 
 ## 概述
 
-在[深入解析Safe多签钱包智能合约:模块](./deep-in-safe-part-2/)中分析`FallbackManager`模块时，限于篇幅限制且`fallback`合约自成一体，所以我们没有介绍具体的`fallback`模块。此篇文章的主要目的是完成这一缺陷，全面介绍`fallback`合约。
+在[深入解析Safe多签钱包智能合约:模块](./deep-in-safe-part-2)中分析`FallbackManager`模块时，限于篇幅限制且`fallback`合约自成一体，所以我们没有介绍具体的`fallback`模块。此篇文章的主要目的是完成这一缺陷，全面介绍`fallback`合约。
 
 本文涉及的代码主要位于`src/handler`内，读者可自行查阅[此仓库](https://github.com/wangshouh/foundry-safe)。
 

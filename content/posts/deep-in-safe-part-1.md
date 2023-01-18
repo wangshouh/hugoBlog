@@ -48,7 +48,7 @@ aliases: ["/2022/08/27/deep-in-safe-part-1"]
 
 在以太坊生态内，用户只能使用ETH作为Gas支付的货币。随着ERC20代币的日益繁荣，很多用户有了使用ERC20代币支付Gas的需求，在此需求刺激下，以太坊生态环境内出现了一种特殊的实体——中继商。它们运行用户向其支付ERC20代币，然后由中继商代替用户进行交互。
 
-值得注意的是中继商进行上述操作需要合约支持，比较著名的有`EIP2771 MetaTranscation`标准，具体可以参考[EIP712的扩展使用](./eip712-extend/#meta-transactions)。当然，`Gnosis Safe`合约对于中继商进行交易进行了很好的支持，我们会在下文逐渐介绍。
+值得注意的是中继商进行上述操作需要合约支持，比较著名的有`EIP2771 MetaTranscation`标准，具体可以参考[EIP712的扩展使用](./eip712-extend#meta-transactions)。当然，`Gnosis Safe`合约对于中继商进行交易进行了很好的支持，我们会在下文逐渐介绍。
 
 ## 代码准备
 
@@ -166,7 +166,7 @@ function deployProxyWithNonce(
 
 首先，我们应该构建出可以部署的字节码。我们可以通过`type(GnosisSafeProxy).creationCode`获得需要部署合约的创建字节码。
 
-> 注意上述表述为创建代码而不是运行代码，具体请参考[此文章](./deep-in-eip1167/#%E5%88%9D%E5%A7%8B%E5%8C%96)
+> 注意上述表述为创建代码而不是运行代码，具体请参考[此文章](./deep-in-eip1167#%E5%88%9D%E5%A7%8B%E5%8C%96)
 
 但我们发现一个问题，我们部署的合约包含一个构造器(src/proxies/GnosisSafeProxy.sol)，代码如下:
 ```solidity
@@ -226,7 +226,7 @@ interface IProxyCreationCallback {
 - proxyRuntimeCode() 获得`Runtime`代码
 - proxyCreationCode() 获得`create`代码
 
-如果读者无法理解两者的区别，请参考[此文章](./deep-in-eip1167/#%E5%88%9D%E5%A7%8B%E5%8C%96)
+如果读者无法理解两者的区别，请参考[此文章](./deep-in-eip1167#%E5%88%9D%E5%A7%8B%E5%8C%96)
 
 还有一个极其鸡肋的函数:
 
@@ -238,7 +238,7 @@ interface IProxyCreationCallback {
 
 此部分是工厂合约部署出的合约，与工厂合约相比，代理合约较为简单。此节介绍的代码位于`src/proxies/GnosisSafeProxy.sol`。
 
-此部分可以参考我之前写的[使用多种方式编写可升级的智能合约(上)](./foundry-contract-upgrade-part1/#%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90)。
+此部分可以参考我之前写的[使用多种方式编写可升级的智能合约(上)](./foundry-contract-upgrade-part1#%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90)。
 
 此处使用`let _singleton := and(sload(0), 0xffffffffffffffffffffffffffffffffffffffff)`获取逻辑合约地址。此流程使用`and`操作使地址满足EVM要求。
 
@@ -447,9 +447,9 @@ bytes32 txHash;
 
 读者可自行阅读我之前写的这两篇文章以理解上述流程:
 
-- [基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain/)
+- [基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain)
 
-- [EIP712的扩展使用](./eip712-extend/)
+- [EIP712的扩展使用](./eip712-extend)
 
 在获得相关数据后，我们使用`checkSignatures(txHash, txHashData, signatures);`进行验证签名是否正确。此函数我们会在下文进行介绍。
 
@@ -607,7 +607,7 @@ Gas Fee = (gasUsed + baseGas) * gasPrice
 
 我们在`execTransaction`通过此函数检测交易多签是否符合签名者的数量限制。此函数需要以下参数:
 
-- dataHash 交易参数的`EIP712`哈希值，具体可以参考[此文章](./ecsda-sign-chain/#%E7%AD%BE%E5%90%8D-1)
+- dataHash 交易参数的`EIP712`哈希值，具体可以参考[此文章](./ecsda-sign-chain#%E7%AD%BE%E5%90%8D-1)
 - data 需要进行签名的数据
 - signatures 需要进行检查的签名数据
 
@@ -619,7 +619,7 @@ Gas Fee = (gasUsed + baseGas) * gasPrice
 
 在函数的起始位置，合约首先检查了`signatures.length >= requiredSignatures.mul(65)`。这是为了保证`signatures`聚合签名的长度符合预期。
 
-> 此处的常数为`65`的原因是在最小签名(即仅包含`v`、`r`、`s`)的长度为`65 bytes`。具体可以参考[此文章](./ecsda-sign-chain/#%E4%BB%A5%E5%A4%AA%E5%9D%8A%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D)。
+> 此处的常数为`65`的原因是在最小签名(即仅包含`v`、`r`、`s`)的长度为`65 bytes`。具体可以参考[此文章](./ecsda-sign-chain#%E4%BB%A5%E5%A4%AA%E5%9D%8A%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D)。
 
 值得注意的是，`GnosisSafe`为了满足多种签名方式并存的情况，修改了部分签名的定义。读者可以阅读相关[文档](https://docs.gnosis-safe.io/contracts/signatures)进行学习。当然，我们也会在后文尽可能解释`Gnosis`的签名格式。
 
@@ -638,7 +638,7 @@ Gas Fee = (gasUsed + baseGas) * gasPrice
 
 #### 合约签名(Contract Signature)
 
-读者在阅读此部分时需要对`EIP1271`标准有一定理解，如果读者对此没有了解，请先阅读[此文章](./ecsda-sign-chain/#eip-1271)。简单来说，合约将签名权授予某拥有私钥的用户，由此用户进行签名。接受合约签名的合约使用合约签名对`签名验证合约`调用`isValidSignature`函数，获得此签名是否是正确的合约签名。
+读者在阅读此部分时需要对`EIP1271`标准有一定理解，如果读者对此没有了解，请先阅读[此文章](./ecsda-sign-chain#eip-1271)。简单来说，合约将签名权授予某拥有私钥的用户，由此用户进行签名。接受合约签名的合约使用合约签名对`签名验证合约`调用`isValidSignature`函数，获得此签名是否是正确的合约签名。
 
 我们首先给出合约签名的静态格式:
 ```

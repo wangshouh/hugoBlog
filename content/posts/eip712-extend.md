@@ -6,7 +6,7 @@ aliases: ["/2022/08/11/eip712-extend"]
 ---
 ## 概述
 
-本文在[上一篇文章](./ecsda-sign-chain/)介绍的`EIP712`的基础上进一步讨论了`EIP712`结构化哈希的进一步应用:
+本文在[上一篇文章](./ecsda-sign-chain)介绍的`EIP712`的基础上进一步讨论了`EIP712`结构化哈希的进一步应用:
 
 1. Meta-transactions，解决用户`gas`费用问题
 2. ERC20-Permit
@@ -27,7 +27,7 @@ aliases: ["/2022/08/11/eip712-extend"]
 
 第一步，生成`calldata`。
 
-我们与合约交互需要生成`calldata`数据。此过程是根据我们输入的数据和`abi`进行编码得到的，在`solidity`中，一般使用`abi.encodeWithSignature`得到，我们在[Foundry教程：使用多种方式编写可升级的智能合约(上)](./foundry-contract-upgrade-part1/)测试中已经多次使用此函数。当然，我们可以使用`Foundry`提供的`cast`完成此步骤，具体可以参考[cast calldata](https://book.getfoundry.sh/reference/cast/cast-calldata)。在下图中，我们给出一个例子。
+我们与合约交互需要生成`calldata`数据。此过程是根据我们输入的数据和`abi`进行编码得到的，在`solidity`中，一般使用`abi.encodeWithSignature`得到，我们在[Foundry教程：使用多种方式编写可升级的智能合约(上)](./foundry-contract-upgrade-part1)测试中已经多次使用此函数。当然，我们可以使用`Foundry`提供的`cast`完成此步骤，具体可以参考[cast calldata](https://book.getfoundry.sh/reference/cast/cast-calldata)。在下图中，我们给出一个例子。
 
 ![castCalldata.png](https://img-blog.csdnimg.cn/img_convert/41e1bf6f1ee7bc67ad9d8d692e1d0dc4.png)
 
@@ -38,7 +38,7 @@ aliases: ["/2022/08/11/eip712-extend"]
 
 第二步，生成并签名交易数据。
 
-我们在[上一篇](./ecsda-sign-chain/)中已经介绍了以太坊交易签名。在此处，我们给出标准交易签名的内容:
+我们在[上一篇](./ecsda-sign-chain)中已经介绍了以太坊交易签名。在此处，我们给出标准交易签名的内容:
 ```
 rlp(
     [
@@ -139,7 +139,7 @@ struct ForwardRequest {
     }
 ```
 
-此代码较为简单，我们已在[基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain/)此文中进行了相关介绍。此函数的功能是验证`ForwardRequest`的请求是否由运营商签名。当然，此处也验证了`nonce`是否正确。设置`nonce`的目的是避免重放攻击。如果不设置此参数，攻击者可以在链上查找到用户的签名并重复使用。加入`nonce`并设置每次运行改变，可以有效避免签名被重复使用。在以太坊正常交易中，用户的`nonce`也会在每次进行交易后自加`1`，也是为了避免重放攻击。
+此代码较为简单，我们已在[基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain)此文中进行了相关介绍。此函数的功能是验证`ForwardRequest`的请求是否由运营商签名。当然，此处也验证了`nonce`是否正确。设置`nonce`的目的是避免重放攻击。如果不设置此参数，攻击者可以在链上查找到用户的签名并重复使用。加入`nonce`并设置每次运行改变，可以有效避免签名被重复使用。在以太坊正常交易中，用户的`nonce`也会在每次进行交易后自加`1`，也是为了避免重放攻击。
 
 `execute`函数，此函数用于将请求转发给接受合约，并由接受合约运行，代码如下:
 ```solidity
@@ -265,7 +265,7 @@ contract Box is ERC2771Recipient {
 
 ### 合约测试
 
-在此处，我们依旧使用[上一篇](./ecsda-sign-chain/)提出的前往浏览器获得签名结果，再将签名结果手动输入测试合约的方法。
+在此处，我们依旧使用[上一篇](./ecsda-sign-chain)提出的前往浏览器获得签名结果，再将签名结果手动输入测试合约的方法。
 
 我们需要收集一些构建结构体所需要的数据:
 
@@ -713,7 +713,7 @@ function setUp() public {
 ```
 主要完成了各行业的初始化和用户的初始化。在用户初始化中，使用了`vm.addr()`函数，此函数会返回指定私钥的地址。此处也使用`mint`函数为`owenr`铸造了代币。
 
-> 通过私钥计算地址的方法我们已在[上一篇文章](./ecsda-sign-chain/)中给出
+> 通过私钥计算地址的方法我们已在[上一篇文章](./ecsda-sign-chain)中给出
 
 完成初始化后，我们首先实现对核心功能`Permit`的测试，具体代码如下:
 
