@@ -54,7 +54,7 @@ tags: [tld]
 1. TRY50/year 存在`.nl` 
 1. TRY65/year 存在`.page`、`.fr`、`.co.in`和`.pictures`
 
-<iframe style="border: none;" src="https://themoneyconverter.com/zh-CN/CurrencyConverter?tab=0&from=TRY&to=CNY&bg=ffffff" marginwidth="0" marginheight="0" scrolling="no" seamless="seamless" width="251" height="348"></iframe>
+{{<exchange "https://themoneyconverter.com/zh-CN/CurrencyConverter?tab=0&from=TRY&to=CNY&bg=ffffff">}}
 
 我们可以通过选择`All endings` 并选择以`Price`进行排序获得所有域名的列表，如下：
 
