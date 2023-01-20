@@ -177,13 +177,15 @@ cast block latest --rpc-url https://rpc.ankr.com/eth
 
 如果读者希望使用此方法获得完整的以太坊区块数据需要大量时间，在此处，我们可以使用`0xFast Stream`提供的极速区块数据下载服务，此服务可以每秒下载 220 个区块，使用方法也非常简单，读者可自行点击以下链接:
 
-1. https://stream.0xfast.com/beta/eth-mainnet/latest 获取最新区块数据
-1. https://stream.0xfast.com/beta/eth-mainnet/1 获取单一区块数据
-1. https://stream.0xfast.com/beta/eth-mainnet/1-10 获取系列区块数据
+1. https://eth-uswest.0xfast.com/stream/free?range=latest 获取最新区块数据
+1. https://eth-uswest.0xfast.com/stream/free?range=1 获取单一区块数据
+1. https://eth-uswest.0xfast.com/stream/free?range=1-10获取系列区块数据
 
-> 上文链接中的10进制字符均可替换为16进制数，如 https://stream.0xfast.com/beta/eth-mainnet/0x1
+> 上文链接中的10进制字符均可替换为16进制数，如 https://eth-uswest.0xfast.com/stream/free?range=0x1
 
 此服务返回`JSON`编码的区块数据，更多内容可参考[Launching 0xFast Stream](https://manishrjain.com/launching-0xfast-stream)文章。
+
+此服务提供一个`status`状态页面，读者可参考 [0xfast status](https://status.0xfast.com/) 以判断是否服务宕机。
 
 ## 总结
 
