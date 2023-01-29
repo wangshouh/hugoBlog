@@ -20,7 +20,7 @@ aliases: ["/2022/08/27/deep-in-safe-part-1"]
 
 1. 更加高级的交易设置。相对于以太坊用户，智能合约具有可编程性，这意味着用户可以自行编辑一些交易逻辑，比如将多个交易聚合起来一起执行(`batched transactions`)。此部分由`Safe Library contracts`提供。
 
-1. 更加灵活的访问管理。用户可以在钱包内加入具有特定功能的模块，比如限制单一用户每日最大可批准金额。这对于DAO是十分有用的。此部分由`Safe Modules提供。
+1. 更加灵活的访问管理。用户可以在钱包内加入具有特定功能的模块，比如限制单一用户每日最大可批准金额。这对于DAO是十分有用的。此部分由`Safe Modules` 提供。
 
 上述仅仅是对`Safe`优势的简单介绍。如果读者想了解更多关于此方面的介绍，请参考[Gnosis Safe 官网](https://docs.gnosis-safe.io/)
 
@@ -166,9 +166,9 @@ function deployProxyWithNonce(
 
 首先，我们应该构建出可以部署的字节码。我们可以通过`type(GnosisSafeProxy).creationCode`获得需要部署合约的创建字节码。
 
-> 注意上述表述为创建代码而不是运行代码，具体请参考[此文章]({{<ref "deep-in-eip1167#%E5%88%9D%E5%A7%8B%E5%8C%96" >}})
+> 注意上述表述为创建代码而不是运行代码，具体请参考[此文章]({{<ref "deep-in-eip1167#%E5%88%9D%E5%A7%8B%E5%8C%96" >}}) 和 [Deconstructing a Solidity Part II: Creation vs. Runtime](https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-ii-creation-vs-runtime-6b9d60ecb44c/)
 
-但我们发现一个问题，我们部署的合约包含一个构造器(src/proxies/GnosisSafeProxy.sol)，代码如下:
+但我们发现一个问题，我们部署的合约包含一个构造器(`src/proxies/GnosisSafeProxy.sol`)，代码如下:
 ```solidity
 constructor(address _singleton) {
     require(_singleton != address(0), "Invalid singleton address provided");
@@ -176,11 +176,11 @@ constructor(address _singleton) {
 }
 ```
 
-上述代码说明我们在构造对应字节码的过程中需要填入对应的参数。深入研究创建代码(可以通过`proxyCreationCode()`获得)，我们发现此代码总是在字节码的最后按照内存长度逐一读取参数。也就是说，我们需要在`creationCode`后增加EVM标准内存长度( 32 byte )的代理合约的地址。在此处，我们使用了`uint256(uint160(_singleton))`进行了转换，将合约地址转换为`uint256`数据类型，此数据类型恰好占用 32 byte 。
+上述代码说明我们在构造对应字节码的过程中需要填入对应的参数。深入研究创建代码(可以通过与`proxyCreationCode()`交互获得)，我们发现此代码总是在字节码的最后按照内存长度逐一读取参数。也就是说，我们需要在`creationCode`后增加EVM标准内存长度( 32 byte )的代理合约的地址。在此处，我们使用了`uint256(uint160(_singleton))`进行了转换，将合约地址转换为`uint256`数据类型，此数据类型恰好占用 32 byte 。
 
 在获得创建代码和构造器参数后，我们使用了`abi.encodePacked`对参数进行合并，此过程的目的是生成符合EVM标准的字节码。此函数的作用是将各参数进行编码并非标准的合并，详细可以参考[文档](https://docs.soliditylang.org/en/latest/abi-spec.html#non-standard-packed-mode)。
 
-如果读者想观察最后生成的代码，请前往[此网站](https://www.evm.codes/playground?unit=Wei&codeType=Bytecode&code='R34wns_ZprtmTe63w3qe68339j8Tt2xojsn33_Zp8sUww5Uxo0U929Urrruvmjvm14nca_t17f08c379ayyyzjh0401wwxo01828s382h22jho01qc4x229139x400l1rrt1w9s390pwuqzaj54jv02lm9083v1x2179055rrxabqlu39XfeRvu54m7fa6l486eyyy00u35Vxr_wuhoX5b36Z37Z36u845af43dZ3eujVxi5kdup3dXfea2g69i66k582212od142929k49653a491wWd6r332de1as68c5f3e07c5c823xc2777ib9552gk6f6c6343zix033496eW6mc69gok696e6Wc6_46f6eo6m4g7265kkoi726fW69g65gySd9db2ic1b5e3bdm1e8c8r3c55ceabeei9552'~YYYYYz000ySSSx60w80vk~~~~u6ztx405T0r50qw6Tpfd5bo20n156s0m16l19k73j81i70h52xg64_57ZuwYffXuf3W76V1415Ul0Ts1SzzRxwt2%01RSTUVWXYZ_ghijklmnopqrstuvwxyz~_)观察和运行代码。
+此处我们使用 `0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552` 作为 `_singleton` 构造器参数，为读者展示了最后拼接获得的 `deploymentData` 的具体字节码，读者可前往[此网站](https://www.evm.codes/playground?unit=Wei&codeType=Bytecode&code='R34wns_ZprtmTe63w3qe68339j8Tt2xojsn33_Zp8sUww5Uxo0U929Urrruvmjvm14nca_t17f08c379ayyyzjh0401wwxo01828s382h22jho01qc4x229139x400l1rrt1w9s390pwuqzaj54jv02lm9083v1x2179055rrxabqlu39XfeRvu54m7fa6l486eyyy00u35Vxr_wuhoX5b36Z37Z36u845af43dZ3eujVxi5kdup3dXfea2g69i66k582212od142929k49653a491wWd6r332de1as68c5f3e07c5c823xc2777ib9552gk6f6c6343zix033496eW6mc69gok696e6Wc6_46f6eo6m4g7265kkoi726fW69g65gySd9db2ic1b5e3bdm1e8c8r3c55ceabeei9552'~YYYYYz000ySSSx60w80vk~~~~u6ztx405T0r50qw6Tpfd5bo20n156s0m16l19k73j81i70h52xg64_57ZuwYffXuf3W76V1415Ul0Ts1SzzRxwt2%01RSTUVWXYZ_ghijklmnopqrstuvwxyz~_)观察和运行代码。
 
 获得关键的`deploymentData`参数后，我们可以非常简单的实现`create2`。此处基本与上一节给出的`call`类似，我们在此处不再赘述。对于最后结果使用了`require`进行断言。
 
