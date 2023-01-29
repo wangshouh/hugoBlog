@@ -7,10 +7,10 @@ math: true
 
 ## 概述
 
-我们在上一篇文章[AAVE交互指南](./aave-interactive)中主要介绍了`aave`前端、利率计算等内容，本篇文章
+我们在上一篇文章[AAVE交互指南]({{<ref aave-interactive}})中主要介绍了`aave`前端、利率计算等内容，本篇文章
 将在交互指南基础上介绍`aave-v3`的合约源代码的相关情况。
 
-与之前所写的[深入解析Safe多签钱包智能合约](./deep-in-safe-part-1)系列文章不同，本文主要以我们在[AAVE交互指南](./aave-interactive)中进行的合约操作为主线进行分析介绍，较为实战化。
+与之前所写的[深入解析Safe多签钱包智能合约]({{<ref deep-in-safe-part-1}})系列文章不同，本文主要以我们在[AAVE交互指南]({{<ref aave-interactive}})中进行的合约操作为主线进行分析介绍，较为实战化。
 
 相比于其他项目，`AAVE`提供了一个较为完整的[文档](https://docs.aave.com/developers/getting-started/readme)。在文档内基本涵盖了所有函数的签名及其作用，读者也可作为阅读源代码的重要参考。
 
@@ -51,7 +51,7 @@ forge init aave-v3
 
 ## 整体逻辑
 
-在介绍具体的合约代码前，我们首先应当明确存款行为的具体逻辑。作为金融系统，其逻辑具有相当的数学性，我们会结合具体的数学公式介绍存款的具体逻辑。与[上一篇文章](./aave-interactive)相比，本节给出的逻辑会更加详细且主要服务于后文代码解释，建议以本节为纲要以避免迷失在具体实现中。
+在介绍具体的合约代码前，我们首先应当明确存款行为的具体逻辑。作为金融系统，其逻辑具有相当的数学性，我们会结合具体的数学公式介绍存款的具体逻辑。与[上一篇文章]({{<ref aave-interactive}})相比，本节给出的逻辑会更加详细且主要服务于后文代码解释，建议以本节为纲要以避免迷失在具体实现中。
 
 本文主要参考了[AAVE V2 Whitepaper](https://github.com/aave/protocol-v2/blob/master/aave-v2-whitepaper.pdf)，此文档给出了具体的逻辑阐述。
 
@@ -60,7 +60,7 @@ forge init aave-v3
 我们引入以下参数:
 
 - ${LR}_t$ 当前的存款利率(`currentLiquidityRate`)，计算方法为 
-    ${LR}_t=\bar{R_t}{U_t}$(此公式在[上一篇文章](./aave-interactive#%E8%B4%A8%E6%8A%BC%E5%88%A9%E7%8E%87%E8%AE%A1%E7%AE%97)内有详细解释，读者可作为参考)
+    ${LR}_t=\bar{R_t}{U_t}$(此公式在[上一篇文章]({{<ref aave-interactive#%E8%B4%A8%E6%8A%BC%E5%88%A9%E7%8E%87%E8%AE%A1%E7%AE%97}})内有详细解释，读者可作为参考)
 
     参数含义如下:
     - $\bar{R_t}$ 为浮动存款和固定存款利率的加权平均数
@@ -143,7 +143,7 @@ function supply(
 
 > 只有持有`aToken`的用户可以获得存款回报，所以一般情况下`onBehalfOf`仅为用户自己的地址，但用户也可以设置为其他人的地址以方便进行利益转移。
 
-虽然此函数看似简单，但其内部调用了一些复杂函数。使用[Solidity Visual Developer](./smart-contract-tool#编辑器配置)中的`ftrace`工具获得如下调用栈:
+虽然此函数看似简单，但其内部调用了一些复杂函数。使用[Solidity Visual Developer]({{<ref smart-contract-tool#编辑器配置}})中的`ftrace`工具获得如下调用栈:
 ```
 └─ Pool::supply
    ├─ SupplyLogic::executeSupply | [Ext] ❗️  🛑 
@@ -256,7 +256,7 @@ struct ReserveData {
 
 > 有读者好奇为什么此处使用 `uint128` 而不是 `uint256` 作为数字的基本类型呢? 原因在于 `AAVE` 在表示浮点数时使用一种较为简单的定点浮点数的表示方法。此处的各种利率均使用了`RAY`表示，其具有固定的 27 位小数，使用 `uint128` 足够进行表示且更节省存储空间。
 >
-> 关于此处数学运算的相关内容，读者可阅读[深入解析AAVE智能合约:计算和利率](./aave-contract-part2)。
+> 关于此处数学运算的相关内容，读者可阅读[深入解析AAVE智能合约:计算和利率]({{<ref aave-contract-part2}})。
 
 `Index`系列变量实现了一个极其特殊的功能，即使用统一参数计算所有用户的质押收益或者贷款利息，此变量系列均属于贴现因子。正如上文所述，在本节内，我们所提及的贴现因子一般指存款的贴现因子。
 
@@ -303,7 +303,7 @@ struct UserConfigurationMap {
 | 212-251 | debt ceiling for isolation mode with decimals | 隔离模式中此抵押品的贷出资产上限 |
 | 252-255 | unused | 未使用 |
 
-此表格内的部分变量的作用留空是因为我们已经在[上一篇文章](./aave-interactive)内对这些变量的使用进行了讨论。也可以使用下图更加清晰的展示`ReserveConfigurationMap`的基础数据结构:
+此表格内的部分变量的作用留空是因为我们已经在[上一篇文章]({{<ref aave-interactive}})内对这些变量的使用进行了讨论。也可以使用下图更加清晰的展示`ReserveConfigurationMap`的基础数据结构:
 
 ![ReserveConfigurationMap](https://img.gejiba.com/images/ab995b3accb9ee51453885c9c210e83a.png)
 
@@ -740,7 +740,7 @@ require(
 );
 ```
 
-> 此处涉及到 ERC20 代币的精度问题，这也是一种顶点浮点数。如 USDT 的精度为 6， 则表示 1 USDT 在合约内使用 1e6 此数值表示，也意味着 USDT 精度最多为 6 位小数
+> 此处涉及到 ERC20 代币的精度问题，这也是一种浮点数。如 USDT 的精度为 6， 则表示 1 USDT 在合约内使用 1e6 此数值表示，也意味着 USDT 精度最多为 6 位小数
 
 ### 更新利率
 
@@ -893,7 +893,7 @@ function revertWithMessage(length, message) {
 
 > 由以上代码，我们可以充分认识到ERC20合约的多样性。建议读者使用一些较为通用的实现方案而不是自己造轮子
 
-> 如果您无法理解上述内容，建议读者阅读[EVM底层探索:字节码级分析最小化代理标准EIP1167](./deep-in-eip1167)系列文章。在这些文章内，我较为详细的讨论了字节码问题。当然，我之前的文章基本均涉及到`yul`底层编程，读者可以按照我的写作的时间顺序逐个阅读
+> 如果您无法理解上述内容，建议读者阅读[EVM底层探索:字节码级分析最小化代理标准EIP1167]({{<ref deep-in-eip1167}})系列文章。在这些文章内，我较为详细的讨论了字节码问题。当然，我之前的文章基本均涉及到`yul`底层编程，读者可以按照我的写作的时间顺序逐个阅读
 
 ### 存款代币铸造
 
@@ -1015,7 +1015,7 @@ function validateUseAsCollateral(
 
 ## supplyWithPermit
 
-在上文中，我们深挖了在`Pool`合约内的`supply`函数，这也是大部分用户存款时使用的函数，但事实上，`AAVE`也提供了另一个使用体验更好的函数`supplyWithPermit`。此函数的核心在于`Permit`，笔者在之前的文章内讨论过此概念，如果读者不了解此概念，请阅读[EIP712的扩展使用](./eip712-extend)，我们在本文的最后讨论了`Permit`这一函数。
+在上文中，我们深挖了在`Pool`合约内的`supply`函数，这也是大部分用户存款时使用的函数，但事实上，`AAVE`也提供了另一个使用体验更好的函数`supplyWithPermit`。此函数的核心在于`Permit`，笔者在之前的文章内讨论过此概念，如果读者不了解此概念，请阅读[EIP712的扩展使用]({{<ref eip712-extend}})，我们在本文的最后讨论了`Permit`这一函数。
 
 在此处，我们给出`supplyWithPermit`的代码:
 ```solidity
@@ -1052,8 +1052,8 @@ function supplyWithPermit(
 }
 ```
 
-与正常的`supply`函数相比，此函数增加了`IERC20WithPermit(asset).permit`部分。此部分为`supply`增加了特殊的功能，即调用者不需要在使用此函数前进行`approve`授权操作，该授权操作隐含在`EIP712`签名中。如果读者无法理解此内容，请阅读[基于链下链上双视角深入解析以太坊签名与验证](./ecsda-sign-chain)和[EIP712的扩展使用](./eip712-extend)。
+与正常的`supply`函数相比，此函数增加了`IERC20WithPermit(asset).permit`部分。此部分为`supply`增加了特殊的功能，即调用者不需要在使用此函数前进行`approve`授权操作，该授权操作隐含在`EIP712`签名中。如果读者无法理解此内容，请阅读[基于链下链上双视角深入解析以太坊签名与验证]({{<ref ecsda-sign-chain}})和[EIP712的扩展使用]({{<ref eip712-extend}})。
 
 ## 总结
 
-终于我们完成了对于AAVE存款部分的描述，可见相对于[Safe](./deep-in-safe-part-1)等功能性合约，AAVE作为DeFi合约充分体现了其复杂性。本文是对AAVE V3版本存款的简单描述，由于篇幅和主题限制，本文对于部分函数的深挖不足，读者可根据自身需求在本文基础上继续深挖部分函数。
+终于我们完成了对于AAVE存款部分的描述，可见相对于[Safe]({{<ref deep-in-safe-part-1}})等功能性合约，AAVE作为DeFi合约充分体现了其复杂性。本文是对AAVE V3版本存款的简单描述，由于篇幅和主题限制，本文对于部分函数的深挖不足，读者可根据自身需求在本文基础上继续深挖部分函数。
