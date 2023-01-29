@@ -394,7 +394,7 @@ struct {
 
 ![enrtree Verify](https://img-blog.csdnimg.cn/img_convert/9fe28cabc4b6ddf03e0afc85c1050935.png)
 
-> 关于公钥恢复的详细介绍可以参考我写的[基于链下链上双视角深入解析以太坊签名与验证](../ecsda-sign-chain#%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D)
+> 关于公钥恢复的详细介绍可以参考我写的[基于链下链上双视角深入解析以太坊签名与验证]({{<ref "ecsda-sign-chain#%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D" >}})
 
 > 为什么需要设计`enr-root`和`link-root`两种根？
 > 设计`link-root`的目的是方便大型列表的维护。由所有以太坊节点构成的`merkle tree`是巨大的，提供`link-root`指向其他DNS服务器可以有效分割大型`merkle tree`。但目前根节点给出的`link-root`似乎是失效的。
