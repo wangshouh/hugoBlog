@@ -20,7 +20,7 @@ tags: [graph,data]
 1. 图可视化
 1. 图检索
 
-对于图可视化，我选择了 [CosmosGraph](https://cosmograph.app/) 作为主要工具，而对于图检索，我选择了 [cozo](https://www.cozodb.org/) 图数据库。当然，读者也可以使用 `neo4j` 或其他图数据库。
+对于图可视化，我选择了 [CosmosGraph](https://cosmograph.app/) 作为主要工具，而对于图检索，我选择了 [cozodb](https://www.cozodb.org/) 图数据库。当然，读者也可以使用 `neo4j` 或其他图数据库。
 
 ## 图可视化
 
