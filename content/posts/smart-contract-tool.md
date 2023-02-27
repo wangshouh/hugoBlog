@@ -67,8 +67,7 @@ aliases: ["/2022/11/12/smart-contract-tool/"]
 
 对于部分合约而言，其可能已经经过了`etherscan`的`Contract Source Code Verified`但没有`github`的开源版本，对于这些合约，我们可以简单地使用`cast`工具获得其合约代码，命令如下:
 ```bash
-cast etherscan-source -d weth 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 --ether
-scan-api-key $etherscan
+cast etherscan-source -d weth 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 --etherscan-api-key $etherscan
 ```
 其中`$etherscan`需要为读者自行设置的`etherscan`的API密钥。
 
