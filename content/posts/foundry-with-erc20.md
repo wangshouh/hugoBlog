@@ -470,6 +470,12 @@ LOCAL_ACCOUNT=ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
 
 注意`ac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`应自行替换成你输出的结果中的任一一个`Private Keys`值。
 
+运行以下命令将 `.env` 中的数据读取为环境变量:
+
+```bash
+source .env
+```
+
 在终端内输入以下命令进行合约部署:
 ```bash
 forge script script/token.s.sol:TokenScript --fork-url http://localhost:8545  --private-key $LOCAL_ACCOUNT --broadcast
