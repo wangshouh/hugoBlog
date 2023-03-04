@@ -4,7 +4,7 @@ date: 2023-03-01T23:47:33Z
 tags: [python,data]
 ---
 
-> 声明，本文译自 [pandas with hundreds of millions of rows](https://datapythonista.me/blog/pandas-with-hundreds-of-millions-of-rows)。 部分译者补充了部分内容。
+> 声明，本文译自 [pandas with hundreds of millions of rows](https://datapythonista.me/blog/pandas-with-hundreds-of-millions-of-rows)。 如果您的英语水平较好，可以阅读原文。为了译文更加流畅，译者补充了部分内容。
 
 ## 问题
 
