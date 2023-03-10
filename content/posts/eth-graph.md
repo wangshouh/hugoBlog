@@ -34,7 +34,7 @@ time, source, target, value
 
 其中，`time` 和 `value` 是可选的，`time` 用于添加时间轴，如下图:
 
-![CosmosGraph TimeLine](https://img-blog.csdnimg.cn/13cec5ef722548f4a11d4dd2926d7e70.webp)
+![CosmosGraph TimeLine](https://acjgpfqbqr.cloudimg.io/_cat_/59q6av.webp)
 
 最下方的即为根据 `time` 生成的时间轴。我们可以在 `csv` 中增加任意数据用于生成节点大小或指定线条颜色等。
 
@@ -62,7 +62,7 @@ WHERE
 
 我们可以通过 `DBeaver` 附带的工具进行数据导出:
 
-![Clickhouse export data](https://img-blog.csdnimg.cn/img_convert/f14a8fc02c90b35d12edc8ddff1fc803.png)
+![Clickhouse export data](https://acjgpfqbqr.cloudimg.io/_csdn_/f14a8fc02c90b35d12edc8ddff1fc803.png)
 
 导出时所有对话框均可为默认配置即可，只需要记住 `csv` 导出地址即可。
 
@@ -70,11 +70,11 @@ WHERE
 
 打开 [此网站](https://cosmograph.app/run/) ，点击 `Select data file` ，选择之前导出的数据集，如下:
 
-![CosmosGraph Setting](https://img-blog.csdnimg.cn/img_convert/abf070082ac9b057eca0eb5ce55a30b5.png)
+![CosmosGraph Setting](https://acjgpfqbqr.cloudimg.io/_csdn_/abf070082ac9b057eca0eb5ce55a30b5.png)
 
 在此处，我们设置节点大小由链接数目决定，节点颜色由转账总价值决定，而链接颜色由 `linkColor` 决定，点击 `Launch` 启动渲染。最后，我们可以得到如下图像:
 
-![ComosGraph Result](https://img-blog.csdnimg.cn/img_convert/d8503975dbd4d2193e2518ba638536bb.png)
+![ComosGraph Result](https://acjgpfqbqr.cloudimg.io/_csdn_/d8503975dbd4d2193e2518ba638536bb.png)
 
 读者可以根据自身需求研究可视化图像。如果读者希望对 `CosmosGraph` 有更多了解，可以参考 [How to Visualize a Graph with a Million Nodes](https://nightingaledvs.com/how-to-visualize-a-graph-with-a-million-nodes/) 
 
