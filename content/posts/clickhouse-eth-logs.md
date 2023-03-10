@@ -475,7 +475,7 @@ ORDER BY mintCount DESC
 
 首先，我们知道 WETH 合约地址为 `0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`，使用 [智能合约开发效率工具]({{<ref "smart-contract-tool.md" >}}) 中介绍的 链上合约阅读 方法，使用 [此链接](https://etherscan.deth.net/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2) 查看 WETH 合约源代码。
 
-![WETH online](https://img-blog.csdnimg.cn/img_convert/470489f8515c9b7f31a7516b367af58d.png)
+![WETH online](https://acjgpfqbqr.cloudimg.io/_csdn_/470489f8515c9b7f31a7516b367af58d.png)
 
 使用 `Ctrl + F` 快捷键进行 `event` 搜索，发现定义如下:
 
