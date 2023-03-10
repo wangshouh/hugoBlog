@@ -307,7 +307,7 @@ python download-kline.py -t spot -s ETHUSDT -i 1m -y 2022 -startDate 2022-01-01 
 在开始进行数据分析前，请读者将上文下载的所有压缩包解压至`unzip`文件夹内。
 
 > 笔者使用的`7z`包含此功能，如下图:
-> ![7z Exact](https://img-blog.csdnimg.cn/img_convert/2f519b63e65505a3056527e655697bd5.png)
+> ![7z Exact](https://acjgpfqbqr.cloudimg.io/_csdn_/2f519b63e65505a3056527e655697bd5.png)
 
 由于此数据较为特殊，具体数据清洗代码如下:
 

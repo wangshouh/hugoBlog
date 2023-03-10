@@ -109,7 +109,7 @@ PersistentKeepalive = 25
 1. 以 **管理员** 身份打开`PowerShell`
 
 1. 首先找到需要设置NAT转发的网络接口，键入以下命令`Get-NetAdapter`，可以找到所有的网络接口，并记录`wg0`的`ifIndex`。如下图：
-![get-NetAdapter](https://img-blog.csdnimg.cn/img_convert/c52a8b220030702a609ec2f8eebfc4f5.png)
+![get-NetAdapter](https://acjgpfqbqr.cloudimg.io/_csdn_/c52a8b220030702a609ec2f8eebfc4f5.png)
 
 1. 配置NAT网关IP，我们一般使用命令`New-NetIPAddress`,完整命令如下：
 ```PowerShell
