@@ -25,7 +25,7 @@ ETH现货价格是可以非常方便的获得基础数据。在此处，我们�
 
 前往[ethereumprice](https://ethereumprice.org/history/)，读者可以下载ETH价格历史价格数据。
 
-![EthereumPrice](https://acjgpfqbqr.cloudimg.io/_csdn_/a5de2751c6a720bd8290b8b7dddc0980.png)
+![EthereumPrice](https://img.gejiba.com/images/19d8c888a9d57c9b9246fb74050617b4.png)
 
 从网站最大可下载 2015 年 8 月 7 日(August 7, 2015)至今的ETH价格历史数据，数据样例如下:
 
@@ -74,7 +74,7 @@ ethereum_price["open"].plot()
 ```
 
 最终读者可以获得下图:
-![EthPrice Plot](https://img-blog.csdnimg.cn/img_convert/1cd7a94f49096237b684a271c093b641.png)
+![EthPrice Plot](https://img.gejiba.com/images/d55396a6965c03f26162f7fbf8f52343.png)
 
 ### Investing Crypto
 
@@ -82,7 +82,7 @@ ethereum_price["open"].plot()
 
 > 此方法获取历史数据需要登陆，读者可以直接通过 google 账户或其他登录方式登录，如果读者不希望注册或登录请跳过此方法。
 
-![Investing Crypto Data](https://img-blog.csdnimg.cn/img_convert/97bdc50c0acc72633220cac33d0cb63b.png)
+![Investing Crypto Data](https://img.gejiba.com/images/ea3ea5a77e2cd6d21cb68d87cc830912.png)
 
 该数据源可获得 2016 年 5 月 10 日至今的ETH价格数据，样例如下:
 
@@ -107,7 +107,7 @@ ethereum_price["open"].plot()
 
 如果读者较为在意数据来源，`investing`提供了各交易所的数据来源接口，读者可前往[ETH USD Historical Data](https://www.investing.com/crypto/ethereum/eth-usd-historical-data)网页，如下图:
 
-![Eth Cex Source](https://img-blog.csdnimg.cn/img_convert/290945885035a025d5659ebb1f8fdf91.gif)
+![Eth Cex Source](https://img.gejiba.com/images/13fb113570cbc4ff734e3892e0563d74.gif)
 
 使用`Pandas`进行数据清洗的流程如下:
 
@@ -149,13 +149,13 @@ memory usage: 152.7+ KB
 
 根据`Change`绘制的ETH价格波动分布图:
 
-![Change Hist](https://img-blog.csdnimg.cn/img_convert/cef12632f5ee2ed0888c893f95f77c27.png)
+![Change Hist](https://img.gejiba.com/images/ed3434e485b50e22af9f367e31a6fdd2.png)
 
 ### yahoo ETH数据
 
 前往[Yahoo](https://finance.yahoo.com/quote/ETH-USD/history/)网站，读者可以很明显的发现数据下载按钮，如下图:
 
-![Yahoo Data](https://img-blog.csdnimg.cn/img_convert/85d404dfefbc2cc035130595e016a8ac.png)
+![Yahoo Data](https://img.gejiba.com/images/a8b3c5e864273967b104f874f47da174.png)
 
 此处可下载2017 年 11 月 9 日至今的数据，数据样例如下:
 
@@ -199,13 +199,13 @@ memory usage: 100.3 KB
 
 使用此数据源绘制ETH成交量图像如下:
 
-![Yahoo Vol](https://img-blog.csdnimg.cn/img_convert/2ddf9df91c1c57a5cc99607e06b5d814.png)
+![Yahoo Vol](https://img.gejiba.com/images/357d5750535ed64f8554971742ee9c60.png)
 
 ### Binance Spot
 
 Binance 交易所作为全球最大的加密货币交易所提供的数据具有较高的权威性。Binance 通过了专门的[网站](https://www.binance.com/en/landing/data)列出了其公开的各项历史交易数据，这些数据中除`Futures Order Book Data`需要请求权限外，其他数据均可以直接下载。
 
-![Binance Open Data](https://img-blog.csdnimg.cn/img_convert/4aaae0fbf45bf96c88215f97d07a099a.png)
+![Binance Open Data](https://img.gejiba.com/images/58543b1d3dd5638ec4843092184c5e78.png)
 
 其中各项含义如下:
 
@@ -215,7 +215,7 @@ Binance 交易所作为全球最大的加密货币交易所提供的数据具有
 
 下图展示了进入 Binance 具体交易数据下载的页面截图:
 
-![Binance Spot Data](https://img-blog.csdnimg.cn/img_convert/e5bba50a9f3142806f0ebc5fd3d63716.png)
+![Binance Spot Data](https://img.gejiba.com/images/91b2c6c5199ad17c21c42bfb1dca582d.png)
 
 > 上图来自[Binance Spot Mothly Data](https://data.binance.vision/?prefix=data/spot/monthly/klines/)
 
@@ -229,13 +229,13 @@ Binance 交易所作为全球最大的加密货币交易所提供的数据具有
 
 下载源代码，如下图:
 
-![Binance Code Save](https://img-blog.csdnimg.cn/img_convert/2daed6cdc8686d9f07f29d30e3865c01.gif)
+![Binance Code Save](https://img.gejiba.com/images/78ad95889f9024c9fb060bf1403c52aa.gif)
 
 > 读者也可通过点击[此链接](https://codeload.github.com/binance/binance-public-data/zip/refs/heads/master)下载`zip`压缩的源代码
 
 将压缩包内的`python`文件夹解压缩到您的数据工作目录，此工具需要`pandas`库支持，但相信读者都已经安装了相关库，所以此处我们不再安装依赖库。打开`cmd`命令行:
 
-![Cmd Open](https://img-blog.csdnimg.cn/img_convert/c1fe238ce5e25cfd4509765b9d7fe80b.gif)
+![Cmd Open](https://img.gejiba.com/images/a1b01aa5e3304fa883ce74da6b7be46c.gif)
 
 在`cmd`内键入以下命令:
 ```bash
@@ -259,7 +259,7 @@ python download-kline.py -t spot -s ETHUSDT -i 1m -y 2022 -startDate 2022-01-01 
 
 此命令输入后会出现如下输出:
 
-![Download Output](https://img-blog.csdnimg.cn/img_convert/477278b38d7b7ae90b80575d52958492.png)
+![Download Output](https://img.gejiba.com/images/c4d70c5198e31829f0e66f5e4fb8648f.png)
 
 当出现`[1/1] - start download daily ETHUSDT klines`时，请同时按下`ctrl + C`键停止`python`脚本运行。
 
@@ -365,7 +365,7 @@ memory usage: 30.3 MB
 
 此处对各个数据源的开盘价绘制在同一张图标上，结果如下:
 
-![Ethereum Data Contrast](https://img-blog.csdnimg.cn/img_convert/f14f7d362a8ee9da30885dda67f33f95.png)
+![Ethereum Data Contrast](https://img.gejiba.com/images/3dcf567c82a89527c6d9d92176930d05.png)
 
 直观来看差距不大。
 
@@ -414,7 +414,7 @@ Name: Open, dtype: float64
 
 如果您是一位金融市场技术分析专家，您不需要上述数据而只需要K线图和其他指标，那么[Tradingview](https://www.tradingview.com/)是一个非常好的选择，作为知名K线图技术提供商，TradingView提供了一站式查看目前几乎所有交易所的相关加密货币对交易K线图的方法，且其允许在原K线图上增加各种元素，以及增加新的技术指标。下图展示了 Binance 合约及其市场费率的组合图，其中下半图为市场费率:
 
-![Binance With Funding](https://img-blog.csdnimg.cn/img_convert/0a2486e4e849f20ff18289f33afedb01.png)
+![Binance With Funding](https://img.gejiba.com/images/485deaf7af9652db4fac6a3673e3feb9.png)
 
 当然，读者可以选择来自任何市场的任何数据进行观察而不需要手动收集数据和绘制相关图像。
 
@@ -433,7 +433,7 @@ Name: Open, dtype: float64
 
 在本文写作时，根据[coinmarketcap](https://coinmarketcap.com/rankings/exchanges/derivatives/)的统计，两者交易量分别为全球第一和第二，如下图:
 
-![Derivatives Top](https://img-blog.csdnimg.cn/img_convert/4f1d664f9145fa6ae48b3ee9e8cecd77.png)
+![Derivatives Top](https://img.gejiba.com/images/6900ac686eb402562ceb6405b5c55f8d.png)
 
 这两家的数据获取方式有明显不同，前者通过数据库下载而后者通过API请求，这两种方式基本可以涵盖目前大部分交易所的数据获取方法。
 
@@ -531,7 +531,7 @@ def get_data(split_list: list, symbol: str) -> list:
 
 使用`mexc.vol.plot()`绘图如下:
 
-![Mexc Future Vol](https://img-blog.csdnimg.cn/img_convert/b5daaade7ef2ce2e54b8b155995e22e3.png)
+![Mexc Future Vol](https://img.gejiba.com/images/ec54959ca8fde2d8f04c9ad818ad9994.png)
 
 > 如果读者想了解更多关于`mexc`的`api`的信息，请自行查阅[文档](https://mxcdevelop.github.io/APIDoc/open.api.v2.en.html)
 
@@ -541,7 +541,7 @@ def get_data(split_list: list, symbol: str) -> list:
 
 读者也可在[Binance Data](https://data.binance.vision/?prefix=data/futures/um/daily/klines/)查询到具体可交割期货的期货名称，如下图:
 
-![Binace Contract](https://img-blog.csdnimg.cn/img_convert/a709b0a04187fd46feb106ccd8e54b9c.png)
+![Binace Contract](https://img.gejiba.com/images/573a8967f9d30ddc283c2e79ba1a5fe3.png)
 
 关于 Binance 期货交易数据的下载其实与现货交易数据下载方法相同，仅需要更改部分参数即可，如下命令:
 ```bash
@@ -553,7 +553,7 @@ python download-kline.py -t um -s ETHUSDT -i 1m -y 2022
 
 本文以 BTC 期货交易数据获取为例，进入 BTC 品种[页面](https://www.cmegroup.com/markets/cryptocurrencies/bitcoin/bitcoin.html)，点击`calendar`按钮获取具体的交易品种和交易日期，如下图:
 
-![CME Calendar](https://img-blog.csdnimg.cn/img_convert/2b20bd1b0bfab19ff1dd30873e8d6697.png)
+![CME Calendar](https://img.gejiba.com/images/d15d9026e9df4c3ce59665bdde42a91c.png)
 
 此处以在 30 May 2022 至 25 Nov 2022 交易的 BTCX22 为例进行相关数据获取，由于CME官网并没有免费公开其交易数据，此处我们通过第三方获取其交易数据。
 
@@ -673,7 +673,7 @@ memory usage: 18.4 KB
 
 绘制`open`开盘价折线图，如下:
 
-![Deribit Funture Plot](https://img-blog.csdnimg.cn/img_convert/aa1d3254d3a59f9f740863746e2d3a9d.png)
+![Deribit Funture Plot](https://img.gejiba.com/images/c68da3a3577f2f6a877cc5baaea6ad31.png)
 
 ## 期权
 
@@ -726,7 +726,7 @@ deribit_option = get_deribit_data("ETH-14SEP22-1700-C", "60", 1662969660000, 166
 
 最后使用期权交易数据的交易量可以绘制如下图像:
 
-![Deribit Option Vol](https://img-blog.csdnimg.cn/img_convert/2dfbf16ed29300df003e0b3fcacb3cbb.png)
+![Deribit Option Vol](https://img.gejiba.com/images/9dc05d773ec797fdfbecb462308bae3d.png)
 
 ## 总结
 
