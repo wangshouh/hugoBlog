@@ -21,11 +21,11 @@ aliases: ["/2022/10/07/obsidian-quartz"]
 
 首先前往[Quartz](https://github.com/jackyzha0/quartz)的仓库地址，点击页面中的`Use this template`按钮，如下图:
 
-![Fork](https://img-blog.csdnimg.cn/img_convert/cf7a0a2888e7b093056d83742c0e82dc.png)
+![Fork](https://img.gejiba.com/images/bfee3db14a343698212158508c52a838.png)
 
 点击后会获得如下页面:
 
-![Fork Result](https://img-blog.csdnimg.cn/img_convert/6d9b477330fb4572a6b2635af5a97666.png)
+![Fork Result](https://img.gejiba.com/images/a71e377ad73f64715f4357bedd6e9573.png)
 
 自行设置仓库名`Repository name`和仓库描述`Description`字段，设置完成后点击`Create repository from template`按钮。
 
@@ -35,11 +35,11 @@ aliases: ["/2022/10/07/obsidian-quartz"]
 
 前往个人`Fork`后的仓库，点击`Setting`，然后点击`Pages`选项卡，如下图:
 
-![Pages Setting](https://img-blog.csdnimg.cn/img_convert/a1b8f362e7ae1a7d90fe783b2b4f01bc.png)
+![Pages Setting](https://img.gejiba.com/images/cbae3d2dd1b0906415e4d1483ed7cc59.png)
 
 在输入域名前，读者需要前往个人域名的`DNS`设置一项`CNAME`记录，记录需指向`<用户名>.github.io`，如我的`Github`用户名为`wangshouh`，则需要设置域名指向`wangshouh.github.io`。如果使用[CloudFlare](https://www.cloudflare.com/)管理域名，读者可通过下图步骤增加解析:
 
-![Add CNAME](https://img-blog.csdnimg.cn/img_convert/b57da1ddd9ad051988ab0ad199db088f.png)
+![Add CNAME](https://img.gejiba.com/images/f1c4b6371e1970c7a4b67daa07c0c302.png)
 
 在`Custom domain`内填写域名，点击`Save`即可，如果出现错误，`github`会给出提示。
 
@@ -47,15 +47,15 @@ aliases: ["/2022/10/07/obsidian-quartz"]
 
 继续在`Pages`页面内进行设置，我们需要将`Branch`内的内容调整的与我相同，即下图红框内的内容应与图片保持一致:
 
-![Branch Setting](https://img-blog.csdnimg.cn/img_convert/a7ded228e417afd8529152bea03afe30.png)
+![Branch Setting](https://img.gejiba.com/images/4e33077edbeefe243778e36c03fbde13.png)
 
 然后，我们需要前往`Code`选项卡，点击`.github`文件夹，如下图:
 
-![Github Code](https://img-blog.csdnimg.cn/img_convert/af12d9a92175cc0440f93f8655533bbe.png)
+![Github Code](https://img.gejiba.com/images/4c5d93d427e1d2fbc5016536cae967d4.png)
 
 然后，继续点击内部的`workflows`文件夹，再点击`deploy.yaml`文件，点击下图内红框内容:
 
-![Edit](https://img-blog.csdnimg.cn/img_convert/d51adf3cbf07740406e31a2233cfe347.png)
+![Edit](https://img.gejiba.com/images/ecea26216d1cf6b8546378bc6fd7e377.png)
 
 将文件最后部分中的`canme`更改为自己的域名。如果读者没有个人域名，请更改为`<用户名>.github.io`的格式。修改后，代码如下:
 ```yaml
@@ -72,7 +72,7 @@ with:
 
 当然，我们还需要修改`config.toml`中的配置内容，如下图:
 
-![Config Toml](https://img-blog.csdnimg.cn/img_convert/627b4c69ff3932354c17045cc1097b79.png)
+![Config Toml](https://img.gejiba.com/images/109dc4dd8509b0ac524151118f24bfed.png)
 
 点击修改按钮，将`baseURL = `后的域名更改为个人域名或`<用户名>.github.io`的形式。
 
@@ -80,7 +80,7 @@ with:
 
 最后，读者可以前往`Actions`选项卡内观察部署是否完成，如果部署完成，读者可以前往自己设置或`<用户名>.github.io`，应该可以获得如下显示:
 
-![Page Review](https://img-blog.csdnimg.cn/img_convert/b6d462d366b43c98b8c1ee219edac4e3.png)
+![Page Review](https://img.gejiba.com/images/367710982c3c9af1471e1cdc1eb80676.png)
 
 ## Clone 和编辑
 
@@ -88,11 +88,11 @@ with:
 
 在`Github`网页内获得仓库地址，如下图:
 
-![Github Clone](https://img-blog.csdnimg.cn/img_convert/066d4db06b8e9f469e9eb900040c9bc9.png)
+![Github Clone](https://img.gejiba.com/images/94be4d499ecdcd8927fb14560ecf050d.png)
 
 将对应的信息填写到`sublime merge`中即可:
 
-![Sublime Merge](https://img-blog.csdnimg.cn/img_convert/e86947e5f941ac001adc43bd76bdcb6c.png)
+![Sublime Merge](https://img.gejiba.com/images/4d7ae0531b526e210ac90829fa54a7de.png)
 
 其中，`source URL`就是我们在`github`中获得的仓库地址。
 
@@ -102,11 +102,11 @@ with:
 
 修改完成后点击保存，我们可以在`Sublime Merge`内看到以下内容:
 
-![Fix Config](https://img-blog.csdnimg.cn/img_convert/39a3f675509faea41f5c1ff1177c4ede.png)
+![Fix Config](https://img.gejiba.com/images/fcd72c829e9be8e6dcd33e9450fb3ff7.png)
 
 点击`stage`，并在最上方的`Commit Message`中填入相关信息，点击`commit`即可。点击右侧的`↑`图标，即可完成推送`commit`。
 
-![Push](https://img-blog.csdnimg.cn/img_convert/819279ff3b034e96ccbb5950a1e4d34e.png)
+![Push](https://img.gejiba.com/images/2902fcb6b7741916b012d7368e02f66a.png)
 
 > 由于每次`push`都会触发`github`的部署操作，所以不建议大家进行一次`commit`后直接`push`
 
@@ -114,17 +114,17 @@ with:
 
 打开`Obsidian`软件，如果第一次打开，会得到如下显示:
 
-![Obsidian new](https://img-blog.csdnimg.cn/img_convert/0c310bb939bc1a093401a608a6254b6e.png)
+![Obsidian new](https://img.gejiba.com/images/ec798257c631fa414671acf515676790.png)
 
 选择`打开本地仓库`，选择地址为`clone`仓库文件夹下的`content`文件夹。
 
 打开`Obsidian`设置菜单，设置以下参数:
 
-![Obsidian Setting](https://img-blog.csdnimg.cn/img_convert/430aeac1bc97ee7e96ea498b2618c46b.png)
+![Obsidian Setting](https://img.gejiba.com/images/db494af6898a20838fe7886d1c5b15e1.png)
 
 完成此步骤后，基本就已经完成了全部设置。读者可以自由地编写笔记，当然，我们也需要使用`Sublime Merge`在完成笔记后进行`commit`和`push`操作。
 
-![Megre Note](https://img-blog.csdnimg.cn/img_convert/312bed16e3c1125a9c5788b618d912a0.png)
+![Megre Note](https://img.gejiba.com/images/2dc8e9695e3d7571f078a8099c74b9a0.png)
 
 > 注意，不要删除`content`下的`template`文件夹，且不要使用`index.md`作为文件名
 
