@@ -100,6 +100,12 @@ Discovered incompatible solidity versions in following
 
 > 此处我们选择了与原合约相同的开源协议
 
+当然，我们也需要增加 `pragma` 标识，如下:
+
+```solidity
+pragma solidity ^0.8.0;
+```
+
 在旧版本中，我们使用了以下回退函数:
 
 ```solidity
