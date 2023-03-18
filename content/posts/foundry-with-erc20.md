@@ -656,7 +656,7 @@ forge script script/token.s.sol:TokenScript --rpc-url $ROPSTEN_RPC_URL  --privat
 
 等待以太坊网络确认并认证，最终输出如下图:
 
-![TestOutput](https://book.getfoundry.sh/images/solidity-scripting%20/contract-verified.png)
+![TestOutput](https://book.getfoundry.sh/images/solidity-scripting/contract-verified.png)
 
 > 此图仅为示例，具体内容由于合约地址会出现不同
 
