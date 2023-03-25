@@ -152,7 +152,7 @@ forge init --template https://github.com/huff-language/huff-project-template huf
 #define macro NON_SAFE_ADD() = takes (0) returns (0) {
 	0x04 calldataload	// [num1]
 	0x24 calldataload	// [num2, num1]
-	add 				// [result]
+	add 			// [result]
 	0x00 mstore
 	0x20 0x00 return
 }
@@ -326,11 +326,11 @@ interface HuffMath {
 #define macro SAFE_ADD() = takes (0) returns (0) {
 	0x04 calldataload	// [num1]
 	0x24 calldataload	// [num2, num1]
-	dup2				// [num1, num2, num1]
-	add					// [result, num1]
-	dup1				// [result, result, num1]
-	swap2				// [num1, result, result]
-	gt					// [is_overflow, result]
+	dup2			// [num1, num2, num1]
+	add			// [result, num1]
+	dup1			// [result, result, num1]
+	swap2			// [num1, result, result]
+	gt			// [is_overflow, result]
 	over_flow jumpi
 	0x00 mstore
 	0x20 0x00 return
@@ -422,10 +422,10 @@ y != 0 && z / y != x
 ```
 [y != 0, z / y != x, z]		<-(iszero)-
 [y == 0, z / y != x, z] 	<-(iszero)-
-[y, z / y != x, z] 			<-(swap1)-
-[z / y != x, y, z]			<-(is_zero)-
-[z / y == x, y, z]			<-(eq)-
-[z / y, x, y, z]			<-(div)-
+[y, z / y != x, z] 		<-(swap1)-
+[z / y != x, y, z]		<-(is_zero)-
+[z / y == x, y, z]		<-(eq)-
+[z / y, x, y, z]		<-(div)-
 [z, y, x, y, z]
 ```
 
@@ -437,16 +437,16 @@ y != 0 && z / y != x
 #define macro SAFE_MULTI() = takes(0) returns (0) {
 	0x04 calldataload	// [x]
 	0x24 calldataload	// [y, x]
-	mul 				// [z]
+	mul 			// [z]
 	0x24 calldataload	// [y, z]
 	0x04 calldataload	// [x, y, z]
-	dup2				// [y, x, y, z]
-	dup4 				// [z, y, x, y, z]
-	div					// [z / y, x, y, z]
-	eq iszero			// [z / y != x, y, z]
-	swap1				// [y, z / y != x, z]
+	dup2			// [y, x, y, z]
+	dup4 			// [z, y, x, y, z]
+	div			// [z / y, x, y, z]
+	eq iszero		// [z / y != x, y, z]
+	swap1			// [y, z / y != x, z]
 	iszero iszero		// [y != 0, z / y != x, z]
-	and 				// [is_overflow, z]
+	and 			// [is_overflow, z]
 	over_flow jumpi
 	0x00 mstore
 	0x20 0x00 return
@@ -541,79 +541,79 @@ int nlz(unsigned x) {
 
 ```huff
 #define macro NLZ_COUNT() = takes(1) returns (1) {
-	0x1 				// [n, x]
-	swap1				// [x, n]
+	0x1 			// [n, x]
+	swap1			// [x, n]
 
-	dup1				// [x, x, n]
-	0x80 shr			// [x >> 128, x, n]
+	dup1			// [x, x, n]
+	0x80 shr		// [x >> 128, x, n]
 	iszero iszero		// [x >> 128 != 0, x, n]
 	not_zero_128 jumpi	// [x, n]
-	0x80 shl			// [x << 128, n]
+	0x80 shl		// [x << 128, n]
 	swap1 0x80 add 		// [n + 128, x << 128]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_128:	
 
-	dup1				// [x, x, n]
-	0xc0 shr			// [x >> 192, x, n]
+	dup1			// [x, x, n]
+	0xc0 shr		// [x >> 192, x, n]
 	iszero iszero		// [x >> 192 != 0, x, n]
 	not_zero_192 jumpi	// [x, n]
-	0x40 shl			// [x << 64, n]
+	0x40 shl		// [x << 64, n]
 	swap1 0x40 add 		// [n + 64, x << 64]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_192:
 
-	dup1				// [x, x, n]
-	0xe0 shr			// [x >> 224, x, n]
+	dup1			// [x, x, n]
+	0xe0 shr		// [x >> 224, x, n]
 	iszero iszero		// [x >> 224 != 0, x, n]
 	not_zero_224 jumpi	// [x, n]
-	0x20 shl			// [x << 32, n]
+	0x20 shl		// [x << 32, n]
 	swap1 0x20 add 		// [n + 32, x << 32]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_224:	
 
-	dup1				// [x, x, n]
-	0xf0 shr			// [x >> 240, x, n]
+	dup1			// [x, x, n]
+	0xf0 shr		// [x >> 240, x, n]
 	iszero iszero		// [x >> 240 != 0, x, n]
 	not_zero_240 jumpi	// [x, n]
-	0x10 shl			// [x << 16, n]
+	0x10 shl		// [x << 16, n]
 	swap1 0x10 add 		// [n + 16, x << 16]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_240:
 
-	dup1				// [x, x, n]
-	0xf8 shr			// [x >> 248, x, n]
+	dup1			// [x, x, n]
+	0xf8 shr		// [x >> 248, x, n]
 	iszero iszero		// [x >> 248 != 0, x, n]
 	not_zero_248 jumpi	// [x, n]
-	0x08 shl			// [x << 8, n]
+	0x08 shl		// [x << 8, n]
 	swap1 0x08 add 		// [n + 8, x << 8]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_248:	
 
-	dup1				// [x, x, n]
-	0xfc shr			// [x >> 252, x, n]
+	dup1			// [x, x, n]
+	0xfc shr		// [x >> 252, x, n]
 	iszero iszero		// [x >> 252 != 0, x, n]
 	not_zero_252 jumpi	// [x, n]
-	0x04 shl			// [x << 4, n]
+	0x04 shl		// [x << 4, n]
 	swap1 0x04 add 		// [n + 4, x << 4]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_252:		
 
-	dup1				// [x, x, n]
-	0xfe shr			// [x >> 254, x, n]
+	dup1			// [x, x, n]
+	0xfe shr		// [x >> 254, x, n]
 	iszero iszero		// [x >> 254 != 0, x, n]
 	not_zero_254 jumpi	// [x, n]
-	0x02 shl			// [x << 2, n]
+	0x02 shl		// [x << 2, n]
 	swap1 0x02 add 		// [n + 2, x << 2]
-	swap1				// [x, n]
+	swap1			// [x, n]
 
 	not_zero_254:
-	0xff shr			// [x >> 255, n]
+	0xff shr		// [x >> 255, n]
 	swap1 sub			
 }
 ```
@@ -760,49 +760,49 @@ int sqrt(unsigned x) {
 ```huff
 #define macro SQRT() = takes (0) returns (0) {
 	0x04 calldataload	// [x]
-	dup1				// [x, x]
-	iszero				// [x == 0, x]
+	dup1			// [x, x]
+	iszero			// [x == 0, x]
 	is_zero jumpi
-	dup1				// [x, x]
-	0x01				// [1, x, x]
-	dup2				// [x, 1, x, x]
-	ILOG2()				// [log2(x), 1, x, x]
-	0x01 shr			// [log2(x) / 2, 1, x, x]
-	shl					// [result, x, x]
+	dup1			// [x, x]
+	0x01			// [1, x, x]
+	dup2			// [x, 1, x, x]
+	ILOG2()			// [log2(x), 1, x, x]
+	0x01 shr		// [log2(x) / 2, 1, x, x]
+	shl			// [result, x, x]
 
-	dup1				// [result, result, x, x]
-	swap2 div			// [x / result, result, x]
-	add 				// [x / result + result, x]
-	0x01 shr			// [result, x]
+	dup1			// [result, result, x, x]
+	swap2 div		// [x / result, result, x]
+	add 			// [x / result + result, x]
+	0x01 shr		// [result, x]
 
-	dup1				// [result, result, x]
-	dup3				// [x, result, result, x]
+	dup1			// [result, result, x]
+	dup3			// [x, result, result, x]
 	div add 0x01 shr	// [result, x]		
 
-	dup1				// [result, result, x]
-	dup3				// [x, result, result, x]
+	dup1			// [result, result, x]
+	dup3			// [x, result, result, x]
 	div add 0x01 shr	// [result, x]		
 
-	dup1				// [result, result, x]
-	dup3				// [x, result, result, x]
+	dup1			// [result, result, x]
+	dup3			// [x, result, result, x]
 	div add 0x01 shr	// [result, x]		
 
-	dup1				// [result, result, x]
-	dup3				// [x, result, result, x]
+	dup1			// [result, result, x]
+	dup3			// [x, result, result, x]
 	div add 0x01 shr	// [result, x]		
 
-	dup1				// [result, result, x]
-	dup3				// [x, result, result, x]
+	dup1			// [result, result, x]
+	dup3			// [x, result, result, x]
 	div add 0x01 shr	// [result, x]		
 
-	dup1				// [result, result, x]
-	dup3				// [x, result, result, x]
+	dup1			// [result, result, x]
+	dup3			// [x, result, result, x]
 	div add 0x01 shr	// [result, x]
 
-	dup2 dup2			// [result, x, result, x] 			
-	gt 					// [result > x, result, x]
+	dup2 dup2		// [result, x, result, x] 			
+	gt 			// [result > x, result, x]
 	min_pop jumpi		// [result, x]
-	swap1				// [x, result]
+	swap1			// [x, result]
 
 	min_pop:
 	pop
@@ -954,15 +954,15 @@ if __name__ == '__main__':
 ```huff
 	0x24 calldataload	// [length]
 
-	0x01				// [readed, length] fix readed
+	0x01			// [readed, length] fix readed
 
-	0x00 				// [sum, readed, length] 
-	0x64 swap1			// [sum, next, readed, length] fix next
-	0x44				// [now, sum, next, readed, length]
+	0x00 			// [sum, readed, length] 
+	0x64 swap1		// [sum, next, readed, length] fix next
+	0x44			// [now, sum, next, readed, length]
 
 	calldataload		// [element, sum, next, readed, length]
 
-	add 				// [sum, next, readed, length] add sum
+	add 			// [sum, next, readed, length] add sum
 ```
 
 在此处，我们使用 `fix readed` 表示对 `readed` 的更新，使用 `fix next` 表示对下一元素的位置的更新，使用 `add sum` 表示对 `sum` 的求和。
@@ -972,8 +972,8 @@ if __name__ == '__main__':
 在我们读取了上述数据后，我们需要进行 `readed` 与 `length` 的大小比较，避免越界访问。
 
 ```huff
-	dup4 dup4			// [readed, length, sum, next, readed, length]
-	lt 					// [readed < length, sum, next, readed, length]
+	dup4 dup4		// [readed, length, sum, next, readed, length]
+	lt 			// [readed < length, sum, next, readed, length]
 	iszero
 	array_end jumpi		// [sum, now, readed, length]
 ```
@@ -1005,28 +1005,28 @@ readed = 0
 此处，我们还没有实现具体的循环逻辑，仅手动读取了第 1 个元素。在 `huff` 中，循环逻辑的实现需要 `jump` 操作码，该操作码意味着无条件跳转。我们可以通过此操作码定义无限循环，使用 `jumpi` 跳出循环。上述论述是抽象的，我们直接给出 `sum` 函数的循环部分，如下:
 
 ```huff
-	array_for:			// [sum, now, readed, length]
+	array_for:		// [sum, now, readed, length]
 
 	dup2 calldataload	// [element, sum, now, readed, length]
-	add 				// [sum, now, readed, length] add sum
+	add 			// [sum, now, readed, length] add sum
 
 	swap1 0x20 add		// [next, sum, readed, length] fix next
 	swap2 0x01 add 		// [readed, sum, next, length] fix readed
 
-	swap1				// [sum, readed, next, length]
+	swap1			// [sum, readed, next, length]
 	dup4 dup3 lt 		// [readed < length, sum, readed, next, length]
 	iszero
 	array_end jumpi		// [sum, readed, now, length]
 
 
 	dup3 calldataload	// [element, sum, readed, now, length]
-	add 				// [sum, readed, now, length] 	add sum
+	add 			// [sum, readed, now, length] 	add sum
 	swap2 0x20 add 		// [next, readed, sum, length]	fix next
 	swap1 0x01 add 		// [readed, next, sum, length]	fix readed
-	swap2				// [sum, next, readed, length]
+	swap2			// [sum, next, readed, length]
 
-	dup4 dup4			// [readed, length, sum, next, readed, length]
-	lt 					// [readed < length, sum, next, readed, length]
+	dup4 dup4		// [readed, length, sum, next, readed, length]
+	lt 			// [readed < length, sum, next, readed, length]
 	iszero
 	array_end jumpi		// [sum, now, readed, length]
 
