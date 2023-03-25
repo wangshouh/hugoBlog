@@ -1,7 +1,7 @@
 ---
 title: Huff实战:编写测试极致效率数学模块
 date: 2023-03-15T11:02:00Z
-tags: [foundry[huff]
+tags: [foundry,huff]
 math: true
 ---
 
