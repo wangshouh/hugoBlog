@@ -17,7 +17,7 @@ aliases: ["/2022/07/14/foundry-with-erc20"]
 
 四是智能合约的部署，介绍如何使用`Anvil`构建本地测试环境并进行合约测试，并介绍如何将合约部署至测试网络。
 
-本文介绍的内容都会较为初级，如果您是高级开发人员，建议您直接阅读[文档](https://book.getfoundry.sh/)
+本文介绍的内容都会较为初级，如果您是高级开发人员，建议您直接阅读[文档](https://book.getfoundry.sh/) 。本文所有代码均位于 [github 仓库](https://github.com/wangshouh/LearnFoundry) 中，读者可自行参考。
 
 ## Foundry的介绍与安装
 
@@ -132,9 +132,9 @@ forge install Rari-Capital/solmate Openzeppelin/openzeppelin-contracts
 
 我们首先进行下述重命名:
 
-- `src/Contract.sol` => `src/token.sol`
-- `script/Contract.s.sol` => `script/token.s.sol`
-- `test/Contract.t.sol` => `test/token.t.sol`
+- `src/Counter.sol` => `src/token.sol`
+- `script/Counter.s.sol` => `script/token.s.sol`
+- `test/Counter.t.sol` => `test/token.t.sol`
 
 > 对于Foundry来说，`.s.sol`和`.t.sol`均为功能性代码的后缀，这两个后缀名虽然使用Solidity作为开发语言但作用不同于智能合约，主要起辅助作用
 
