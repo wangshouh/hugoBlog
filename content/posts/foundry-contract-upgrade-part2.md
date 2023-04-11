@@ -167,7 +167,7 @@ function _delegate(address implementation) internal virtual {
 0x40 - 0x5f (32 bytes): currently allocated memory size (aka. free memory pointer)
 ```
 
-`0`属于暂存空间的一部分，而我们直接常用的`0x40`则指向当前为空的内存地址。在一般情况下，`0x40`指向的空间就是以`0`开始的内存块，所以我们可以简单地认为`0`与`0x40`是等价的，暂时没有找到可以严格证明两者不同的文献资料。因为`openzeppelin`选择了`0`，所以我们在后文会使用此内存地址。
+`0`属于暂存空间的一部分，而我们直接常用的`0x40`则指向当前为空的内存地址。在一般情况下，`0x40`指向的空间就是以`0`开始的内存块，所以我们可以简单地认为`0`与`0x40`是等价的，但需要注意这种等价是不可靠的，只有在合约刚刚启动时才会存在。
 
 同时我们发现了另一个与我们之前编写的`fallback`函数不同的是，在`openzeppelin`中使用了参数`implementation`，该参数来自`_implementation()`函数。而后者为抽象函数，我们需要进行在继承合约内进行实现。在UML图中，我们可以看出`ERC1967Proxy`和`BeaconProxy`都实现了此函数，但两者的实现方法不同，正是这种不同使`BeaconProxy`可以实现通过一次调用实现所有代理合约的升级。
 
