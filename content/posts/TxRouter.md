@@ -186,6 +186,7 @@ function permit(
 `calldata` 需要消耗不少 gas ，具体消耗如下:
 
 > Calldata size: Each calldata byte costs gas, the larger the size of the transaction data, the higher the gas fees. Calldata costs 4 gas per byte equal to 0, and 16 gas for the others (64 before the hardfork Istanbul).
+> 
 > Calldata大小：每个calldata字节都要消耗gas，交易数据的大小越大，gas费用就越高。Calldata每字节花费4 gas，等于0时为零费用，而其他情况下为16 gas（在Istanbul硬分叉之前为64 gas）。
 
 与 `transfer(address to, uint256 amount)` 的 `calldata` 参数相比，我们使用了 `uint160 to || uint96 amount` 的格式压缩参数，这有效减少了 `calldata` 的 gas 消耗。当然，也增加了解压缩的 gas 消耗，但解压缩消耗的 gas 是极低的，远远小于 calldata 的 gas 消耗。
