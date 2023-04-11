@@ -762,7 +762,7 @@ contract Proxiable {
 }
 ```
 
-根据标准，所有基于`EIP-1822`的合约都应该继承此合约，此合约的目的是保存向后兼容。合约内容非常简单，在`updateCodeAddress(address)`升级函数中要求新合约的`proxiableUUID`为`0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7`。部分读者可能对`Proxiable(newAddress)`该语法表示疑惑，编译器认为此语法是一种显性类型转换，即将地址转换为合约。我查阅了很多文档，并未提及存在此方法，如果读者对此有更好地解释，请向我发送[邮件](mailto:wongshouhao@outlook.com)。
+根据标准，所有基于`EIP-1822`的合约都应该继承此合约，此合约的目的是保存向后兼容。合约内容非常简单，在`updateCodeAddress(address)`升级函数中要求新合约的`proxiableUUID`为`0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7`。部分读者可能对`Proxiable(newAddress)`该语法表示疑惑，编译器认为此语法是一种显性类型转换，即将地址转换为合约。该方法与面向对象中的**实例化**概念一致，我们可以使用此方法实例化 `Proxiable` 以调用方法。
 
 该合约的作用体现在长时间升级更新项目过程中，可能出现了`EIP-1822`升级的情况，由于升级可能导致`0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7`该存储槽地址改变，通过此合约内的逻辑可以拒绝升级避免错误的发生。
 
