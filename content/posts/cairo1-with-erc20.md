@@ -96,7 +96,7 @@ code --install-extension cairo1*.vsix
 
 如果读者不想自己编译 `cairo1*.vsix` 文件，我提供了一个编译后的插件，点击[此处](https://files.catbox.moe/vrkyt8.vsix) 进行下载。此插件版本对应 `v1.0.0-alpha.7`，请读者注意时效性。当然，我相信未来我们可以直接在拓展市场下载此插件。
 
-下载后仅需要运行 `code --install-extension cairo1*.vsix`，使用以下方法导入安装:
+下载后仅需要运行 `code --install-extension cairo1*.vsix`，或使用以下方法导入安装:
 
 ![visx install](https://img.gejiba.com/images/a4c7fcaae3378cc3d8ba84e85d6fbf5f.png)
 
