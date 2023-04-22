@@ -1,6 +1,6 @@
 ---
 title: "Cairo 1 实战入门:可升级合约与跨链信息发送"
-date: 2023-04-22T14:45:33Z
+date: 2023-04-21T14:45:33Z
 tags: [cario,solidity]
 ---
 
