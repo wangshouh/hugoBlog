@@ -156,7 +156,7 @@ function getMessageHashForSafe(GnosisSafe safe, bytes memory message) public vie
 
 #### isValidSignature 2
 
-此函数用于协调`GnosisSafe`合约对`EIP1271`的特殊改造版本与标准版本。简答来说，`GnosisSafe`规定`EIP1271_MAGIC_VALUE`，即验证签名成功后返回的签名为`0x20c13b0b`，这与`EIP1271`标准规定的`0x1626ba7e`是不符的。为了协调两者，使`GnosisSafe`也具有通用的合约签名能力，开发者设计了此函数。
+此函数用于协调`GnosisSafe`合约对`EIP1271`的特殊改造版本与标准版本。简单来说，`GnosisSafe`规定`EIP1271_MAGIC_VALUE`，即验证签名成功后返回的签名为`0x20c13b0b`，这与`EIP1271`标准规定的`0x1626ba7e`是不符的。为了协调两者，使`GnosisSafe`也具有通用的合约签名能力，开发者设计了此函数。
 
 其代码实现如下:
 ```solidity
