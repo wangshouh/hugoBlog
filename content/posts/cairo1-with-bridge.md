@@ -453,7 +453,7 @@ impl EthAddressSerde of Serde<EthAddress> {
 }
 ```
 
-此处是对 `Serde` trait 的实现，`Serde` 是用于序列化与反序列化的模块，其核心在于 `Span<T>` 和 `Array<T>` 的互相转化。我们对 `Array` 都较为熟悉，是编程中常用的数组类型，而 `Span<T>` 类型则较为罕见，在 cairo 1 中 `Span<T>` 指内存中的裸数据，即数据在内存中的二进制存储形态。如果我们需要进行底层交互，大部分情况下我们都需要使用 `Span<T>` 类型。一个不太准确的类比是，`Span<T>` 类似 solidity 中的 calldata 数据类型。
+此处是对 `Serde` trait 的实现，`Serde` 是用于序列化与反序列化的模块，其功能是将定义的结构体序列化为数组或者进行相反操作。此处我们定义的 `EthAddress` 作为 felt252 类型本身不需要较多的序列化，所以此处的对 `EthAddress` 序列化与反序列化的定义都较为简单。关于 `Serde` 更多的信息可以参考 [Cairo Book](https://cairo-book.github.io/appendix-03-derivable-traits.html#serializing-with-serde) 中的内容
 
 我们可以注意到 `deserialize` 返回了 `Option<T>` 数据类型，`Option<T>` 数据类型对 rust 工程师来说应该非常熟悉，该数据类型会返回一个包装结果，该结果有可能是返回的正确的结果，也有可能为空(Null)。此处的可能产生的空值来自 `Serde::<felt252>::deserialize(ref serialized)?` ，最后的 `?` 用于简化处理 `Serde::<felt252>::deserialize` 的返回值。
 
