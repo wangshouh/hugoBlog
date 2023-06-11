@@ -5,6 +5,7 @@ tags: [cario,ERC-20]
 math: true
 ---
 
+
 ## 概述
 
 Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://www.starknet.io/en) 项目。随着 Rollup 叙事的发展，我们认为 cairo 在未来一定会成为智能合约开发的核心语言。
@@ -17,7 +18,7 @@ Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://w
 
 本文的部分内容为 solidity 与 cairo 的对比，如果读者不熟悉 solidity 可以直接跳过。由于笔者对 rust 了解不多，所以本文没有给出 cairo 与 rust 的对比。
 
-值得注意的是，笔者没有详细介绍 ERC20 各函数的功能，读者可以参考 [eip 文档](https://eips.ethereum.org/EIPS/eip-20) 或者 [SNIP 文档](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
+值得注意的是，笔者没有详细介绍 ERC20 各函数的功能，读者可以参考 [EIP 文档](https://eips.ethereum.org/EIPS/eip-20) 或者 [SNIP 文档](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
 
 ## 安装
 
@@ -37,10 +38,10 @@ Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://w
 我们主要介绍 Cairo 开发工具链的安装，使用以下命令下载 `release` 中编译好的二进制压缩包:
 
 ```bash
-curl -L -o cairo.zip https://github.com/starkware-libs/cairo/releases/download/v1.0.0-alpha.7/release-x86_64-unknown-linux-musl.tar.gz
+curl -L -o cairo.zip https://github.com/starkware-libs/cairo/releases/download/v1.1.0/release-x86_64-unknown-linux-musl.tar.gz
 ``` 
 
-上述命令中的 `v1.0.0-alpha.7` 是笔者编写时的最新版本，请读者根据 [releases](https://github.com/starkware-libs/cairo/releases/) 中的最新版本自行替换。
+上述命令中的 `v1.1.0` 是笔者编写时的最新版本，请读者根据 [releases](https://github.com/starkware-libs/cairo/releases/) 中的最新版本自行替换。
 
 下载完成后，我们使用以下命令解压缩文件:
 
@@ -94,9 +95,9 @@ code --install-extension cairo1*.vsix
 
 如果读者遇到错误，请参考 [文档](https://github.com/starkware-libs/cairo/tree/main/vscode-cairo)，或者直接使用下文我编译好的插件。
 
-如果读者不想自己编译 `cairo1*.vsix` 文件，我提供了一个编译后的插件，点击[此处](https://files.catbox.moe/vrkyt8.vsix) 进行下载。此插件版本对应 `v1.0.0-alpha.7`，请读者注意时效性。当然，我相信未来我们可以直接在拓展市场下载此插件。
+如果读者不想自己编译 `cairo1*.vsix` 文件，我提供了一个编译后的插件，点击 [此处](https://files.catbox.moe/0reyvh.vsix) 进行下载。此插件版本对应 `v1.1.0`，请读者注意时效性。当然，我相信未来我们可以直接在拓展市场下载此插件。
 
-下载后仅需要运行 `code --install-extension cairo1*.vsix`，或使用以下方法导入安装:
+下载后仅需要运行 `code --install-extension cairo1*.vsix`，使用以下方法导入安装:
 
 ![visx install](https://img.gejiba.com/images/a4c7fcaae3378cc3d8ba84e85d6fbf5f.png)
 
@@ -108,17 +109,17 @@ code --install-extension cairo1*.vsix
 
 一个示例配置如下(请勿直接抄写文件地址):
 
-![Cairo Setting Example](https://img.gejiba.com/images/e5bf2d977ad039ceefa84135d8514d0e.png)
+![Cairo Setting Example](https://img.gejiba.com/images/17983ca61ab9a9dbfb81f94ac6ae2378.png)
 
 ## Cairo vs. Solidity
 
 考虑到本文大部分读者具有 `solidity` 编程背景，本文将梳理 `EVM` 与 `cairoVM` 的区别。本节内容对于 Cairo 0 的开发者而言有阅读必要，但对于 Cairo 1 的开发者而言，理论上可以跳过本文。
 
-在数据类型方面，事实上，EVM 的原生数据类型仅有 `uint256` ，其他类型都是由 solidity 编程语言在编译过程中实现的。
+在数据类型方面，事实上，EVM 的原生数据类型仅有 `uint256` ，其他类型都是由 solidity 编程器在编译过程中实现的。
 
 而在 cairo 中，原生数据类型仅有 `felt` 类型，读者可简单认为该类型为 `uint252`。需要注意的是，该类型定义在 **有限域** 上，更加准确的定义为 $0 \leq x < P$ ，而 $P = 2^{251}+17 \cdot 2^{192} + 1$ 。其他数据类型都是由 `corelib` 标准库和编译器实现的。
 
-与 solidity 提供的常规计算机代数不同，cairo 的所有计算都定义在域上，简单来说，就是所有计算完成后都需要与 $P$ 进行模除。当然，这似乎与常规的计算机代数相同。但 `felt` 类型的除法是令人惊奇的。在 solidity 中，我们认为 `x / y` 的结果为 $\lfloor x / y \rfloor$ ，设 $x = 7$ 和 $y=3$ ，那么在 solidity 中计算结果为 2 ，但在 cairo 中，计算结果为 `1,206,167,596,222,043,737,899,107,594,365,023,368,541,035,738,443,865,566,657,697,352,045,290,673,496`
+与 solidity 提供的常规计算机代数不同，cairo 的所有计算都定义在域上，简单来说，就是所有计算完成后都需要与 $P$ 进行模除。当然，这似乎与常规的计算机代数相同。但 `felt` 类型的除法是令人惊奇的。在 solidity 中，我们认为 `x / y` 的结果为 `\lfloor x / y \rfloor` ，设 $x = 7$ 和 $y=3$ ，那么在 solidity 中计算结果为 2 ，但在 cairo 中，计算结果为 `1,206,167,596,222,043,737,899,107,594,365,023,368,541,035,738,443,865,566,657,697,352,045,290,673,496`
 
 这是因为 cairo 对 `felt` 的除法做出了以下要求，设 $z = x / y$ ，那么 $z * y = x$ 是恒成立的。该保证使上述离谱结果的出现。更加详细的解释，请参考 [Field elements](https://www.cairo-lang.org/docs/how_cairo_works/cairo_intro.html#field-elements)。请读者在进行 `felt` 数据类型除法时注意。
 
@@ -150,11 +151,11 @@ code --install-extension cairo1*.vsix
 
 上述资料都处于快速变化中，读者应随时参考官方最新动态。
 
-> 此处的临时文档来自官方的 discord 群组，可能随时会下架或并入官方网站
-
 在编译上，Cairo 1 引入了中间编译层，该表示层被称为 `Sierra` ，而最终的编译结果被称为 `casm` ，更多信息可以参考 [Under the hood of Cairo 1.0: Exploring Sierra](https://medium.com/nethermind-eth/under-the-hood-of-cairo-1-0-exploring-sierra-7f32808421f5) 。如下图:
 
 ![cairo 1 complie](https://img.gejiba.com/images/f1424e7997da290ddced38e7f9eb9595.png)
+
+> solidity 的编译也是用了中间表示层方案，大家熟悉的 yul 即中间表示层
 
 ## Hello World 与测试
 
@@ -201,10 +202,10 @@ helloERC20 = "src"
 
 我们接下来介绍每个文件和文件夹的作用，如下:
 
-1. `lib.cairo` 类似 Rust 项目中的 `lib.rs` 文件，主要用于项目作为库被其他开发者调用时使用。作为库时入口，编译器将 `lib.cairo` 内标识的文件进行编译。 
+1. `lib.cairo` 作为 `create` 的根，是编译器查找需要编译的代码的起点
 2. `tests.cairo` 作为测试的入口存在，内部所有给出的模块都会被测试，我们马上会展示其用法
 
-可能有读者好奇为什么需要 `lib.cairo` ？由于在于项目中可能包含合约文件，显然，合约文件作为库被其他开发者调用时是不需要编译的，所以我们需要 `lib.cairo` 进行限定作为库时的编译范围。在本项目中，`lib.cairo` 不太重要，因为我们主要是编写合约而不是库。
+此处出现了一个新概念 `create`，对于 Rust 开发者而言，这是一个熟悉的概念。`create` 是编译器一次编译的所有内容。
 
 打开 `lib.cairo` ，读者会看到如下代码:
 
@@ -238,6 +239,8 @@ fn fib_test() {
 根据上述流程，我们可以认为 `use helloERC20::fib` 等价于导入 `src/lib.cairo` 中的 `fib` 作用域。可能有读者不理解 `use` 关键词含义，该关键词会将 `helloERC20::fib` 导入作用域，然后我们可以直接调用 `fib` 函数。值得注意的是，`use` 不止可以导入函数，也可以导入一个模块，我们会在后文进行展示。
 
 > 如果读者无法理解，请继续阅读，我会对后文每一个路径导入进行详细分析。当然，读者也可以尝试分析 [quaireaux](https://github.com/keep-starknet-strange/quaireaux/tree/main) 复杂项目的路径导入问题，如果读者可以理解 `quaireaux` 的路径导入，那么就基本可以理解大部分项目的路径导入方法。
+> 
+> 此部分最好的学习材料是 [Cairo Book Chapter 6](https://cairo-book.github.io/ch06-00-managing-cairo-projects-with-packages-crates-and-modules.html)，建议读者参考
 
 完成上述流程后，在 `tests.cairo` 中键入以下内容:
 
@@ -245,7 +248,7 @@ fn fib_test() {
 mod fib_test;
 ```
 
-正如前文所述，`tests.cairo` 是一个测试入口文件，我们使用 `mod fib_test;` 在此文件内标识待测试文件。我们可以认为 `mod fib_test;` 相当于告诉测试工具请将 `tests/fib_test.cairo` 文件中的测试函数运行。
+正如前文所述，`tests.cairo` 是一个测试入口文件，我们使用 `mod fib_test;` 在此文件内标识待测试文件。我们可以认为 `mod fib_test;` 相当于告诉测试工具请将 `tests/fib_test.cairo` 文件中的测试函数运行。更加正式的说，`mod mod fib_test;` 的作用是声明模块。
  
 在根目录允许 `cairo-test .` 命令(不要忽略 `.`)，然后，我们发现输入如下:
 
@@ -300,7 +303,6 @@ Caused by:
 use option::OptionTrait;
 
 fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
-    gas::withdraw_gas_all(get_builtin_costs()).expect('Out of gas');
     match n {
         0 => a,
         _ => fib(b, a + b, n - 1),
@@ -310,12 +312,6 @@ fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
 #[cfg(test)]
 mod tests;
 ```
-
-此处加入了 `gas::withdraw_gas_all(get_builtin_costs()).expect('Out of gas');` 命令，该命令用于 `withdraw_gas` 即扣减 gas ，其工作原理为当函数执行前，`gas::withdraw_gas_all(get_builtin_costs())` 会获取当前可用 gas 余额，并与 `get_builtin_costs()` 相减。`get_builtin_costs` 函数由编译器处理，其值为当前函数运行所需 gas 。如果 gas 余额大于当前函数运行所需要余额，函数会继续运行，否则则会抛出 `Out of gas` 错误。
-
-`gas::withdraw_gas_all(get_builtin_costs()).expect('Out of gas');` 是所有递归或循环函数必备语句，该语句在未来极有可能变成一个宏或者直接被并入编译器，但目前我们仍需在递归或循环函数头部增加此语句。
-
-> 在 [quaireaux](https://github.com/keep-starknet-strange/quaireaux) 项目中，开发者将 `gas::withdraw_gas_all(get_builtin_costs()).expect('Out of gas');` 语句包装为 `check_gas()` 函数，具体定义可参考 [此处](https://github.com/keep-starknet-strange/quaireaux/blob/main/quaireaux/utils/src/utils.cairo)。
 
 最后，我们再次运行 `cairo_test .` 命令，输出如下:
 
@@ -377,11 +373,11 @@ Remaining gas: 280410
 
 > 目前来看 `cairo-run` 的功能远远低于 `cairo 0` 中的 `cairo-run` 的功能，我相信 cairo 1 的开发者团队会在为了进一步扩充其功能
 
-## ERC20 合约编程与测试
+## ERC20 合约编程
 
 关于 `cairo` 智能合约编程最为核心文档是 [Cairo Contracts](https://github.com/starkware-libs/cairo/blob/main/docs/reference/src/components/cairo/modules/language_constructs/pages/contracts.adoc) ，请读者务必阅读此文档内容。本文的 ERC20 代币合约主要参考了 [starkware 官方实现](https://github.com/starkware-libs/cairo/blob/main/crates/cairo-lang-starknet/test_data/erc20.cairo) 和 [openzeppline 实现](https://github.com/OpenZeppelin/cairo-contracts/blob/cairo-1/src/openzeppelin/token/erc20.cairo) 。需要注意的是，starknet 已有 ERC20 代币规范被称为 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
 
-> openzeppline 目前的实现位于 `cairo-1` 分支，读者阅读时可能此分支已被合并进入主分支
+> openzeppline 目前的实现位于 `cairo-1` 分支，读者阅读时可能此分支已被合并进入主分支。此处需要注意 SNIP 2 的命名规范与 cairo 1 的命名规范不符，但大部分钱包都兼容于 SNIP 2 规范，所以后文我们仍使用了不符合 cairo 1 规范的 SNIP 2 规范进行命名
 
 本文主要基于 solmate 版本的 [ERC20 智能合约](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) 的具体逻辑。
 
@@ -456,7 +452,6 @@ mod ERC20 {
 ```rust
     use starknet::get_caller_address;
     use starknet::ContractAddress;
-    use starknet::ContractAddressZeroable;
 
     struct Storage {
         _name: felt252,
@@ -478,7 +473,6 @@ mod ERC20 {
 
 1. `get_caller_address` 导入获取请求者地址的模块，类似 solidity 中的 `msg.sender`
 1. `ContractAddress` 导入 `starkNet` 地址类型
-1. `ContractAddressZeroable` 导入和零地址相关的一些函数，包括 `zero()` 、`is_zero()` 和 `is_non_zero()` 函数
 
 结构体 `Storage` 是一类特殊的结构体，声明在此结构体内的变量会被写入存储。此处需要注意 `LegacyMap` 数据类型，此数据类型类似 `solidity` 中的 `mapping` 映射类型。在上述存储变量中，最难理解的是 `_allowances` ，在 solidity 中，该变量一般定义如下:
 
@@ -710,27 +704,27 @@ fn test_err_transfer() {
 接下来，我们实现 `transferFrom` 函数，代码如下:
 
 ```rust
-    #[external]
-    fn transferFrom(from: ContractAddress, to: ContractAddress, amount: u256) -> bool {
-        let caller = get_caller_address();
-        let allowed: u256 = _allowances::read((from, caller));
+#[external]
+fn transferFrom(from: ContractAddress, to: ContractAddress, amount: u256) -> bool {
+    let caller = get_caller_address();
+    let allowed: u256 = _allowances::read((from, caller));
 
-        let ONES_MASK = 0xffffffffffffffffffffffffffffffff_u128;
+    let ONES_MASK = 0xffffffffffffffffffffffffffffffff_u128;
 
-        let is_max = (allowed.low == ONES_MASK) & (allowed.high == ONES_MASK);
+    let is_max = (allowed.low == ONES_MASK) & (allowed.high == ONES_MASK);
 
-        if !is_max {
-            _allowances::write((from, caller), allowed - amount);
-            Approval(from, caller, allowed - amount);
-        }
-
-        _balances::write(from, _balances::read(from) - amount);
-        _balances::write(to, _balances::read(to) + amount);
-
-        Transfer(from, to, amount);
-
-        true
+    if !is_max {
+        _allowances::write((from, caller), allowed - amount);
+        Approval(from, caller, allowed - amount);
     }
+
+    _balances::write(from, _balances::read(from) - amount);
+    _balances::write(to, _balances::read(to) + amount);
+
+    Transfer(from, to, amount);
+
+    true
+}
 ```
 
 此处涉及到 `u256` 即 `uint256` 的最大值判断问题，正如上文所述，`u256` 事实上是由 `u128` 拼接获得的，所以其本质是一个结构体，我们可以提供 `u256.low` 和 `u256.high` 的方法去访问其前 128 位和后 128 位。此处使用了 `(allowed.low == ONES_MASK) & (allowed.high == ONES_MASK);` 来判断 `allowed` 是否为 `u256` 的最大值。
@@ -755,11 +749,13 @@ fn MAX_U256() -> u256 {
 
 关于存储变量访问问题，由于目前 cairo 不支持使用等号对存储变量进行重赋值操作，我们只能使用 `::read` 和 `::write` 函数，这些操作是复杂的。`openzepplin` 在自己的实现中使用了包装函数，即将所有的对存储变量的读写尽可能抽象为内部函数，而在具体编程过程中，涉及到对存储变量的读写时都使用包装函数。这是一个较好的思路。
 
+> 在较新版本的 cairo 中，已经引入了一些函数用以解决此问题，但笔者使用的 `cairo-1.1.0` 尚不支持这些函数。
+
 关于项目组织问题，我们可以发现使用 rust 作为语法来源，遵从 [组合优于继承](https://en.wikipedia.org/wiki/Composition_over_inheritance) 原则的 cairo 1 语言无法实现 solidity 那样的合约继承关系。而且 cairo 1 中的合约属于特殊模块。目前较为通用的做法是将大部分不涉及存储变量的操作抽离为库，即不包含 `#[contrat]` 宏的普通模块，而合约则调用库中的函数。由于 ERC20 合约较为简单，所以我们没有采取这种复杂方式，但随着项目的拓展，我们有必要将较为复杂的逻辑独立出来写进库中。当然，这一法则也不是我提出的，在 cairo 0 时期就已有对此问题的讨论，具体可以参考 [Cairo Coding Guidelines](https://medium.com/nethermind-eth/cairo-coding-guidelines-74eb6f4ee264) 。
 
 ## ERC20 合约部署
 
-我们需要使用 [argent](https://www.argent.xyz/argent-x/) 钱包进行一些账户初始化操作。请读者完成插件安装等步骤，并设置账户。
+本文使用 [argent](https://www.argent.xyz/argent-x/) 钱包部署合约。请读者完成插件安装等步骤，并设置账户。
 
 设置完成后，读者可以获得账户地址。读者需要注意在 starknet 上，所有账户均为合约账户，没有 EOA 账户的存在，所以理论上获得一个账户就是我们在 starknet 上的第一次合约部署。
 
@@ -779,7 +775,7 @@ fn MAX_U256() -> u256 {
 
 完成上述流程后，我们需要安装一个用于部署合约的 CLI 工具 [nile-rs](https://github.com/OpenZeppelin/nile-rs/tree/main)，非常不幸的是，该工具虽然使用 Rust 作为开发语言，但开发者可能认为工具仍较为早期所以没有给出预编译版本。我使用了 `github codespace` 进行了编译，编译后可以获得 `nile-rs` 二进制文件，将其放入 `PATH` 即可。
 
-> Rust 的编译是较为简单的，所以此处我们简化了这一流程。读者阅读时可能官方已经给出预编译的二进制文件了
+> `nile-rs` 的开发似乎进入了停滞，但对于简单的合约部署而言还是有用的
 
 完成上述流程后，我们需要修正项目使其兼容 `nile-rs`。在 `Scarb.toml` 中写入以下内容:
 
@@ -789,11 +785,14 @@ name = "helloERC20" # the name of the package
 version = "0.1.0"    # the current version, obeying semver
 
 [[target.starknet-contract]]
+allowed-libfuncs = true
 
 [tool.nile_rs]
 artifacts_dir = "./target/release"
 contracts_dir = "./src"
 ```
+
+此处我们加入了一个特殊的选项为 `allowed-libfuncs = true` ，该选项的含义为允许合约调用库函数。如果不使用此选项，合约不能调用标准库内的函数。读者应当注意测试网和主网启用的标注库函数种类不同，具体可以参考 [allowed_libfuncs_lists](https://github.com/starkware-libs/cairo/tree/main/crates/cairo-lang-starknet/src/allowed_libfuncs_lists) 内的内容。
 
 在项目中加入 `.gitgnore` 文件，写入以下内容:
 
@@ -853,7 +852,17 @@ Class hash: 0x06672e37dd3f0afe69354fd6243d99a9854f537aa21f607b419b2e67dc2589d0
 
 等待出现 `⏳ Transaction status: Pending` ，该过程一般来说耗时较长。目前，我们一般认为 `declare` 交易达到 `Pending` 状态就相当于交易完成。
 
-值得注意的是，如果您完全照抄了我的代码，可能会出现 `already declared` 的错误，您可以通过修改 `mint` 函数的名字，或者增加部分函数解决这一问题。
+值得注意的是，如果您完全照抄了我的代码，可能会出现 `already declared` 的错误，如下:
+
+```bash
+Error: Failed attempt to send the declare transaction
+
+Caused by:
+    Class with hash 0x6672e37dd3f0afe69354fd6243d99a9854f537aa21f607b419b2e67dc2589d0 is already declared.
+    0x7cb3adf9071af26bd07ee9cfd5e94270590a53be25353f68948a7c373731466 != 0 (ClassAlreadyDeclared)
+```
+
+您可以通过修改 `mint` 函数的名字，或者增加部分函数解决这一问题。
 
 > 不要任意修改除 `mint` 外的函数的名字，否则就会被钱包识别无效代币
 
@@ -892,4 +901,4 @@ nile-rs deploy -p PRIVATE_KEY -n goerli helloERC20_ERC20 'HELLO' 'HE' 18
 
 我个人还是比较看好 cairo 语言发展的，其自带的测试框架是极其优秀的。但目前最大问题仍是开发工具的不足，我相信 starknet 团队未来一定会使用 rust 完全重写开发框架。
 
-本文写于 2023 年 4 月 17 日，使用 `cairo 1.0.0-alpha7` 完成。
+本文写于 2023 年 4 月 17 日，使用 `cairo 1.0.0-alpha7` 完成。在 2023 年 6 月 11 日进行了更新，使用了 `cairo 1.1.0` 。
