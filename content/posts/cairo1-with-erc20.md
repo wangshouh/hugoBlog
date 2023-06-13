@@ -8,6 +8,8 @@ math: true
 
 ## 概述
 
+本文正在根据 Cairo 1.2 进行更新，请读者注意。
+
 Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://www.starknet.io/en) 项目。随着 Rollup 叙事的发展，我们认为 cairo 在未来一定会成为智能合约开发的核心语言。
 
 本文类似我之前编写的 [Foundry教程：编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/foundry-with-erc20/) ，介绍了使用 cairo 1 进行编程、测试和部署的全流程。由于缺乏易用工具，本文放弃了本地测试网部署。
