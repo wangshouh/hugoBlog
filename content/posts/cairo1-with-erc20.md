@@ -1,18 +1,15 @@
 ---
-title: "Cairo 1 实战入门:编写测试部署ERC-20代币智能合约"
-date: 2023-04-17T11:47:33Z
+title: "Cairo 2 实战入门:编写测试部署ERC-20代币智能合约"
+date: 2023-07-06T11:47:33Z
 tags: [cario,ERC-20]
 math: true
 ---
 
-
 ## 概述
-
-本文正在根据 Cairo 1.2 进行更新，请读者注意。
 
 Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://www.starknet.io/en) 项目。随着 Rollup 叙事的发展，我们认为 cairo 在未来一定会成为智能合约开发的核心语言。
 
-本文类似我之前编写的 [Foundry教程：编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/foundry-with-erc20/) ，介绍了使用 cairo 1 进行编程、测试和部署的全流程。由于缺乏易用工具，本文放弃了本地测试网部署。
+本文类似我之前编写的 [Foundry教程：编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/foundry-with-erc20/) ，介绍了使用 cairo 1 v2 版本(该版本也可称为 `Cairo 2`) 进行编程、测试和部署的全流程。由于缺乏易用工具，本文放弃了本地测试网部署。
 
 本文仅使用 Rust 的部分基础语法，并进行了详细说明，所以读者可以没有 rust 开发基础，但如果读者熟悉 rust 基础语法，那么阅读代码会更加容易。
 
@@ -21,7 +18,7 @@ Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://w
 本文的部分内容为 solidity 与 cairo 的对比，如果读者不熟悉 solidity 可以直接跳过。由于笔者对 rust 了解不多，所以本文没有给出 cairo 与 rust 的对比。
 
 值得注意的是，笔者没有详细介绍 ERC20 各函数的功能，读者可以参考 [EIP 文档](https://eips.ethereum.org/EIPS/eip-20) 或者 [SNIP 文档](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
-
+ 
 ## 安装
 
 在开始进行 Cairo 编程前，我们需要安装准备相关环境。笔者使用的是 WSL Ubuntu 22.04 系统。但事实上，使用 macOS 也可达到相同的开发体验。
@@ -40,10 +37,10 @@ Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://w
 我们主要介绍 Cairo 开发工具链的安装，使用以下命令下载 `release` 中编译好的二进制压缩包:
 
 ```bash
-curl -L -o cairo.zip https://github.com/starkware-libs/cairo/releases/download/v1.1.0/release-x86_64-unknown-linux-musl.tar.gz
+curl -L -o cairo.zip curl -L -o cairo.zip https://github.com/starkware-libs/cairo/releases/download/v2.0.0-rc1/release-x86_64-unknown-linux-musl.tar.gz
 ``` 
 
-上述命令中的 `v1.1.0` 是笔者编写时的最新版本，请读者根据 [releases](https://github.com/starkware-libs/cairo/releases/) 中的最新版本自行替换。
+上述命令中的 `v2.0.0-rc1` 是笔者编写时的最新版本，请读者根据 [releases](https://github.com/starkware-libs/cairo/releases/) 中的最新版本自行替换。
 
 下载完成后，我们使用以下命令解压缩文件:
 
@@ -121,7 +118,7 @@ code --install-extension cairo1*.vsix
 
 而在 cairo 中，原生数据类型仅有 `felt` 类型，读者可简单认为该类型为 `uint252`。需要注意的是，该类型定义在 **有限域** 上，更加准确的定义为 $0 \leq x < P$ ，而 $P = 2^{251}+17 \cdot 2^{192} + 1$ 。其他数据类型都是由 `corelib` 标准库和编译器实现的。
 
-与 solidity 提供的常规计算机代数不同，cairo 的所有计算都定义在域上，简单来说，就是所有计算完成后都需要与 $P$ 进行模除。当然，这似乎与常规的计算机代数相同。但 `felt` 类型的除法是令人惊奇的。在 solidity 中，我们认为 `x / y` 的结果为 $\lfloor x / y \rfloor$ ，设 $x = 7$ 和 $y=3$ ，那么在 solidity 中计算结果为 2 ，但在 cairo 中，计算结果为 `1,206,167,596,222,043,737,899,107,594,365,023,368,541,035,738,443,865,566,657,697,352,045,290,673,496`
+与 solidity 提供的常规计算机代数不同，cairo 的所有计算都定义在域上，简单来说，就是所有计算完成后都需要与 $P$ 进行模除。当然，这似乎与常规的计算机代数相同。但 `felt` 类型的除法是令人惊奇的。在 solidity 中，我们认为 `x / y` 的结果为 `\lfloor x / y \rfloor` ，设 $x = 7$ 和 $y=3$ ，那么在 solidity 中计算结果为 2 ，但在 cairo 中，计算结果为 `1,206,167,596,222,043,737,899,107,594,365,023,368,541,035,738,443,865,566,657,697,352,045,290,673,496`
 
 这是因为 cairo 对 `felt` 的除法做出了以下要求，设 $z = x / y$ ，那么 $z * y = x$ 是恒成立的。该保证使上述离谱结果的出现。更加详细的解释，请参考 [Field elements](https://www.cairo-lang.org/docs/how_cairo_works/cairo_intro.html#field-elements)。请读者在进行 `felt` 数据类型除法时注意。
 
@@ -131,11 +128,15 @@ code --install-extension cairo1*.vsix
 
 > 如果读者熟悉 [elixir](https://elixir-lang.org/) 等函数式编程语言，应该对于递归代替循环的编程逻辑较为熟悉。如果读者有空闲时间，可以考虑学习一下。
 
-## Cairo 0 vs Cairo 1
+## Cairo 0 vs Cairo 1 vs Cairo 2
 
-本文在编写时，cairo 1 已经发布，笔者认为 Cairo 1 应该是进一步发展的重点，所以本文主要介绍 Cairo 1 。考虑到读者不一定了解 Cairo 语言的发展历程且了解 Cairo 0 是有意义的，所以本节主要介绍 Cairo 0 和 Cairo 1 之间的区别。
+本文在编写时，Starknet [量子跃迁](https://medium.com/starkware/starknet-quantum-leap-major-throughput-improvements-are-here-3e4e294ad8cd) 已部署，使用 Cairo 2 编写的合约可以进行部署。考虑到读者不一定了解 Cairo 语言的发展历程且了解 Cairo 0 是有意义的，所以本节主要介绍 Cairo 0、Cairo 1 和 Cairo 2 之间的区别。
 
-在语法方面，`cairo 1.0` 与 Rust 语法几乎完全一致，但可能有部分语法由于 CairoVM 的限制无法实现。而 `cairo 0` 则与 `golang` 等语言类似。另一方面，Cairo 0 支持一些底层编程方法，允许开发者直接调整寄存器和内存。同时，cairo 0 要求开发者手动维护内存，没有自动的内存分配系统。一个并不恰当的类比是 Cairo 0 类似 huff 语言，而 cairo 1 类似 solidity 语言。
+我们首先介绍 Cairo 1 和 Cairo 2 之间的区别，事实上，两者区别较小，只在部分语法上存在差异，其中差异最大的部分在于合约编程部分。正是此部分的破坏性更新导致 Cairo 1 升级为 Cairo 2。关于两者具体不同，请参考 [此文章](https://community.starknet.io/t/cairo-1-contract-syntax-is-evolving/94794)。
+
+接下来，我们介绍 Cairo 0 与 Cairo 1 的区别。
+
+在语法方面，`cairo 1` 与 Rust 语法几乎完全一致，但可能有部分语法由于 CairoVM 的限制无法实现。而 `cairo 0` 则与 `golang` 等语言类似。另一方面，Cairo 0 支持一些底层编程方法，允许开发者直接调整寄存器和内存。同时，cairo 0 要求开发者手动维护内存，没有自动的内存分配系统。一个并不恰当的类比是 Cairo 0 类似 huff 语言，而 cairo 2 类似 solidity 语言。
 
 在本文编写时，`cairo 0` 并没有语法文档，只有官方提供的两个教程：
 
@@ -144,14 +145,14 @@ code --install-extension cairo1*.vsix
 
 前者属于实战入门，而后者则是自底向上的分析。读者可根据自身爱好选择教程。我推荐读者阅读后者，因为后者涉及大量对 CairoVM 的底层分析，这些内容是不会随语言特性改变而改变的。
 
-很遗憾，`cairo 1` 似乎没有完整文档，语法特性几乎完全借鉴于 Rust ，但至于那些特性不被支持，暂且没有完整的语法文档。如果读者希望了解 `cairo 1` ，可以参考以下文档:
+如果读者希望更加详细的了解 Cairo 1 和 Cairo 2 的语法，可以参考 [Cairo book](https://cairo-book.github.io/title-page.html) 。该文档是目前最为详细和系统的 Cairo 教程。读者也可参考以下文章:
 
 1. [Starknet Cairo 101 Automated Workshop](https://github.com/starknet-edu/starknet-cairo-101/tree/main)
 2. [A First Look at Cairo 1.0: A Safer, Stronger & Simpler Provable Programming Language](https://medium.com/nethermind-eth/a-first-look-at-cairo-1-0-a-safer-stronger-simpler-provable-programming-language-892ce4c07b38)
 3. [The Starknet Book](https://book.starknet.io/index.html)
 4. [Awesome Cairo](https://github.com/auditless/awesome-cairo) 该仓库给出了很多 cairo 1 的资源，建议参考
 
-上述资料都处于快速变化中，读者应随时参考官方最新动态。
+值得注意的是，上述资料部分仍使用了 cairo 1 语法，可能会在 Cairo 2 的编译环境内报错，请读者注意。上述资料都处于快速变化中，读者应随时参考官方最新动态。
 
 在编译上，Cairo 1 引入了中间编译层，该表示层被称为 `Sierra` ，而最终的编译结果被称为 `casm` ，更多信息可以参考 [Under the hood of Cairo 1.0: Exploring Sierra](https://medium.com/nethermind-eth/under-the-hood-of-cairo-1-0-exploring-sierra-7f32808421f5) 。如下图:
 
@@ -290,32 +291,7 @@ fn fib_test() {
 }
 ```
 
-此处，我们使用 `#[available_gas(2000000)]` 宏为测试环境增加了 `2000000 gas`。再次运行测试命令，如下:
-
-```bash
-Error: Failed setting up runner.
-
-Caused by:
-    Failed calculating gas usage, it is likely a call for `gas::withdraw_gas` is missing.
-```
-
-这次报错更加恐怖，直接无法启动运行环境，这是因为 `fib` 函数未增加 `gas::withdraw_gas` 函数，使运行时无法计算 gas 相关信息。我们需要对 `lib,cairo` 中的 `fib` 函数进行修改，修改后如下:
-
-```rust
-use option::OptionTrait;
-
-fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
-    match n {
-        0 => a,
-        _ => fib(b, a + b, n - 1),
-    }
-}
-
-#[cfg(test)]
-mod tests;
-```
-
-最后，我们再次运行 `cairo_test .` 命令，输出如下:
+此处，我们使用 `#[available_gas(2000000)]` 宏为测试环境增加了 `2000000 gas`。再次运行测试命令，输出如下:
 
 ```bash
 running 1 tests
@@ -343,6 +319,7 @@ fn main() {
 use option::OptionTrait;
 
 fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
+    gas::withdraw_gas_all(get_builtin_costs()).expect('Out of gas');
     match n {
         0 => a,
         _ => fib(b, a + b, n - 1),
@@ -372,11 +349,9 @@ Remaining gas: 280410
 
 如果读者对底层感兴趣，可以尝试使用 `cairo-run --available-gas 300000 --print-full-memory .` 此处使用 `--print-full-memory` 可以打印出内存结构。之前介绍 `cairoVM` 时，我们已经支出 cairoVM 的内存结构是不可变的，所以我们可以根据运行结束后的内存情况来推测运行过程中的事件。当然，直接输出的内存可能很难读懂，如果读者经过 cairo 0 的相关训练，可能可以读懂一部分。
 
-> 目前来看 `cairo-run` 的功能远远低于 `cairo 0` 中的 `cairo-run` 的功能，我相信 cairo 1 的开发者团队会在为了进一步扩充其功能
-
 ## ERC20 合约编程
 
-关于 `cairo` 智能合约编程最为核心文档是 [Cairo Contracts](https://github.com/starkware-libs/cairo/blob/main/docs/reference/src/components/cairo/modules/language_constructs/pages/contracts.adoc) ，请读者务必阅读此文档内容。本文的 ERC20 代币合约主要参考了 [starkware 官方实现](https://github.com/starkware-libs/cairo/blob/main/crates/cairo-lang-starknet/test_data/erc20.cairo) 和 [openzeppline 实现](https://github.com/OpenZeppelin/cairo-contracts/blob/cairo-1/src/openzeppelin/token/erc20.cairo) 。需要注意的是，starknet 已有 ERC20 代币规范被称为 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
+关于 `cairo` 智能合约编程最为核心文档是 [Cairo Contracts](https://github.com/starkware-libs/cairo/blob/main/docs/reference/src/components/cairo/modules/language_constructs/pages/contracts.adoc) 和 [Cairo book](https://cairo-book.github.io/ch99-00-starknet-smart-contracts.html)，请读者务必阅读这两份文档内容。本文的 ERC20 代币合约主要参考了 [starkware 官方实现](https://github.com/starkware-libs/cairo/blob/main/crates/cairo-lang-starknet/test_data/erc20.cairo) 和 [openzeppline 实现](https://github.com/OpenZeppelin/cairo-contracts/blob/cairo-1/src/openzeppelin/token/erc20.cairo) 。需要注意的是，starknet 已有 ERC20 代币规范被称为 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
 
 > openzeppline 目前的实现位于 `cairo-1` 分支，读者阅读时可能此分支已被合并进入主分支。此处需要注意 SNIP 2 的命名规范与 cairo 1 的命名规范不符，但大部分钱包都兼容于 SNIP 2 规范，所以后文我们仍使用了不符合 cairo 1 规范的 SNIP 2 规范进行命名
 
@@ -420,57 +395,49 @@ mod ERC20;
 ```rust
 use starknet::ContractAddress;
 
-trait IERC20 {
-    fn name() -> felt252;
-    fn symbol() -> felt252;
-    fn decimals() -> u8;
-    fn total_supply() -> u256;
-    fn balanceOf(account: ContractAddress) -> u256;
-    fn allowance(owner: ContractAddress, spender: ContractAddress) -> u256;
-    fn transfer(recipient: ContractAddress, amount: u256) -> bool;
-    fn transferFrom(sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool;
-    fn approve(spender: ContractAddress, amount: u256) -> bool;
+#[starknet::interface]
+trait IERC20<TContractState> {
+    fn name(self: @TContractState) -> felt252;
+    fn symbol(self: @TContractState) -> felt252;
+    fn decimals(self: @TContractState) -> u8;
+    fn total_supply(self: @TContractState) -> u256;
+    fn balanceOf(self: @TContractState, account: ContractAddress) -> u256;
+    fn allowance(self: @TContractState, owner: ContractAddress, spender: ContractAddress) -> u256;
+    fn transfer(ref self: TContractState, to: ContractAddress, amount: u256) -> bool;
+    fn transferFrom(
+        ref self: TContractState, from: ContractAddress, to: ContractAddress, amount: u256
+    ) -> bool;
+    fn approve(ref self: TContractState, spender: ContractAddress, amount: u256) -> bool;
+    fn mint(ref self: TContractState, amount: u256);
 }
 ```
 
-此处引入了 `starknet::ContractAddress` 数据类型，该数据类型表示地址，类似 solidity 中的 `address` 类型。此接口参考了 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 中的内容。
+此处引入了 `starknet::ContractAddress` 数据类型，该数据类型表示地址，类似 solidity 中的 `address` 类型。此接口参考了 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 中的内容。此处，我们使用了 `TContractState` 类型，该类型代表合约的状态空间(或简单认为是合约的存储空间)。我们可以看到使用了 `self: @TContractState` 和 `ref self: TContractState` 两种不同的参数。其中 `@TContractState` 象征当前合约状态的快照(`snapshots`)，这是一种不可变视图，使用此类型意味着该函数不能改变合约的状态，即该函数不可以向合约内写入数据。而 `ref self: TContractState` 代表可变引用，使用此类型的函数具有改变合约状态的能力，即函数可以向合约内写入数据。显然，`total_supply` 等函数只需要读取合约状态而不需要改变合约状态，所以我们使用了 `self: @TContractState`，而 `mint` 等函数显然会改变合约状态(进行用户余额的增加)，所以使用了 `ref self: TContractState` 参数。
 
-接下来，我们进行合约主体的开发，我们首先定义合约模块，如下:
+> 关于 `snapshots` 与 `ref` 的不同，读者可以参考 [References and Snapshots](https://cairo-book.github.io/ch03-02-references-and-snapshots.html)
+
+接下来，我们进行合约主体的开发，我们首先定义合约内的存储，如下:
 
 ```rust
-#[contract]
+#[starknet::contract]
 mod ERC20 {
-    use helloERC20::ERC20::IERC20;
-}
-```
-
-此处的 `#[contract]` 告知编译器以下模块 `ERC20` 为合约模块，需要编译时特殊处理。而 `use helloERC20::ERC20::IERC20;` 则为了导入上文定义到 `IERC20` 接口。此处的路径翻译导入 `src/ERC20.cairo` 中的 `IERC20` 部分。
-
-读者可以考虑一下，在 `ERC20_test.cairo` 中如何导入 `ERC20` 模块，首先该模块位于 `src/ERC20.cairo`，所以导入语句前部分路径为 `helloERC20::ERC20`，而 `mod ERC20` 是导入部分，所以最终结果为 `use helloERC20::ERC20::ERC20` ，第一个 ERC20 指文件 `ERC20.cairo` 而第二个 `ERC20` 指 `ERC20.cairo` 中定义的 `mod ERC20`。
-
-完成上述定义后，我们开始定义数据结构和事件，如下:
-
-```rust
     use starknet::get_caller_address;
     use starknet::ContractAddress;
-
+    #[storage]
     struct Storage {
         _name: felt252,
         _symbol: felt252,
         _decimals: u8,
         _total_supply: u256,
-        _balances: LegacyMap<ContractAddress, u256>,
-        _allowances: LegacyMap<(ContractAddress, ContractAddress), u256>,
+        _balances: LegacyMap::<ContractAddress, u256>,
+        _allowances: LegacyMap::<(ContractAddress, ContractAddress), u256>,
     }
-
-    #[event]
-    fn Transfer(from: ContractAddress, to: ContractAddress, value: u256) {}
-
-    #[event]
-    fn Approval(owner: ContractAddress, spender: ContractAddress, value: u256) {}
+}
 ```
 
-导入各模块的作用如下:
+此处的 `#[starknet::contract]` 告知编译器以下模块 `ERC20` 为合约模块，需要编译时特殊处理。
+
+我们使用 `use` 导入的各模块的作用如下:
 
 1. `get_caller_address` 导入获取请求者地址的模块，类似 solidity 中的 `msg.sender`
 1. `ContractAddress` 导入 `starkNet` 地址类型
@@ -485,59 +452,120 @@ mapping(address => mapping(address => uint256)) public allowance;
 
 > cairo 原生不支持 uint256 类型，仅支持 felt252 类型，uint256 本质上是由 felt128 拼接获得的。此处使用 uint256 是为了保持兼容性。
 
-最后，我们利用 `#[event]` 宏声明了两个事件。对于大部分熟悉 solidity 的读者而言，这些事件都应该较为熟悉。
+完成上述定义后，我们开始定义事件，如下:
+
+```rust
+#[event]
+#[derive(Drop, starknet::Event)]
+enum Event {
+    Transfer: Transfer,
+    Approval: Approval,
+}
+#[derive(Drop, starknet::Event)]
+struct Transfer {
+    #[key]
+    from: ContractAddress,
+    #[key]
+    to: ContractAddress,
+    value: u256,
+}
+#[derive(Drop, starknet::Event)]
+struct Approval {
+    #[key]
+    owner: ContractAddress,
+    #[key]
+    spender: ContractAddress,
+    value: u256,
+}
+```
+
+最后，我们利用 `#[event]` 宏声明了两个事件。此处需要在 `enum Event` 枚举类型内写入合约内所有 event 的名字。接下来，我们使用结构体具体定义了 event 包含的数据，此处可以使用 `#[key]` 标识可检索变量，类似 solidity 中的 `index` 关键词。在此处，我们也使用了 `#[derive(Drop, starknet::Event)]` 宏为 event 增加了一些接口的默认实现。
 
 接下来，我们编写构造器和基础的 `view` 函数，如下:
 
 ```rust
     #[constructor]
-    fn constructor(name: felt252, symbol: felt252, decimals: u8, ) {
-        _name::write(name);
-        _symbol::write(symbol);
-        _decimals::write(decimals);
+    fn constructor(ref self: ContractState, name: felt252, symbol: felt252, decimals: u8, ) {
+        self._name.write(name);
+        self._symbol.write(symbol);
+        self._decimals.write(decimals);
     }
 ```
 
-构造器是合约初始化函数，我们在此处对 ERC20 代币的基本参数进行初始化，较为简单不再赘述，接下来，我们编写 `view` 函数，如下:
+构造器是合约初始化函数，我们在此处对 ERC20 代币的基本参数进行初始化，显然构造器函数需要对合约状态进行改变，所以此处我们使用了 `ref self: ContractState` 参数。在此处，我们也使用了 `self._name.write` 形式的函数对合约内的变量进行了写入。
+
+接下来，我们编写 `view` 函数，如下:
 
 ```rust
-    #[view]
-    fn name() -> felt252 {
-        _name::read()
+#[external(v0)]
+impl IERC20Impl of super::IERC20<ContractState> {
+    fn name(self: @ContractState) -> felt252 {
+        self._name.read()
     }
 
-    #[view]
-    fn symbol() -> felt252 {
-        _symbol::read()
+    fn symbol(self: @ContractState) -> felt252 {
+        self._symbol.read()
     }
 
-    #[view]
-    fn decimals() -> u8 {
-        _decimals::read()
+    fn decimals(self: @ContractState) -> u8 {
+        self._decimals.read()
     }
 
-    #[view]
-    fn total_supply() -> u256 {
-        _total_supply::read()
+    fn total_supply(self: @ContractState) -> u256 {
+        self._total_supply.read()
     }
 
-    #[view]
-    fn balanceOf(account: ContractAddress) -> u256 {
-        _balances::read(account)
+    fn balanceOf(self: @ContractState, account: ContractAddress) -> u256 {
+        self._balances.read(account)
     }
 
-    #[view]
-    fn allowance(owner: ContractAddress, spender: ContractAddress) -> u256 {
-        _allowances::read((owner, spender))
+    fn allowance(
+        self: @ContractState, owner: ContractAddress, spender: ContractAddress
+    ) -> u256 {
+        self._allowances.read((owner, spender))
     }
+}
 ```
 
-该部分也较为简单，基本都是 `read` 读取操作。完成上述构造器后，我们可以尝试编写测试函数，请读者在 `src/tests/ERC20_test.cairo` 中输入以下内容:
+该部分也较为简单，基本都是 `read` 读取操作。此处，我们对上文定义的 `super::IERC20<ContractState>` 进行了实现。此处允许 `IERC20Impl` 对多个接口进行实现，但需要注意的是不允许 `IERC20Impl` 实现的多接口内的存在重名函数。
+
+> 此处使用了 `#[external(v0)]` 宏对 `IERC20Impl` 进行修饰。这也是目前唯一的修饰符，在未来可能会增加更多修饰符。
+
+完成上述构造器后，我们可以尝试编写测试函数，但由于目前合约没有实现全部的接口，所以会出现编译报错，请读者在合约内增加无实现函数来避免编译报错。如下:
+
+```rust
+fn mint(ref self: ContractState, amount: u256) {}
+
+fn transfer(ref self: ContractState, to: ContractAddress, amount: u256) -> bool {
+    true
+}
+
+fn transferFrom(
+    ref self: ContractState, from: ContractAddress, to: ContractAddress, amount: u256
+) -> bool {
+    true
+}
+```
+
+请读者在 `src/tests/ERC20_test.cairo` 中输入以下内容:
 
 ```rust
 use helloERC20::ERC20::ERC20;
-use integer::u256;
-use integer::u256_from_felt252;
+use helloERC20::ERC20::IERC20Dispatcher;
+use helloERC20::ERC20::IERC20DispatcherTrait;
+
+use array::ArrayTrait;
+use traits::Into;
+use result::ResultTrait;
+use traits::TryInto;
+use option::OptionTrait;
+
+use starknet::contract_address_const;
+use starknet::contract_address::ContractAddress;
+use starknet::testing::{set_caller_address, set_contract_address};
+use starknet::syscalls::deploy_syscall;
+use starknet::SyscallResultTrait;
+use starknet::class_hash::Felt252TryIntoClassHash;
 
 const NAME: felt252 = 'Test';
 const SYMBOL: felt252 = 'TET';
@@ -546,19 +574,62 @@ const DECIMALS: u8 = 18_u8;
 #[test]
 #[available_gas(2000000)]
 fn test_initializer() {
-    let initial_supply: u256 = u256_from_felt252(2000);
-    ERC20::constructor(NAME, SYMBOL, DECIMALS, initial_supply);
+    let mut calldata = Default::default();
+    calldata.append(NAME);
+    calldata.append(SYMBOL);
+    calldata.append(DECIMALS.into());
+    let (erc20_address, _) = deploy_syscall(
+        ERC20::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
+    )
+        .unwrap();
 
-    assert(ERC20::name() == NAME, 'Name should be NAME');
-    assert(ERC20::symbol() == SYMBOL, 'Symbol should be SYMBOL');
-    assert(ERC20::decimals() == 18_u8, 'Decimals should be 18');
-    assert(ERC20::total_supply() == u256_from_felt252(2000), 'Supply should eq 2000');
+    let mut erc20_token = IERC20Dispatcher { contract_address: erc20_address };
+
+    assert(erc20_token.name() == NAME, 'Name should be NAME');
+    assert(erc20_token.symbol() == SYMBOL, 'Symbol should be SYMBOL');
+    assert(erc20_token.decimals() == 18_u8, 'Decimals should be 18');
 }
 ```
 
-在文件头部，我们定义了一系列后文所需要的常量，主要集中在 ERC20 构造部分。此处需要注意 `initial_supply` 由于其属于特殊类型 `u256` 无法定义为常量。
+在文件头部，我们定义了一系列后文所需要的常量，主要集中在 ERC20 构造部分。
 
 > 此处利用了 cairo 对短字符串的支持，使用了 `'Test'` 等进行字符串定义，这些字符串会被直接转化为 `felt252` 类型。
+
+为了进行测试，我们导入了大量依赖，其中最核心的依赖为 `helloERC20::ERC20::IERC20Dispatcher` 和 `helloERC20::ERC20::IERC20DispatcherTrait` 。读者可能感觉我们似乎没有在 `ERC20` 合约内实现这两个模块，实际上，这两个模块是由 `IERC20` 接口衍生获得的，是 cairo 语言自动生成的。此模块用于后文对部署合约的函数调用。
+
+> 可能有读者好奇如果写出这么多依赖，对于我来说，大部分都是写完代码观察编译器报错后补充的，当然还有一部分来自参考代码
+
+对于 Cairo 合约测试来说，我们需要部署合约然后调用部署合约的函数观察结果来判断合约运行是否符合要求。此处，我们使用 `deploy_syscall` 函数进行合约部署，该函数的参数如下:
+
+```rust
+extern fn deploy_syscall(
+    class_hash: ClassHash,
+    contract_address_salt: felt252,
+    calldata: Span<felt252>,
+    deploy_from_zero: bool,
+) -> SyscallResult<(ContractAddress, Span<felt252>)> implicits(GasBuiltin, System) nopanic;
+```
+
+此处涉及到关于合约部署的相关知识，我们会在后文进行专题介绍，简单来说，在 starknet 上部署合约分为两步，第一步是 `declare` 合约，此过程中会将合约注册到 StarkNet 合约库中获得唯一标识 `classhash` ，第二步是根据 Classhash 部署合约。此处的 `deploy_syscall` 函数即用于合约部署，其中 `class_hash` 参数即为 declare 后获得的 classhash ，而 `calldata` 参数则用于构造器函数。
+
+其余参数均有特殊作用，`contract_address_salt` 参数用于调整和计算合约地址，合约地址的计算方法为:
+
+```javascript
+contract_address := pedersen(
+    “STARKNET_CONTRACT_ADDRESS”,
+    caller_address,
+    salt,
+    class_hash,
+    pedersen(constructor_calldata))
+```
+
+而 `deploy_from_zero` 则是 StarkNet 账户抽象的核心，其允许用户使用零用户部署合约，即不在 EOA 帮助的情况下部署合约，我们会在后文内详细讨论此问题。
+
+在上述测试代码中，我们使用 `Default::default()` 获得数组类型，通过 `append` 使其具有合约初始化的参数，完成 calldata 构造后，我们使用 `deploy_syscall` 函数进行合约部署。最后，我们将部署的合约包装在 `IERC20Dispatcher` 内以方便后文直接调用。
+
+此处使用了 `DECIMALS.into()` 实现类型转换，`calldata` 为 `Array<felt252>` 而 `DECIMALS` 为 `u8` 类型，所以 `DECIMALS` 无法直接 `append` 到 `calldata` 中。在 Cairo 中，存在一类 `trait` 被称为 `into` ，该 `trait` 的功能是将不符合标准的类型转化为函数要求的类型，所以此处我们调用 `DECIMALS.into()` 实现了 `u8` 到 `felt252` 的自动转换。但需要注意的是，不是任意类型都可以使用 `into` 进行转换。而后文使用的 `try_into` 功能类似，但其会在转换失败后返回 `Option` 类型，我们可以使用 `unwrap` 函数获取 `Option` 内包装的数据。当然，如果转换失败，`unwrap`方法也会抛出异常。
+
+在 `deploy_syscall` 函数中，我们也是有 `span` 实现了 `Array<felt252>` 到 `Span<felt252>` 的转化。此处使用的 `Span<felt252>` 是 `Array<felt252>` 的快照(`snapshots`)。在 Cairo 中，官方建议函数之间传递数组使用 `Span<T>` 类型以避免变量借代等问题。
 
 对于具体的 `assert` 相等判断部分较为简单，不再赘述。
 
@@ -576,19 +647,16 @@ test result: ok. 2 passed; 0 failed; 0 ignored; 0 filtered out;
 我们首先编写较为容易测试的 `approve` 函数，编写代码如下:
 
 ```rust
-    #[external]
-    fn approve(spender: ContractAddress, amount: u256) -> bool {
-        let owner = get_caller_address();
+fn approve(ref self: ContractState, spender: ContractAddress, amount: u256) -> bool {
+    let owner = get_caller_address();
+    self._allowances.write((owner, spender), amount);
+    self.emit(Event::Approval(Approval { owner, spender, value: amount }));
 
-        _allowances::write((owner, spender), amount);
-
-        Approval(owner, spender, amount);
-
-        true
-    }
+    true
+}
 ```
 
-较为简单，但由于目前 cairo 1 没有语法糖直接对 `_allowances` 等存储变量进行操作，所以我们只能采用 `_allowances::write` 这种笨拙的方式。该方法等同于以下 solidity 代码:
+该函数较为简单，在此处，我们采用 `self._allowances.write((owner, spender), amount);` 函数对数据进行写入。该方法等同于以下 solidity 代码:
 
 ```solidity
 _allowance[msg.sender][spender] = amount;
@@ -597,15 +665,28 @@ _allowance[msg.sender][spender] = amount;
 然后，我们编写测试代码，我们首先增加一个特殊测试辅助函数 `setUp` ，该函数用于初始化 ERC20 合约，并设置一个用于合约调用的地址，如下:
 
 ```rust
-fn setUp() -> ContractAddress {
+fn setUp() -> (ContractAddress, IERC20Dispatcher) {
     let caller = contract_address_const::<1>();
-    set_caller_address(caller);
-    ERC20::constructor(NAME, SYMBOL, DECIMALS);
-    caller
+    set_contract_address(caller);
+
+    let mut calldata = Default::default();
+    calldata.append(NAME);
+    calldata.append(SYMBOL);
+    calldata.append(DECIMALS.into());
+    let (erc20_address, _) = deploy_syscall(
+        ERC20::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
+    )
+        .unwrap();
+
+    let mut erc20_token = IERC20Dispatcher { contract_address: erc20_address };
+
+    (caller, erc20_token)
 }
 ```
 
-此处的 `set_caller_address` 函数需要使用 `use starknet::testing::set_caller_address;` 语句导入。该函数的作用是将该语句后的所有函数调用的 `msg.sender` 修正为 `caller` 。
+此处的 `set_contract_address` 函数需要使用 `use starknet::testing::set_contract_address;` 语句导入。该函数的作用是将该语句后的所有函数调用的测试合约地址修正为 `caller` 。
+
+在 `src/tests/ERC20_test.cairo` 中，我们使用 `ERC20_test.cairo` 为基础对部署的 ERC20 代币合约进行测试，所以我们需要修改 `ERC20_test.cairo` 的地址来改变 ERC20 代币合约调用者的地址，此处我们使用 `set_contract_address` 函数将 `ERC20_test.cairo` 的地址修正为 `contract_address_const::<1>()` 实现了对代币合约调用者的修改。
 
 最后，我们给出测试函数，如下:
 
@@ -613,13 +694,14 @@ fn setUp() -> ContractAddress {
 #[test]
 #[available_gas(2000000)]
 fn test_approve() {
-    let caller: ContractAddress = setUp();
+    let (caller, erc20_token) = setUp();
+
     let spender: ContractAddress = contract_address_const::<2>();
     let amount: u256 = u256_from_felt252(2000);
 
-    ERC20::approve(spender, amount);
+    erc20_token.approve(spender, amount);
 
-    assert(ERC20::allowance(caller, spender) == amount, 'Approve should eq 2000');
+    assert(erc20_token.allowance(caller, spender) == amount, 'Approve should eq 2000');
 }
 ```
 
@@ -628,13 +710,11 @@ fn test_approve() {
 接下来，我们编写 `transfer` 系列代码，但在编写 `transfer` 系列代码前。为了方便后期测试，我们引入 `mint` 函数，如下:
 
 ```rust
-    #[external]
-    fn mint(amount: u256) {
-        let sender = get_caller_address();
-
-        _total_supply::write(_total_supply::read() + amount);
-        _balances::write(sender, _balances::read(sender) + amount);
-    }
+fn mint(ref self: ContractState, amount: u256) {
+    let sender = get_caller_address();
+    self._total_supply.write(self._total_supply.read() + amount);
+    self._balances.write(sender, self._balances.read(sender) + amount);
+}
 ```
 
 由于此函数测试较为简单，不再给出测试代码，读者可以前往 [github 仓库](https://github.com/wangshouh/helloERC20/blob/main/src/tests/ERC20_test.cairo) 阅读。
@@ -642,18 +722,19 @@ fn test_approve() {
 我们给出 `transfer` 的最简实现，如下:
 
 ```rust
-    #[external]
-    fn transfer(to: ContractAddress, amount: u256) -> bool {
-        let from = get_caller_address();
+fn transfer(ref self: ContractState, to: ContractAddress, amount: u256) -> bool {
+    let from = get_caller_address();
 
-        _balances::write(from, _balances::read(from) - amount);
-        _balances::write(to, _balances::read(to) + amount);
+    self._balances.write(from, self._balances.read(from) - amount);
+    self._balances.write(to, self._balances.read(to) + amount);
 
-        Transfer(from, to, amount);
-        
-        true
-    }
+    self.emit(Event::Transfer(Transfer { from, to, value: amount }));
+
+    true
+}
 ```
+
+此处的 `self.emit` 用于 `event` 的释放。
 
 对于此函数的正向测试，请读者自行参考 [仓库](https://github.com/wangshouh/helloERC20/blob/main/src/tests/ERC20_test.cairo#L55)。此函数是本合约中第一个可能会抛出异常的函数，我们认为该函数在用户转账数额大于其余额时应该产生报错。我们尝试编写此测试:
 
@@ -684,7 +765,7 @@ test helloERC20::tests::ERC20_test::test_mint ... ok
 test helloERC20::tests::ERC20_test::test_err_transfer ... fail
 test helloERC20::tests::ERC20_test::test_transfer ... ok
 failures:
-   helloERC20::tests::ERC20_test::test_err_transfer - panicked with [39879774624085075084607933104993585622903 ('u256_sub Overflow'), ].
+   helloERC20::tests::ERC20_test::test_err_transfer - panicked with [39879774624085075084607933104993585622903 ('u256_sub Overflow'), 23583600924385842957889778338389964899652 ('ENTRYPOINT_FAILED'), ].
 ```
 
 但是问题来了，`fail` 测试看上去不太好看，而且这个错误是我们已知的，该怎么办？答案是引入 `should_panic` 宏，用法如下:
@@ -692,7 +773,7 @@ failures:
 ```rust
 #[test]
 #[available_gas(2000000)]
-#[should_panic(expected: ('u256_sub Overflow', ))]
+#[should_panic(expected: ('u256_sub Overflow', 'ENTRYPOINT_FAILED', ))]
 fn test_err_transfer() {
     ...
 }
@@ -700,29 +781,35 @@ fn test_err_transfer() {
 
 此处使用 `expected` 指明报错原因即可。再次运行测试，会发现所有测试均通过。
 
-> 此处的错误就是 rust 中的 `panic` 运行时恐慌，目前所见合约基本都使用 `panic` 抛出错误。众所周知，在 EVM 生态系统中，我们都是以 `revert` 进行错误抛出，这是因为 `revert` 不仅可以抛出异常，还会退回 gas 。但尚未见到 cairo 提供此机制，似乎 cairo 错误会直接用户发送的所有 gas ，用户在合约交互时应注意此点。
+> 此处的错误就是 rust 中的 `panic` 运行时恐慌，目前所见合约基本都使用 `panic` 抛出错误。值得注意的，Cairo 合约所有的错误除原本的错误外都会带有 `ENTRYPOINT_FAILED` 错误。
 
 接下来，我们实现 `transferFrom` 函数，代码如下:
 
 ```rust
-#[external]
-fn transferFrom(from: ContractAddress, to: ContractAddress, amount: u256) -> bool {
+fn transferFrom(
+    ref self: ContractState, from: ContractAddress, to: ContractAddress, amount: u256
+) -> bool {
     let caller = get_caller_address();
-    let allowed: u256 = _allowances::read((from, caller));
+    let allowed: u256 = self._allowances.read((from, caller));
 
     let ONES_MASK = 0xffffffffffffffffffffffffffffffff_u128;
 
     let is_max = (allowed.low == ONES_MASK) & (allowed.high == ONES_MASK);
 
     if !is_max {
-        _allowances::write((from, caller), allowed - amount);
-        Approval(from, caller, allowed - amount);
+        self._allowances.write((from, caller), allowed - amount);
+        self
+            .emit(
+                Event::Approval(
+                    Approval { owner: from, spender: caller, value: allowed - amount }
+                )
+            );
     }
 
-    _balances::write(from, _balances::read(from) - amount);
-    _balances::write(to, _balances::read(to) + amount);
+    self._balances.write(from, self._balances.read(from) - amount);
+    self._balances.write(to, self._balances.read(to) + amount);
 
-    Transfer(from, to, amount);
+    self.emit(Event::Transfer(Transfer { from, to, value: amount }));
 
     true
 }
@@ -748,15 +835,11 @@ fn MAX_U256() -> u256 {
 
 关于命名问题，很幸运，此部分的文档处于完成状态，我们可以参考 [Naming conventions](https://github.com/starkware-libs/cairo/blob/main/docs/reference/src/components/cairo/modules/language_constructs/pages/naming-conventions.adoc) 文档。
 
-关于存储变量访问问题，由于目前 cairo 不支持使用等号对存储变量进行重赋值操作，我们只能使用 `::read` 和 `::write` 函数，这些操作是复杂的。`openzepplin` 在自己的实现中使用了包装函数，即将所有的对存储变量的读写尽可能抽象为内部函数，而在具体编程过程中，涉及到对存储变量的读写时都使用包装函数。这是一个较好的思路。
-
-> 在较新版本的 cairo 中，已经引入了一些函数用以解决此问题，但笔者使用的 `cairo-1.1.0` 尚不支持这些函数。
-
 关于项目组织问题，我们可以发现使用 rust 作为语法来源，遵从 [组合优于继承](https://en.wikipedia.org/wiki/Composition_over_inheritance) 原则的 cairo 1 语言无法实现 solidity 那样的合约继承关系。而且 cairo 1 中的合约属于特殊模块。目前较为通用的做法是将大部分不涉及存储变量的操作抽离为库，即不包含 `#[contrat]` 宏的普通模块，而合约则调用库中的函数。由于 ERC20 合约较为简单，所以我们没有采取这种复杂方式，但随着项目的拓展，我们有必要将较为复杂的逻辑独立出来写进库中。当然，这一法则也不是我提出的，在 cairo 0 时期就已有对此问题的讨论，具体可以参考 [Cairo Coding Guidelines](https://medium.com/nethermind-eth/cairo-coding-guidelines-74eb6f4ee264) 。
 
 ## ERC20 合约部署
 
-本文使用 [argent](https://www.argent.xyz/argent-x/) 钱包部署合约。请读者完成插件安装等步骤，并设置账户。
+本文使用 [argent](https://www.argent.xyz/argent-x/) 钱包作为浏览器钱包，但需要注意的是，在部署阶段，我们使用了命令行工具，`argent` 钱包的功能是完成一些简单的 faucet 等操作。请读者完成插件安装等步骤，并设置账户。
 
 设置完成后，读者可以获得账户地址。读者需要注意在 starknet 上，所有账户均为合约账户，没有 EOA 账户的存在，所以理论上获得一个账户就是我们在 starknet 上的第一次合约部署。
 
@@ -774,125 +857,186 @@ fn MAX_U256() -> u256 {
 
 ![StarkNet Deploy](https://files.catbox.moe/bqu4fa.svg)
 
-完成上述流程后，我们需要安装一个用于部署合约的 CLI 工具 [nile-rs](https://github.com/OpenZeppelin/nile-rs/tree/main)，非常不幸的是，该工具虽然使用 Rust 作为开发语言，但开发者可能认为工具仍较为早期所以没有给出预编译版本。我使用了 `github codespace` 进行了编译，编译后可以获得 `nile-rs` 二进制文件，将其放入 `PATH` 即可。
+此流程中，我们没有使用 EOA 账户进行合约部署，此做法需要将 `deploy_syscall` 函数的 `deploy_from_zero` 设置为 `True` 。在此模式下，会使用部署合约地址上的 ETH 支付手续费。我们可以通过计算提前获得此地址，使用跨链桥等工具对其充值 ETH 即可。
 
-> `nile-rs` 的开发似乎进入了停滞，但对于简单的合约部署而言还是有用的
+完成上述流程后，我们需要安装一个用于部署合约的 CLI 工具 [cairo-lang](https://github.com/starkware-libs/cairo-lang)。该工具曾用于 cairo 0 的开发和测试工作，但目前我们仅使用此工具进行合约部署。
 
-完成上述流程后，我们需要修正项目使其兼容 `nile-rs`。在 `Scarb.toml` 中写入以下内容:
+在安装具体工具前，读者应使用首先安装 `libgmp3-dev` 软件包，在 Ubuntu 上可以使用以下命令:
+
+```bash
+sudo apt install -y libgmp3-dev
+```
+
+在 MacOS 上请使用以下命令:
+
+```bash
+brew install gmp
+```
+
+完成 `libgmp3-dev` 安装后，我们需要安装 Python 3.9 ，具体安装方法可以参考 [Ubuntu Python 多版本安装](https://blog.csdn.net/WongSSH/article/details/130166679) 文章。完成 Python 3.9 安装后，我们可以使用以下命令创建并激活 `venv` 环境:
+
+```bash
+python3.9 -m venv cairo_venv
+source bin/activate.fish
+```
+
+> 由于我使用了 fish 作为终端，所以此处使用了 `activate.fish` ，如果读者使用了默认的 bash 终端，则需要使用 `source bin/activate` 进行激活
+
+完成虚拟环境激活后，需要前往 [此页面](https://github.com/starkware-libs/cairo-lang/releases) 下载最新的 `zip` 压缩包。
+
+![Cairo Lang ZIP](https://img.gejiba.com/images/9c5a6f63b2d6b879ffb8a191ed7c0222.png)
+
+使用以下命令安装压缩包内的内容:
+
+```bash
+pip install cairo-lang-0.12.0.zip
+```
+
+等待所有 pip 包安装完成，使用以下命令检查是否安装成功:
+
+```bash
+starknet -v
+```
+
+接下来，我们需要部署一个用于合约部署的账户，我们首先设置以下环境变量:
+
+```bash
+export STARKNET_NETWORK=alpha-goerli
+export STARKNET_WALLET=starkware.starknet.wallets.open_zeppelin.OpenZeppelinAccount
+```
+
+根据上文对 argent 钱包的介绍，读者应该发现部署一个账户实际上分为以下三步:
+
+1. 计算账户地址
+2. 向账户地址内转入 ETH
+3. 部署
+
+使用 `starknet new_account --account account_name` 计算账户地址:
+
+```bash
+(cairo_venv) root@LAPTOP cairo_venv# starknet new_account --account blog
+Account address: 0x037bdd90167c90e81276d3ad552b128e24eae3748f75a0fbd317e2b767f0555d
+Public key: 0x07b7e76bdc5bbb825d6a13e8a1ddd5980d8a0ab70edba88659b93a3617bebe54
+Move the appropriate amount of funds to the account, and then deploy the account
+by invoking the 'starknet deploy_account' command.
+
+NOTE: This is a modified version of the OpenZeppelin account contract. The signature is computed
+differently.
+```
+
+使用 [faucet](https://faucet.goerli.starknet.io/) 向账户地址进行充值。
+
+使用 `starknet deploy_account --account account_name` 部署账户:
+
+```bash
+(cairo_venv) root@LAPTOP cairo_venv# starknet deploy_account --account blog
+Sending the transaction with max_fee: 0.000018 ETH (17576528114410 WEI).
+Sent deploy account contract transaction.
+
+Contract address: 0x037bdd90167c90e81276d3ad552b128e24eae3748f75a0fbd317e2b767f0555d
+Transaction hash: 0x1b2a235007efd9b20a724dcd1390e534221acf8645f6e455a6f433642d75d6b
+```
+
+至此，我们完成了部署合约账户的配置，这些账户都存储在 `~/.starknet_accounts/` 中，如下:
+
+```bash
+(cairo_venv) root@LAPTOP /m/d/c/s/cairo_venv# cd ~/.starknet_accounts/
+(cairo_venv) root@LAPTOP ~/.starknet_accounts# ls
+starknet_open_zeppelin_accounts.json  starknet_open_zeppelin_accounts.json.backup
+(cairo_venv) root@LAPTOP ~/.starknet_accounts# cat starknet_open_zeppelin_accounts.json
+{
+    "alpha-goerli": {
+        "blog": {
+            "private_key": "...",
+            "public_key": "0x7b7e76bdc5bbb825d6a13e8a1ddd5980d8a0ab70edba88659b93a3617bebe54",
+            "salt": "0x72c542174c1417e296fe16a109d02333394089d7b62a5244e8cbe0c9d3e796e",
+            "address": "0x37bdd90167c90e81276d3ad552b128e24eae3748f75a0fbd317e2b767f0555d",
+            "deployed": true
+        }
+    }
+}
+```
+
+接下来，我们需要修正项目使其可以被正确编译。在 `Scarb.toml` 中写入以下内容:
 
 ```toml
 [package]
 name = "helloERC20" # the name of the package
 version = "0.1.0"    # the current version, obeying semver
 
+[dependencies]
+starknet = ">=2.0.0-rc0"
+
 [[target.starknet-contract]]
 allowed-libfuncs = true
-
-[tool.nile_rs]
-artifacts_dir = "./target/release"
-contracts_dir = "./src"
 ```
 
-此处我们加入了一个特殊的选项为 `allowed-libfuncs = true` ，该选项的含义为允许合约调用库函数。如果不使用此选项，合约不能调用标准库内的函数。读者应当注意测试网和主网启用的标注库函数种类不同，具体可以参考 [allowed_libfuncs_lists](https://github.com/starkware-libs/cairo/tree/main/crates/cairo-lang-starknet/src/allowed_libfuncs_lists) 内的内容。
+此处我们加入了 `dependencies` 和 `target.starknet-contract`。前者为当前项目增加依赖项，此处我们增加了 `starknet` 作为依赖项，此模块提供了大量合约相关的内容。后者代表编译出的合约所含有的特殊选项，此处的特殊选项为 `allowed-libfuncs = true` ，该选项的含义为允许合约调用库函数。如果不使用此选项，合约不能调用标准库内的函数。读者应当注意测试网和主网启用的标注库函数种类不同，具体可以参考 [allowed_libfuncs_lists](https://github.com/starkware-libs/cairo/tree/main/crates/cairo-lang-starknet/src/allowed_libfuncs_lists) 内的内容。
 
 在项目中加入 `.gitgnore` 文件，写入以下内容:
 
 ```
 /target
-/.env
-/deployments
 ```
 
-请读者前往 `Argent` 钱包中导出私钥，如下图:
+此处的 `target` 即编译产物的存储文件夹，我们一般不将编译结果上传到 github 中。
 
-![Argent Export private key](https://img.gejiba.com/images/0a6a9b974d989d9c20928881c0a915de.png)
+使用 `scarb build` 对合约进行编译，我们可以在 `target` 文件夹内获得以下内容:
 
-导出私钥后，打开 `.env` 文件填入，如下:
-
+```bash
+.
+├── CACHEDIR.TAG
+└── dev
+    ├── helloERC20.starknet_artifacts.json
+    ├── helloERC20_ERC20.json
+    └── helloERC20_ERC20.sierra.json
 ```
-PRIVATE_KEY=您的私钥
-```
-
-创建 `deployments/goerli.accounts.json` 填入以下内容:
-
-```json
-[
-  {
-    "name": "PRIVATE_KEY",
-    "address": "您的钱包地址",
-    "public_key": "公钥"
-  }
-]
-```
-
-其中 `address` 可以直接在钱包内复制获得，而钱包公钥则较为复杂，读者可以在区块链浏览器里打开钱包地址，如下图:
-
-![View on starknet](https://img.gejiba.com/images/43222d17c1874829e7538a445489e903.png)
-
-在合约交互中，使用 `getSigner` 函数，点击 `query` 就可以获得钱包公钥。
-
-![getSigner](https://img.gejiba.com/images/953163bc321c7ac9bebd24d84ef59da0.png)
-
-完成上述流程后，在终端运行 `nile-rs compile` 命令，我们可以发现项目目录中增加了 `target/release/helloERC20_ERC20.json` 文件。
 
 使用以下命令进行 `declare` 操作，如下:
 
 ```bash
-nile-rs declare -p PRIVATE_KEY -n goerli helloERC20_ERC20 -t
+starknet declare --contract target/dev/helloERC20_ERC20.sierra.json --account cairo-dev --show_trace
 ```
 
-我们会获得如下输出:
+此处增加了 `--show_trace` 选项以打印出完整的错误报告。
 
-```
-⏳ Declaration successfully sent!
-
-Transaction hash: 0x067abfeef634ba7755627cbf34921e262aa5e0c7efe3718a32f88278e125e011
-Class hash: 0x06672e37dd3f0afe69354fd6243d99a9854f537aa21f607b419b2e67dc2589d0
-⏳ Transaction status: Received
-```
-
-等待出现 `⏳ Transaction status: Pending` ，该过程一般来说耗时较长。目前，我们一般认为 `declare` 交易达到 `Pending` 状态就相当于交易完成。
-
-值得注意的是，如果您完全照抄了我的代码，可能会出现 `already declared` 的错误，如下:
+值得注意的是，如果您完全照抄了我的代码，可能会出现 `StarknetErrorCode.CLASS_ALREADY_DECLARED` 的错误，如下:
 
 ```bash
-Error: Failed attempt to send the declare transaction
-
-Caused by:
-    Class with hash 0x6672e37dd3f0afe69354fd6243d99a9854f537aa21f607b419b2e67dc2589d0 is already declared.
-    0x7cb3adf9071af26bd07ee9cfd5e94270590a53be25353f68948a7c373731466 != 0 (ClassAlreadyDeclared)
+services.external_api.client.BadRequest: HTTP error ocurred. Status: 400. Text: {"code": "StarknetErrorCode.CLASS_ALREADY_DECLARED", "message": "Class with hash 0x473de2fe7d86ae45909172f359479a2a7c04cb892925ffd25fbc968da8aafbf is already declared.\n0x417f0e737d12bae893a07baf7cb4ce854f67ed1cfb3fbc0671b726d227767a5 != 0"}
 ```
 
 您可以通过修改 `mint` 函数的名字，或者增加部分函数解决这一问题。
 
 > 不要任意修改除 `mint` 外的函数的名字，否则就会被钱包识别无效代币
 
-正如上文所述，我们通过 `declare` 获得了 `Class hash` ，下一步我们可以使用此 `Class hash` 进行合约部署。但是，`nile-rs` 为了方便用户，没有设置直接通过 `class hash` 部署合约的功能，而是直接给出了 `nile-rs deploy` 命令。
+正如上文所述，我们通过 `declare` 获得了 `Class hash` ，下一步我们可以使用此 `Class hash` 进行合约部署。
 
 我们尝试使用此命令部署合约:
 
-```
-nile-rs deploy -p PRIVATE_KEY -n goerli helloERC20_ERC20 'HELLO' 'HE' 18
+```bash
+starknet deploy --inputs 0x48454c4c4f32 0x484532 18 --class_hash 0x0473de2fe7d86ae45909172f359479a2a7c04cb892925ffd25fbc968da8aafbf --account cairo-dev --show_trace
 ```
 
-此函数会直接使用 `helloERC20_ERC20` 的 `class hash` 进行合约部署，最后三个参数为构造器参数。此处，我们没有使用 `-t` 标识符来进行交易状态跟踪，读者可以使用 `Transaction hash` ，前往任一区块链浏览器查看交易状态。较为著名的区块链浏览器有:
+此函数会直接使用 `class hash` 进行合约部署，`--inputs` 指明了合约构造器参数，此处仅允许输入整数类型，所以我们需要将字符串类型的 `name` 和 `symbol` 转化为 16 进制形式。如果读者安装了 Solidity 的 Foundry 开发框架，可以使用以下命令获得编码结果:
+
+```bash
+(cairo_venv) root@LAPTOP helloERC20 (main)# cast from-utf8 "HELLO2"
+0x48454c4c4f32
+(cairo_venv) root@LAPTOP helloERC20 (main)# cast from-utf8 "HE2"
+0x484532
+```
+
+读者可以使用 `Transaction hash` ，前往任一区块链浏览器查看交易状态。较为著名的区块链浏览器有:
 
 1. [starkscan](https://testnet.starkscan.co/)
 2. [voyager](https://goerli.voyager.online/)
 
-当然，此处我们仅给出了 `nile-rs deploy` 的最简单使用，读者可以通过 `nile-rs deploy -h` 命令获得更多参数，如用于调整地址的 `salt` 参数等。
+由于本文使用了较新的 Cairo 2 编程语言，在本文编写时，StarkScan 并没有兼容，所以建议使用 voyager 进行合约操作。
 
-合约最终部署位置为 `0x0398dd27515818daa8dcbf57f18befefd42d4d98405a3a736394314d39c4c29e`。点击 [此网址](https://testnet.starkscan.co/contract/0x0398dd27515818daa8dcbf57f18befefd42d4d98405a3a736394314d39c4c29e#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
+合约最终部署位置为 `0x04375195089e9684ed18b7cf77cf3e6c7e64faf23b017501c9cbe645101e81e3`。点击 [此网址](https://testnet.starkscan.co/contract/0x0398dd27515818daa8dcbf57f18befefd42d4d98405a3a736394314d39c4c29e#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
 
-![Hello ERC20](https://img.gejiba.com/images/e03b52057727eac7209afbf735468832.png)
-
-事实上，目前 starknet 官方更推荐使用 `starknet` 命令行工具进行合约部署，该工具使用 Python 作为开发语言，需要部署虚拟环境且仅兼容 Python 3.9。关于 Python 3.9 安装及虚拟环境配置问题，读者可以参考我在 CSDN 上发表的 [Ubuntu Python 多版本安装](https://blog.csdn.net/WongSSH/article/details/130166679) 。其他部署相关与上文大同小异，具体可以参考 [官方文档](https://docs.starknet.io/documentation/getting_started/deploying_contracts/)。
-
-> 本文其实最早准备使用 `starknet` 工具，我都完成了环境安装，但最后考虑到安装较为复杂，所以更换为了 `nile-rs` 。如果读者无法安装 `starknet` ，可以评论区留言。
-
-读者可能发现我们使用了 `nile-rs` 的编译功能，而 `nile-rs` 开发较慢，其编译器为 `v1.0.0-alpha6` ，而上文我们使用的 `cairo-test` 等 cairo 系工具都基于 `v1.0.0-alpha7` ，由于我们编写 ERC20 代币合约仅在测试部分使用了较新的语法，所以没有出现编译问题。如果读者是狂热的语言新特性爱好者，请使用 `starknet` 命令行工具，因为该工具的编译部分是由 `starknet-compile` 完成的，该编译器属于 cairo 系工具，所以版本较新。
-
-> 当然，最硬核的方法自然是直接与 RPC URL 交互来部署合约
+![Hello ERC20](https://img.gejiba.com/images/880d7d4e22758bcc9e788c51792b3535.png)
 
 ## 总结
 
@@ -902,4 +1046,4 @@ nile-rs deploy -p PRIVATE_KEY -n goerli helloERC20_ERC20 'HELLO' 'HE' 18
 
 我个人还是比较看好 cairo 语言发展的，其自带的测试框架是极其优秀的。但目前最大问题仍是开发工具的不足，我相信 starknet 团队未来一定会使用 rust 完全重写开发框架。
 
-本文写于 2023 年 4 月 17 日，使用 `cairo 1.0.0-alpha7` 完成。在 2023 年 6 月 11 日进行了更新，使用了 `cairo 1.1.0` 。
+本文写于 2023 年 4 月 17 日，使用 `cairo 1.0.0-alpha7` 完成。在 2023 年 6 月 11 日进行了更新，使用了 `cairo 1.1.0` 。在 2023 年 7 月 7 日使用 `Cairo v2.0.1` 更新内容。
