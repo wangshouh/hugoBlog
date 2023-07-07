@@ -873,7 +873,7 @@ sudo apt install -y libgmp3-dev
 brew install gmp
 ```
 
-完成 `libgmp3-dev` 安装后，我们需要安装 Python 3.9 ，具体安装方法可以参考 [Ubuntu Python 多版本安装](https://blog.csdn.net/WongSSH/article/details/130166679) 文章。完成 Python 3.9 安装后，我们可以使用以下命令创建并激活 `venv` 环境:
+完成 `libgmp3-dev` 安装后，我们需要安装 Python 3.9 ，具体安装方法可以参考 [Ubuntu Python 多版本安装]({{<ref "ubuntu-python" >}}) 文章。完成 Python 3.9 安装后，我们可以使用以下命令创建并激活 `venv` 环境:
 
 ```bash
 python3.9 -m venv cairo_venv
