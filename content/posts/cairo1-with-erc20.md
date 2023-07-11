@@ -859,51 +859,42 @@ fn MAX_U256() -> u256 {
 
 此流程中，我们没有使用 EOA 账户进行合约部署，此做法需要将 `deploy_syscall` 函数的 `deploy_from_zero` 设置为 `True` 。在此模式下，会使用部署合约地址上的 ETH 支付手续费。我们可以通过计算提前获得此地址，使用跨链桥等工具对其充值 ETH 即可。
 
-完成上述流程后，我们需要安装一个用于部署合约的 CLI 工具 [cairo-lang](https://github.com/starkware-libs/cairo-lang)。该工具曾用于 cairo 0 的开发和测试工作，但目前我们仅使用此工具进行合约部署。
+完成上述流程后，我们需要安装一个用于 StarkNet 的 CLI 工具 [starkli](https://github.com/xJonathanLEI/starkli)。该工具是目前 StarkNet 生态系统内最新的交互工具，其功能对标 Foundry 中的 `cast` 工具。
 
-在安装具体工具前，读者应使用首先安装 `libgmp3-dev` 软件包，在 Ubuntu 上可以使用以下命令:
-
-```bash
-sudo apt install -y libgmp3-dev
-```
-
-在 MacOS 上请使用以下命令:
+我们首先使用以下命令进行 starkli 的安装工具 `starkliup` 的安装:
 
 ```bash
-brew install gmp
+curl https://get.starkli.sh | sh
 ```
 
-完成 `libgmp3-dev` 安装后，我们需要安装 Python 3.9 ，具体安装方法可以参考 [Ubuntu Python 多版本安装]({{<ref "ubuntu-python" >}}) 文章。完成 Python 3.9 安装后，我们可以使用以下命令创建并激活 `venv` 环境:
+接下来运行 `starkliup` 命令安装 starkli，如下:
 
 ```bash
-python3.9 -m venv cairo_venv
-source bin/activate.fish
+root@LAPTOP ~# starkliup
+Installing the latest version of starkli...
+Fetching the latest release from GitHub...
+####################################################################################################### 100.0%
+Latest release found: v0.1.3
+Detected host triple: x86_64-unknown-linux-gnu
+Downloading latest release from GitHub...
+####################################################################################################### 100.0%
+Successfully installed starkli v0.1.3
+
+Generating shell completion files...
+- Bash ... Done
+- Zsh ... Done
+Note that shell completions might not work until you start a new session.
 ```
 
-> 由于我使用了 fish 作为终端，所以此处使用了 `activate.fish` ，如果读者使用了默认的 bash 终端，则需要使用 `source bin/activate` 进行激活
-
-完成虚拟环境激活后，需要前往 [此页面](https://github.com/starkware-libs/cairo-lang/releases) 下载最新的 `zip` 压缩包。
-
-![Cairo Lang ZIP](https://img.gejiba.com/images/9c5a6f63b2d6b879ffb8a191ed7c0222.png)
-
-使用以下命令安装压缩包内的内容:
+接下来，我们需要部署一个用于合约部署的账户，首先我们需要生成账户私钥，如下:
 
 ```bash
-pip install cairo-lang-0.12.0.zip
+starkli signer keystore new ~/.starknet_accounts/key.json
 ```
 
-等待所有 pip 包安装完成，使用以下命令检查是否安装成功:
+其中 `~/.starknet_accounts/key.json` 可以修改为任一文件位置。
 
-```bash
-starknet -v
-```
-
-接下来，我们需要部署一个用于合约部署的账户，我们首先设置以下环境变量:
-
-```bash
-export STARKNET_NETWORK=alpha-goerli
-export STARKNET_WALLET=starkware.starknet.wallets.open_zeppelin.OpenZeppelinAccount
-```
+在生成私钥过程中，需要用户输入一个密码来加密密钥，建议开发者使用一个较为复杂的密码。
 
 根据上文对 argent 钱包的介绍，读者应该发现部署一个账户实际上分为以下三步:
 
@@ -911,49 +902,53 @@ export STARKNET_WALLET=starkware.starknet.wallets.open_zeppelin.OpenZeppelinAcco
 2. 向账户地址内转入 ETH
 3. 部署
 
-使用 `starknet new_account --account account_name` 计算账户地址:
+使用 `starkli account oz init ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json` 计算账户地址:
 
 ```bash
-(cairo_venv) root@LAPTOP cairo_venv# starknet new_account --account blog
-Account address: 0x037bdd90167c90e81276d3ad552b128e24eae3748f75a0fbd317e2b767f0555d
-Public key: 0x07b7e76bdc5bbb825d6a13e8a1ddd5980d8a0ab70edba88659b93a3617bebe54
-Move the appropriate amount of funds to the account, and then deploy the account
-by invoking the 'starknet deploy_account' command.
+root@LAPTOP ~# starkli account oz init ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json
+Enter keystore password: Created new account config file: /root/.starknet_accounts/starkli.json
 
-NOTE: This is a modified version of the OpenZeppelin account contract. The signature is computed
-differently.
+Once deployed, this account will be available at:
+    0x02306d22bc46bc9399e705094a496c134a0cf8fe872d72ec9fe45ca9ccfd4851
+
+Deploy this account by running:
+    starkli account deploy /root/.starknet_accounts/starkli.json
 ```
 
 使用 [faucet](https://faucet.goerli.starknet.io/) 向账户地址进行充值。
 
-使用 `starknet deploy_account --account account_name` 部署账户:
+使用 `starkli account deploy ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json` 部署账户:
 
 ```bash
-(cairo_venv) root@LAPTOP cairo_venv# starknet deploy_account --account blog
-Sending the transaction with max_fee: 0.000018 ETH (17576528114410 WEI).
-Sent deploy account contract transaction.
+root@LAPTOP # starkli account deploy ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json
 
-Contract address: 0x037bdd90167c90e81276d3ad552b128e24eae3748f75a0fbd317e2b767f0555d
-Transaction hash: 0x1b2a235007efd9b20a724dcd1390e534221acf8645f6e455a6f433642d75d6b
+WARNING: no valid provider option found. Falling back to using the sequencer gateway for the goerli-1 network.
+Enter keystore password: The estimated account deployment fee is 0.000005063280307272 ETH. However, to avoid failure, fund at least:
+    0.000007594920460908 ETH
+to the following address:
+    0x02306d22bc46bc9399e705094a496c134a0cf8fe872d72ec9fe45ca9ccfd4851
+Press [ENTER] once you've funded the address.
+Account deployment transaction: 0x06b17658670c9d3c6c1d3ef8e235249eb0cc66cf40bd172335faff98b0b636bc
+Waiting for transaction 0x06b17658670c9d3c6c1d3ef8e235249eb0cc66cf40bd172335faff98b0b636bc to confirm. If this process is interrupted, you will need to run `starkli account fetch` to update the account file.
+Transaction not confirmed yet...
+Transaction 0x06b17658670c9d3c6c1d3ef8e235249eb0cc66cf40bd172335faff98b0b636bc confirmed
 ```
 
-至此，我们完成了部署合约账户的配置，这些账户都存储在 `~/.starknet_accounts/` 中，如下:
+至此，我们完成了部署合约账户的配置，这些账户都存储在 `~/.starknet_accounts/starkli.json` 中，如下:
 
-```bash
-(cairo_venv) root@LAPTOP /m/d/c/s/cairo_venv# cd ~/.starknet_accounts/
-(cairo_venv) root@LAPTOP ~/.starknet_accounts# ls
-starknet_open_zeppelin_accounts.json  starknet_open_zeppelin_accounts.json.backup
-(cairo_venv) root@LAPTOP ~/.starknet_accounts# cat starknet_open_zeppelin_accounts.json
+```json
 {
-    "alpha-goerli": {
-        "blog": {
-            "private_key": "...",
-            "public_key": "0x7b7e76bdc5bbb825d6a13e8a1ddd5980d8a0ab70edba88659b93a3617bebe54",
-            "salt": "0x72c542174c1417e296fe16a109d02333394089d7b62a5244e8cbe0c9d3e796e",
-            "address": "0x37bdd90167c90e81276d3ad552b128e24eae3748f75a0fbd317e2b767f0555d",
-            "deployed": true
-        }
-    }
+  "version": 1,
+  "variant": {
+    "type": "open_zeppelin",
+    "version": 1,
+    "public_key": "0x7b62815cb338983d49827cb1d359859ca57642803b9cb2f894cdaea748e7437"
+  },
+  "deployment": {
+    "status": "deployed",
+    "class_hash": "0x48dd59fabc729a5db3afdf649ecaf388e931647ab2f53ca3c6183fa480aa292",
+    "address": "0x2306d22bc46bc9399e705094a496c134a0cf8fe872d72ec9fe45ca9ccfd4851"
+  }
 }
 ```
 
@@ -995,15 +990,14 @@ allowed-libfuncs = true
 使用以下命令进行 `declare` 操作，如下:
 
 ```bash
-starknet declare --contract target/dev/helloERC20_ERC20.sierra.json --account cairo-dev --show_trace
+starkli declare --keystore ~/.starknet_accounts/key.json --account ~/.starknet_accounts/starkli.json target/dev/helloERC20_ERC20.sierra.json```
 ```
 
-此处增加了 `--show_trace` 选项以打印出完整的错误报告。
 
 值得注意的是，如果您完全照抄了我的代码，可能会出现 `StarknetErrorCode.CLASS_ALREADY_DECLARED` 的错误，如下:
 
 ```bash
-services.external_api.client.BadRequest: HTTP error ocurred. Status: 400. Text: {"code": "StarknetErrorCode.CLASS_ALREADY_DECLARED", "message": "Class with hash 0x473de2fe7d86ae45909172f359479a2a7c04cb892925ffd25fbc968da8aafbf is already declared.\n0x417f0e737d12bae893a07baf7cb4ce854f67ed1cfb3fbc0671b726d227767a5 != 0"}
+Not declaring class as it's already declared.
 ```
 
 您可以通过修改 `mint` 函数的名字，或者增加部分函数解决这一问题。
@@ -1015,15 +1009,15 @@ services.external_api.client.BadRequest: HTTP error ocurred. Status: 400. Text: 
 我们尝试使用此命令部署合约:
 
 ```bash
-starknet deploy --inputs 0x48454c4c4f32 0x484532 18 --class_hash 0x0473de2fe7d86ae45909172f359479a2a7c04cb892925ffd25fbc968da8aafbf --account cairo-dev --show_trace
+starkli deploy --keystore ~/.starknet_accounts/key.json --account ~/.starknet_accounts/starkli.json 0x0473de2fe7d86ae45909172f359479a2a7c04cb892925ffd25fbc968da8aafbf 0x48454c4c4f32 0x484532 18
 ```
 
 此函数会直接使用 `class hash` 进行合约部署，`--inputs` 指明了合约构造器参数，此处仅允许输入整数类型，所以我们需要将字符串类型的 `name` 和 `symbol` 转化为 16 进制形式。如果读者安装了 Solidity 的 Foundry 开发框架，可以使用以下命令获得编码结果:
 
 ```bash
-(cairo_venv) root@LAPTOP helloERC20 (main)# cast from-utf8 "HELLO2"
+root@LAPTOP helloERC20 (main)# cast from-utf8 "HELLO2"
 0x48454c4c4f32
-(cairo_venv) root@LAPTOP helloERC20 (main)# cast from-utf8 "HE2"
+root@LAPTOP helloERC20 (main)# cast from-utf8 "HE2"
 0x484532
 ```
 
