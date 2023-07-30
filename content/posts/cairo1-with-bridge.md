@@ -1,12 +1,10 @@
 ---
-title: "Cairo 1 实战入门:可升级合约与跨链信息发送"
-date: 2023-04-21T14:45:33Z
+title: "Cairo 2 实战入门:可升级合约与跨链信息发送"
+date: 2023-07-29T14:45:33Z
 tags: [cario,solidity]
 ---
 
 ## 概述
-
-本文正在根据 Cairo 1.2 进行更新，请读者注意。
 
 如果读者阅读过笔者之前的文章就会发现，我在 solidity 中使用了 ERC20 代币 -> 可实升级合约的学习路径。为了保持文章的统一性，我准备在此文中介绍 cairo 的可升级合约编程。
 
@@ -14,7 +12,7 @@ tags: [cario,solidity]
 
 StarkNet 作为以太坊 L2 项目，其部署在以太坊 [核心合约](https://goerli.etherscan.io/address/0xde29d060D45901Fb19ED6C6e959EB22d8626708e) 提供了跨链信息传输功能，而在 StarkNet 链上，原生支持向以太坊通信的系统调用。
 
-显然，使用这些函数可以构造一个沟通 StarkNet 和 Ethereum 的跨链应用。本文将在 [Cairo 1 实战入门:编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/cairo1-with-erc20/) 基础上构造一个原生支持跨链的 ERC20 代币。
+显然，使用这些函数可以构造一个沟通 StarkNet 和 Ethereum 的跨链应用。本文将在 [Cairo 2 实战入门:编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/cairo1-with-erc20/) 基础上构造一个原生支持跨链的 ERC20 代币。
 
 本文出现了大量难度不高的 solidity 代码并使用了 foundry 开发框架，如果读者不熟悉 solidity 合约编程或不熟悉 foundry 框架，请参考 [Foundry教程：编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/foundry-with-erc20/)。
 
@@ -27,7 +25,7 @@ StarkNet 作为以太坊 L2 项目，其部署在以太坊 [核心合约](https:
 
 ## 可升级合约
 
-在 [Cairo 1 实战入门:编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/cairo1-with-erc20/) 中，我们曾介绍过 `class hash`。事实上，我们编写的 cairo 代码上链时都会被注册到 starknet 区块链的 `class` 状态仓库中，而合约只是 `class` 的运行时，用于存储运行状态。 `class` 和 合约的分离彻底实现了逻辑和状态的分离。
+在 [Cairo 2 实战入门:编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/cairo1-with-erc20/) 中，我们曾介绍过 `class hash`。事实上，我们编写的 cairo 代码上链时都会被注册到 starknet 区块链的 `class` 状态仓库中，而合约只是 `class` 的运行时，用于存储运行状态。 `class` 和 合约的分离彻底实现了逻辑和状态的分离。
 
 > 简单来看，`class` 相当于逻辑合约，而合约相当于代理合约。
 
@@ -38,40 +36,48 @@ StarkNet 作为以太坊 L2 项目，其部署在以太坊 [核心合约](https:
 在 starknet 智能合约中，我们使用以下方法进行数据写入:
 
 ```rust
-_name::write(name);
+self._name.write(name);
 ```
 
 但这其实使用语法糖后的写法，其底层实现为:
 
 ```rust
-        fn address() -> starknet::StorageBaseAddress {
-            starknet::storage_base_address_const::<0x3a858959e825b7a94eb8d55c738f59c7bf4685267af5064bed5fd9c6bbc26de>()
-        }
-        fn write(value: felt252) {
-            // Only address_domain 0 is currently supported.
-            let address_domain = 0_u32;
-            starknet::StorageAccess::<felt252>::write(
-                address_domain,
-                address(),
-                value,
-            ).unwrap_syscall()
-        }
+impl InternalContractStateImpl of InternalContractStateTrait {
+    fn address(self: @ContractState) -> starknet::StorageBaseAddress {
+        starknet::storage_base_address_const::<0x3a858959e825b7a94eb8d55c738f59c7bf4685267af5064bed5fd9c6bbc26de>()
+    }
+    fn read(self: @ContractState) -> felt252 {
+        // Only address_domain 0 is currently supported.
+        let address_domain = 0_u32;
+        starknet::StorageAccess::<felt252>::read(
+            address_domain,
+            self.address(),
+        ).unwrap_syscall()
+    }
+    fn write(ref self: ContractState, value: felt252) {
+        // Only address_domain 0 is currently supported.
+        let address_domain = 0_u32;
+        starknet::StorageAccess::<felt252>::write(
+            address_domain,
+            self.address(),
+            value,
+        ).unwrap_syscall()
+    }
+}
 ```
 
-其中，`starknet::StorageAccess::<felt252>::write(address_domain, address, value)` 是写入的核心函数，而写入地址为 变量名的 `sn-keccak` 哈希值 `0x3a858959e825b7a94eb8d55c738f59c7bf4685267af5064bed5fd9c6bbc26de` 。这与 solidity 的线性存储排布产生了鲜明对比。显然，这种依靠变量名哈希值进行存储的方式完全避免了存储槽冲突问题。我们可以进行任意的合约升级，不需要专门考虑升级前后存储变量是否会丢失或无法检索等问题。
+其中，`starknet::StorageAccess::<felt252>::write(address_domain, self.address(), value)` 是写入的核心函数，而写入地址为 变量名的 `sn-keccak` 哈希值 `0x3a858959e825b7a94eb8d55c738f59c7bf4685267af5064bed5fd9c6bbc26de` 。这与 solidity 的线性存储排布产生了鲜明对比。显然，这种依靠变量名哈希值进行存储的方式完全避免了存储槽冲突问题。我们可以进行任意的合约升级，不需要专门考虑升级前后存储变量是否会丢失或无法检索等问题。
 
 > 关于此处的变量存储地址 `address` 的计算问题，读者可以参考 [文档](https://docs.starknet.io/documentation/architecture_and_concepts/Contracts/contract-storage/#storage_variables)
 
 综上所述，可升级合约在 cairo 1 的极易实现，只需要在合约内加入以下内容:
 
 ```rust
-    use starknet::syscalls::replace_class_syscall;
+use starknet::syscalls::replace_class_syscall;
 
-    #[external]
-    fn upgrade(new_class_hash:  core::starknet::class_hash::ClassHash) -> bool {
-        replace_class_syscall(new_class_hash);
-        true
-    }
+fn upgrade(self: @ContractState, new_class_hash: ClassHash) {
+    replace_class_syscall(new_class_hash);
+}
 ```
 
 请注意此处没有对 `upgrade` 进行权限控制，读者在使用时应当进行增加。
@@ -187,7 +193,7 @@ function consumeMessageFromL2(uint256 fromAddress, uint256[] calldata payload)
 
 ![StarkNet L2 -> L1](https://files.catbox.moe/tkjaer.svg)
 
-在上图中，出现之前没有给出过解释的 `StarknetOS` 名词。简单来说，我们可以认为其指 cairo 运行环境。但事实上，该词有更加深层的隐喻。我们所学习的 `cairo 1` 都是无状态的，无法进行数据存储等操作，而缺少数据存储等操作显然无法构造真正的应用。所以 `StarkNet` 开发者为 Cairo 提供了一系列函数用于拓展 Cairo 编程语言。当 cairo 调用到这些函数后，类似操作系统中的应用进行系统调用，控制权会被转移到 cairo 外的程序，这一过程也类似操作系统中的用户态到内核态的转移。基于这种相似性，我们称 starknet 项目组构造的 cairo 运行时环境为 `StarknetOS` 。
+在上图中，出现之前没有给出过解释的 `StarknetOS` 名词。简单来说，我们可以认为其指 cairo 运行环境。但事实上，该词有更加深层的隐喻。我们所学习的 `cairo` 都是无状态的，无法进行数据存储等操作，而缺少数据存储等操作显然无法构造真正的应用。所以 `StarkNet` 开发者为 Cairo 提供了一系列函数用于拓展 Cairo 编程语言。当 cairo 调用到这些函数后，类似操作系统中的应用进行系统调用，控制权会被转移到 cairo 外的程序，这一过程也类似操作系统中的用户态到内核态的转移。基于这种相似性，我们称 starknet 项目组构造的 cairo 运行时环境为 `StarknetOS` 。
 
 > 这样解释了在测试过程中，我们为什么使用 `cairo-test --starknet .` 。此处的 `--starknet` 就意味着测试过程中应为运行时增加 `StarknetOS` 提供的系统调用
 
@@ -347,17 +353,24 @@ function cancelL1ToL2Message(
 
 注意是检查时间是否达到要求。此函数中没有退回 ETH 的函数，这是因为错误交易也消耗了 gas ，所以核心合约不会退回 gas ，此函数的意义在于开发者可以通过调用 `cancelL1ToL2Message` 来判断交易是否处于可取消状态。如果 `cancelL1ToL2Message` 调用成功，那么开发者可以在函数内编写代币铸造等功能帮助用户恢复资产。我们会在后文给出此过程的具体编程方法。
 
-一般来说，退回 gas 都是因为 L2 gas 不足而交易失败导致的，所以如何准确评估 L2 交易 gas 消耗是一个问题，万幸的是，starknet 提供了用于评估交易 gas 消耗的 `estimate_fee` 接口，读者可以提供 `starknet` 的 CLI 进行调用，调用方法如下:
+一般来说，退回 gas 都是因为 L2 gas 不足而交易失败导致的，所以如何准确评估 L2 交易 gas 消耗是一个问题，万幸的是，常用的开发工具 `starkli` 提供了 Gas 评估方法。我们以调用 `0x04375195089e9684ed18b7cf77cf3e6c7e64faf23b017501c9cbe645101e81e3` 的 `mint` 函数为例介绍如何评估。
+
+> 该合约是我们在 [上一篇文章](https://blog.wssh.trade/posts/cairo1-with-erc20) 中部署的。
+
+读者可以使用以下命令进行评估:
 
 ```bash
-starknet estimate_fee
-    --address <contract_address>
-    --abi <contract_abi>
-    --function <function_name>
-    --inputs <arguments>
+starkli invoke --estimate-only 0x04375195089e9684ed18b7cf77cf3e6c7e64faf23b017501c9cbe645101e81e3 mint u256:100
 ```
 
-由于笔者没有安装此工具，所以读者可以自行参考 [文档](https://docs.starknet.io/documentation/tools/CLI/commands/#starknet_estimate_fee) 。
+值得注意的是，在运行此命令前，读者需要设置以下环境变量:
+
+```bash
+export STARKNET_ACCOUNT=~/.starknet_accounts/starkli.json
+export STARKNET_KEYSTORE=~/.starknet_accounts/key.json
+```
+
+此处没有设置 RPC 所以默认使用 `goerli-1` 测试网，读者可以自行设置 RPC 以切换网络。
 
 ## 合约编程
 
@@ -385,120 +398,40 @@ starknet estimate_fee
 > 本文选择将跨链信息的接受方设置为 EOA 地址，不可能被消费。在测试过程中，我们可以使用 `foundry` 的 `cheatcode` 调整合约部署地址
 
 #### L2 cairo 合约
-在此流程中，我们首先修改 cairo 合约。由于 starknet 的地址格式与以太坊不同，所以我们需要构造一个用于生成以太坊地址的模块，创建 `helloERC20/src/utils/eth_address.cairo` 文件，写入以下内容:
+
+本文会在 [上篇文章](https://blog.wssh.trade/posts/cairo1-with-erc20) 编写的标准 ERC20 合约基础上修改，读者可以在 [此处](https://github.com/wangshouh/helloERC20/tree/bridge) 查看源代码。
+
+首先，我们需要增加 `burn` 函数。与其他函数不同，`burn` 属于内部函数，所以不能放在 `impl IERC20Impl of super::IERC20<ContractState>` 内，我们需要编写以下代码:
 
 ```rust
-use serde::Serde;
-use zeroable::Zeroable;
-use traits::Into;
+#[external(v0)]
+impl IERC20Impl of super::IERC20<ContractState> {
+    ...
+}
 
-#[derive(Copy, Drop)]
-struct EthAddress {
-    address: felt252, 
-}
-trait EthAddressTrait {
-    fn new(address: felt252) -> EthAddress;
-}
-impl EthAddressImpl of EthAddressTrait {
-    // Creates a EthAddress from the given address, if it's a valid Ethereum address. If not,
-    // panics with the given error.
-    fn new(address: felt252) -> EthAddress {
-        // TODO(yuval): change to a constant once u256 literals are supported.
-        let ETH_ADDRESS_BOUND = u256 { high: 0x100000000_u128, low: 0_u128 }; // 2 ** 160
+#[generate_trait]
+impl StorageImpl of StorageTrait {
+    fn burn(ref self: ContractState, amount: u256) {
+        let zero_address = contract_address_const::<0>();
+        let sender = get_caller_address();
+        self._total_supply.write(self._total_supply.read() - amount);
+        self._balances.write(sender, self._balances.read(sender) - amount);
 
-        assert(address.into() < ETH_ADDRESS_BOUND, 'INVALID_ETHEREUM_ADDRESS');
-        EthAddress { address }
-    }
-}
-impl EthAddressIntoFelt252 of Into<EthAddress, felt252> {
-    fn into(self: EthAddress) -> felt252 {
-        self.address
-    }
-}
-impl EthAddressSerde of Serde<EthAddress> {
-    fn serialize(ref output: Array<felt252>, input: EthAddress) {
-        Serde::<felt252>::serialize(ref output, input.address);
-    }
-    fn deserialize(ref serialized: Span<felt252>) -> Option<EthAddress> {
-        // Option::Some(EthAddressTrait::new(*serialized.pop_front()?))
-        Option::Some(EthAddressTrait::new(Serde::<felt252>::deserialize(ref serialized)?))
-    }
-}
-impl EthAddressZeroable of Zeroable<EthAddress> {
-    fn zero() -> EthAddress {
-        EthAddressTrait::new(0)
-    }
-
-    #[inline(always)]
-    fn is_zero(self: EthAddress) -> bool {
-        self.address.is_zero()
-    }
-
-    #[inline(always)]
-    fn is_non_zero(self: EthAddress) -> bool {
-        !self.is_zero()
+        self.emit(Event::Transfer(Transfer { from: sender, to: zero_address, value: amount }));
     }
 }
 ```
 
-此代码看上去复杂，实际较为简单，核心逻辑是在 felt252 内存储 160 位长的以太坊地址，由于 felt 完全可以存储下一个以太坊地址，所以此处的核心函数是 `EthAddressImpl` 中的 `new` 函数。其他的代码都是对一些接口的实现。此处我们着重探讨以下代码:
+我们将函数直接作为 `StorageTrait` 的一个 `trait` ，这意味着我们可以通过以下方法调用此函数:
 
 ```rust
-impl EthAddressSerde of Serde<EthAddress> {
-    fn serialize(ref output: Array<felt252>, input: EthAddress) {
-        Serde::<felt252>::serialize(ref output, input.address);
-    }
-    fn deserialize(ref serialized: Span<felt252>) -> Option<EthAddress> {
-        // Option::Some(EthAddressTrait::new(*serialized.pop_front()?))
-        Option::Some(EthAddressTrait::new(Serde::<felt252>::deserialize(ref serialized)?))
-    }
-}
+self.burn(amount);
 ```
-
-此处是对 `Serde` trait 的实现，`Serde` 是用于序列化与反序列化的模块，其功能是将定义的结构体序列化为数组或者进行相反操作。此处我们定义的 `EthAddress` 作为 felt252 类型本身不需要较多的序列化，所以此处的对 `EthAddress` 序列化与反序列化的定义都较为简单。关于 `Serde` 更多的信息可以参考 [Cairo Book](https://cairo-book.github.io/appendix-03-derivable-traits.html#serializing-with-serde) 中的内容
-
-我们可以注意到 `deserialize` 返回了 `Option<T>` 数据类型，`Option<T>` 数据类型对 rust 工程师来说应该非常熟悉，该数据类型会返回一个包装结果，该结果有可能是返回的正确的结果，也有可能为空(Null)。此处的可能产生的空值来自 `Serde::<felt252>::deserialize(ref serialized)?` ，最后的 `?` 用于简化处理 `Serde::<felt252>::deserialize` 的返回值。
-
-> `Serde::<felt252>::deserialize` 的返回值为 `Option::Some` ，使用 `?` 可以处理此返回值。关于 `Option<T>` 的更多内容，读者可以参考 [Rust 文档](https://doc.rust-lang.org/std/option/enum.Option.html)
-
-此处另一个未见过的关键词是 `ref` ，该关键词表示传入变量为引用。
-
-> 上述 `eth_address` 看似复杂，但由于 `EthAddress` 数据类型本质上就是 `felt252` 类型，所以大部分实现都是直接调用了 `felt252` 函数的实现。此处使用的 `trait` 都来自 `corelib` ，读者可以自行查阅其源代码。
-
-完成上述模块编程后，创建 `helloERC20/src/utils.cairo` 文件，写入以下内容:
-
-```rust
-mod eth_address;
-```
-
-并在 `lib.cairo` 中写入以下内容:
-
-```rust
-mod ERC20;
-mod utils;
-
-#[cfg(test)]
-mod tests;
-```
-
-在 cairo 设计的模块系统内，在检索模块时仅会在 `lib.cairo` 中检索，而 `lib.cairo` 中只能引用同级文件夹下的 `cairo` 文件，所以出现上述情况。我们通过创建与 `uitls/` 文件夹同名的 `utils.cairo` ，实现了在 `utils.cairo` 中引用 `eth_address` 模块，此时 `utils.cairo` 与 `lib.cairo` 位于同级文件夹下，所以 `lib.cairo` 可以通过 `mod utils;` 引用 `utils.cairo`。通过上述流程，我们实现了 `eth_address` 在命名空间内的注册。
-
-首先，我们需要增加 `burn` 函数，代码如下:
-
-```rust
-fn burn(amount: u256) {
-    let zero_address = contract_address_const::<0>();
-    let sender = get_caller_address();
-    _total_supply::write(_total_supply::read() - amount);
-    _balances::write(sender, _balances::read(sender) - amount);
-}
-```
-
-注意此函数没有 `#[external]` 标识。此处我们省略测试代码，该函数的测试与 `mint` 函数类似。
 
 我们也需要修正 `stroage` 结构体，增加 `governor` 和 `l1_token` 变量，前者指 `owner` 而后者指 L1 上的代币合约。修改后的 `Storage` 如下:
 
 ```rust
+#[storage]
 struct Storage {
     ...,
     _allowances: LegacyMap<(ContractAddress, ContractAddress), u256>,
@@ -511,52 +444,54 @@ struct Storage {
 
 ```rust
 #[constructor]
-fn constructor(name: felt252, symbol: felt252, decimals: u8, governor:ContractAddress) {
-    _name::write(name);
-    _symbol::write(symbol);
-    _decimals::write(decimals);
-    governor::write(governor);
+fn constructor(
+    ref self: ContractState,
+    name: felt252,
+    symbol: felt252,
+    decimals: u8,
+    governor: ContractAddress
+) {
+    self._name.write(name);
+    self._symbol.write(symbol);
+    self._decimals.write(decimals);
+    self.governor.write(governor);
 }
 ```
 
-此处不要使用 `governor::write(get_caller_address())` 设置 `owner` ，因为如果你使用的是 `ArgentX` 钱包，其合约部署是通过调用 `UniversalDeployer` 合约实现的，这意味如果使用 `get_caller_address()` 函数，则 `governor` 会被设置为 `UniversalDeployer` 合约地址。
+此处不要使用 `self.governor.write(get_caller_address())` 设置 `owner` ，因为如果你使用的是 `ArgentX` 钱包，其合约部署是通过调用 `UniversalDeployer` 合约实现的，这意味如果使用 `get_caller_address()` 函数，则 `governor` 会被设置为 `UniversalDeployer` 合约地址。
 
 更改 `constructor` 后，也需要修改一部分单元测试，请读者自行更改。
 
 增加以下函数用于设置 L1 代币合约地址:
 
 ```rust
-#[external]
-fn set_l1_token(l1_token_address: EthAddress) {
-    // The call is restricted to the governor.
-    assert(get_caller_address() == governor::read(), 'GOVERNOR_ONLY');
+fn set_l1_token(ref self: ContractState, l1_token_address: EthAddress) {
+    assert(get_caller_address() == self.governor.read(), 'GOVERNOR_ONLY');
 
-    assert(l1_token::read().is_zero(), 'L1_token_ALREADY_INITIALIZED');
+    assert(self.l1_token.read().is_zero(), 'L1_token_ALREADY_INITIALIZED');
     assert(l1_token_address.is_non_zero(), 'ZERO_token_ADDRESS');
 
-    l1_token::write(l1_token_address.into());
-    l1_token_set(l1_token_address);
+    self.l1_token.write(l1_token_address.into());
+    self.emit(Event::SetL1Token(SetL1Token { l1token: l1_token_address }))
 }
 ```
 
 `set_l1_token` 函数较为简单，但我们暂时没有引入 `EthAddress` 类型，请读者使用以下代码引入:
 
 ```rust
-use helloERC20::utils::eth_address::EthAddress;
+use starknet::eth_address::EthAddress;
 ```
 
 读者可能发现报错中提示 `is_zero` 和 `is_non_zero` 方法也不存在，所以我们需要引入:
 
 ```rust
-use zeroable::Zeroable;
-use helloERC20::utils::eth_address::EthAddressZeroable;
+use starknet::eth_address::EthAddressZeroable;
 ```
 
-最后，`l1_token_address` 为 `EthAddress` 类型，而 `l1_token` 为 `felt` 类型，所以此处需要使用 `l1_token_address.into()` 进行转换。此转换是我们之前在 `EthAddressIntoFelt252` 中定义的，而不是原生存在的方法。读者可能发现此处提示函数不存在，我们需要导入以下内容来使用 `into` 方法:
+最后，`l1_token_address` 为 `EthAddress` 类型，而 `l1_token` 为 `felt` 类型，所以此处需要使用 `l1_token_address.into()` 进行转换。此转换是在 `EthAddressIntoFelt252` 中定义的，而不是原生存在的方法。读者可能发现此处提示函数不存在，我们需要导入以下内容来使用 `into` 方法:
 
 ```rust
-use traits::Into;
-use helloERC20::utils::eth_address::EthAddressIntoFelt252;
+use starknet::eth_address::EthAddressIntoFelt252;
 ```
 
 关于测试部分，读者可以自行参考 [github 仓库](https://github.com/wangshouh/helloERC20/blob/bridge/src/tests/ERC20_test.cairo) 。
@@ -564,22 +499,25 @@ use helloERC20::utils::eth_address::EthAddressIntoFelt252;
 完成这些繁琐的基本任务后，我们开始真正编写跨链函数 `transfer_to_L1` ，其实也比较简单，代码如下:
 
 ```rust
-#[external]
-fn transfer_to_L1(l1_recipient: EthAddress, amount: u256) {
-    burn(amount);
-    // Call burn on l2_token contract.
+fn transfer_to_L1(ref self: ContractState, l1_recipient: EthAddress, amount: u256) {
+    self.burn(amount);
+
     let caller_address = get_caller_address();
 
-    // Send the message.
     let mut message_payload: Array<felt252> = ArrayTrait::new();
     message_payload.append(l1_recipient.into());
     message_payload.append(amount.low.into());
     message_payload.append(amount.high.into());
 
     send_message_to_l1_syscall(
-        to_address: l1_token::read(), payload: message_payload.span()
+        to_address: self.l1_token.read(), payload: message_payload.span()
     );
-    TransferToL1(l1_recipient, amount, caller_address);
+    self
+        .emit(
+            Event::TransferToL1(
+                TransferToL1 { l2_sender: caller_address, l1_recipient, value: amount }
+            )
+        )
 }
 ```
 
@@ -587,22 +525,13 @@ fn transfer_to_L1(l1_recipient: EthAddress, amount: u256) {
 
 完成上述工作后，我们开始部署此合约。这种跨链合约显然无法较为简单的进行本地测试，直接使用测试网可能是一个更好的选择。
 
-在部署过程中，直接使用 `nile-rs complie` 进行编译会出现编译报错，这可能是由于 `nile-rs` 的编译器版本问题，我们可以直接使用以下命令进行编译:
+我们使用以下命令进行编译:
 
 ```bash
-starknet-compile . target/release/bridgeERC20_ERC20.json
+scarb build
 ```
 
-在部署过程中需要注意，由于 nile-rs 的 gas 计算似乎有些问题，所以如果使用默认 max-fee 会出现交易失败的情况，如 [这笔交易](https://testnet.starkscan.co/tx/0xe636d8e82b2a9cbe76bc7d227f843d788de53ba36e8b73cd907fa1765e597e)，手动调整 `max-fee` 可以避免这种情况，命令如下:
-
-```bash
-nile-rs declare -p PRIVATE_KEY -n goerli bridgeERC20_ERC20 -t
-nile-rs deploy -p PRIVATE_KEY -m 1025377281411474 -n goerli bridgeERC20_ERC20 'BRIDGE' 'BE' 18 $OWNER_ADDRESS
-```
-
-请读者自行设置 `OWNER_ADDRESS` 变量。
-
-> 不太清楚为什么 `nile-rs` 的 gas 变量计算存在问题，目前，gas 不足的错误交易会被不会被记录到区块链上，且不扣用户 gas 费用。当然，不上链也可以使用区块链浏览器进行检索。注意，官方文档中声明错误交易不消耗 gas 只是权宜之计，为了更新后会移除此特性。
+关于部署的具体流程，读者可参考 [Cairo 2 实战入门:编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/cairo1-with-erc20/)
 
 部署完成后，读者可以调用 `set_l1_token` 函数设置一个 L1 地址，设置完成后，调用 `transfer_to_L1` 函数，读者可以点击 [此链接](https://testnet.starkscan.co/tx/0x36811d58cb4ef9bf804c0c22a0152797dd2bd69613fe4964dfd39756f82d68#overview) 查看示例交易。
 
