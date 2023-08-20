@@ -25,63 +25,15 @@ Cairo 是 ZK Rollup 的领域专用语言，目前仅用于 [StarkNet](https://w
 
 本文使用了 Cairo 1 语言，相比于大量依赖于 Python 的 Cairo 0 语言，Cairo 1 语言相关的开发工具基本都使用了 Rust 。这意味着我们可以通过直接下载编译后的二进制安装包进行安装。
 
-我们主要依赖于以下工具:
-
-1. [Cairo 开发工具链](https://github.com/starkware-libs/cairo)
-2. Cairo 包管理器 [scarb](https://docs.swmansion.com/scarb)
-
-读者需要 `nodejs` 和 `npm` 工具，考虑到大部分读者在系统内应包含此工具，我们不再详细介绍。事实上，如果读者没有此工具，也可以继续阅读。
-
-> 如果读者没有 `nodejs` 工具链，可以考虑使用 [nvm](https://github.com/nvm-sh/nvm) 工具进行安装
-
-我们主要介绍 Cairo 开发工具链的安装，使用以下命令下载 `release` 中编译好的二进制压缩包:
-
-```bash
-curl -L -o cairo.zip curl -L -o cairo.zip https://github.com/starkware-libs/cairo/releases/download/v2.0.0-rc1/release-x86_64-unknown-linux-musl.tar.gz
-``` 
-
-上述命令中的 `v2.0.0-rc1` 是笔者编写时的最新版本，请读者根据 [releases](https://github.com/starkware-libs/cairo/releases/) 中的最新版本自行替换。
-
-下载完成后，我们使用以下命令解压缩文件:
-
-```bash
-tar -xvf cairo.zip
-```
-
-最终，读者会获得一个 `cairo/` 文件夹，该文件内结构如下:
-
-```
-.
-├── bin
-│   ├── cairo-compile
-│   ├── cairo-format
-│   ├── cairo-language-server
-│   ├── cairo-run
-│   ├── cairo-test
-│   ├── sierra-compile
-│   ├── starknet-compile
-│   └── starknet-sierra-compile
-└── corelib
-    ├── Scarb.toml
-    ├── cairo_project.toml
-    └── src
-```
-
-请读者将 `cairo/bin` 部分加入系统变量 `PATH` 中，即完成安装工作。
-
-> 我一般直接修改 `.bashrc` 来永久性增加系统变量，可以在 `.bashrc` 内增加类似 `export PATH="$PATH:/root/.cairo/bin"` 的命令来添加系统变量。
-
-使用以下命令测试安装是否成功:
-
-```bash
-cairo-compile -V
-```
+在开发环境部署上，我们主要依赖于 Cairo 包管理器 [scarb](https://docs.swmansion.com/scarb)
 
 Scarb的安装方法与 cairo 基本一致，读者可以参考 [文档](https://docs.swmansion.com/scarb/download)。使用以下命令测试安装是否成功:
 
 ```bash
 scarb -V
 ```
+
+> 此处存在一个 scarb 自带的 cairo 版本与 starknet 区块链支持版本的差异问题，读者可以通过 [Starknet environments](https://docs.starknet.io/documentation/starknet_versions/version_notes/) 确定当前测试网和主网支持的版本，可以在 [Scarb Releases](https://github.com/software-mansion/scarb/releases) 中查看 scarb 自带的 cairo 版本
 
 最后，我们安装 `vscode` 中的开发插件，值得注意的是，目前开发插件需要自行编译安装，使用 [download-directory](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fstarkware-libs%2Fcairo%2Ftree%2Fmain%2Fvscode-cairo) 工具下载 `vscode-cairo` 文件夹，并在其中运行以下命令:
 
@@ -108,7 +60,7 @@ code --install-extension cairo1*.vsix
 
 一个示例配置如下(请勿直接抄写文件地址):
 
-![Cairo Setting Example](https://img.gejiba.com/images/17983ca61ab9a9dbfb81f94ac6ae2378.png)
+![Cairo Setting Example](https://img.gejiba.com/images/f0564492611f17938f4170eb697b9823.png)
 
 ## Cairo vs. Solidity
 
@@ -118,7 +70,7 @@ code --install-extension cairo1*.vsix
 
 而在 cairo 中，原生数据类型仅有 `felt` 类型，读者可简单认为该类型为 `uint252`。需要注意的是，该类型定义在 **有限域** 上，更加准确的定义为 $0 \leq x < P$ ，而 $P = 2^{251}+17 \cdot 2^{192} + 1$ 。其他数据类型都是由 `corelib` 标准库和编译器实现的。
 
-与 solidity 提供的常规计算机代数不同，cairo 的所有计算都定义在域上，简单来说，就是所有计算完成后都需要与 $P$ 进行模除。当然，这似乎与常规的计算机代数相同。但 `felt` 类型的除法是令人惊奇的。在 solidity 中，我们认为 `x / y` 的结果为 `\lfloor x / y \rfloor` ，设 $x = 7$ 和 $y=3$ ，那么在 solidity 中计算结果为 2 ，但在 cairo 中，计算结果为 `1,206,167,596,222,043,737,899,107,594,365,023,368,541,035,738,443,865,566,657,697,352,045,290,673,496`
+与 solidity 提供的常规计算机代数不同，cairo 的所有计算都定义在域上，简单来说，就是所有计算完成后都需要与 $P$ 进行模除。当然，这似乎与常规的计算机代数相同。但 `felt` 类型的除法是令人惊奇的。在 solidity 中，我们认为 `x / y` 的结果为 $\lfloor x / y \rfloor$ ，设 $x = 7$ 和 $y=3$ ，那么在 solidity 中计算结果为 2 ，但在 cairo 中，计算结果为 `1,206,167,596,222,043,737,899,107,594,365,023,368,541,035,738,443,865,566,657,697,352,045,290,673,496`
 
 这是因为 cairo 对 `felt` 的除法做出了以下要求，设 $z = x / y$ ，那么 $z * y = x$ 是恒成立的。该保证使上述离谱结果的出现。更加详细的解释，请参考 [Field elements](https://www.cairo-lang.org/docs/how_cairo_works/cairo_intro.html#field-elements)。请读者在进行 `felt` 数据类型除法时注意。
 
@@ -456,12 +408,12 @@ mapping(address => mapping(address => uint256)) public allowance;
 
 ```rust
 #[event]
-#[derive(Drop, starknet::Event)]
+#[derive(Drop, PartialEq, starknet::Event)]
 enum Event {
     Transfer: Transfer,
     Approval: Approval,
 }
-#[derive(Drop, starknet::Event)]
+#[derive(Drop, PartialEq, starknet::Event)]
 struct Transfer {
     #[key]
     from: ContractAddress,
@@ -469,7 +421,7 @@ struct Transfer {
     to: ContractAddress,
     value: u256,
 }
-#[derive(Drop, starknet::Event)]
+#[derive(Drop, PartialEq, starknet::Event)]
 struct Approval {
     #[key]
     owner: ContractAddress,
@@ -479,7 +431,7 @@ struct Approval {
 }
 ```
 
-最后，我们利用 `#[event]` 宏声明了两个事件。此处需要在 `enum Event` 枚举类型内写入合约内所有 event 的名字。接下来，我们使用结构体具体定义了 event 包含的数据，此处可以使用 `#[key]` 标识可检索变量，类似 solidity 中的 `index` 关键词。在此处，我们也使用了 `#[derive(Drop, starknet::Event)]` 宏为 event 增加了一些接口的默认实现。
+最后，我们利用 `#[event]` 宏声明了两个事件。此处需要在 `enum Event` 枚举类型内写入合约内所有 event 的名字。接下来，我们使用结构体具体定义了 event 包含的数据，此处可以使用 `#[key]` 标识可检索变量，类似 solidity 中的 `index` 关键词。在此处，我们也使用了 `#[derive(Drop, PartialEq, starknet::Event)]` 宏为 event 增加了一些接口的默认实现，此处的 `PartialEq` 是为后文进行测试准备的。
 
 接下来，我们编写构造器和基础的 `view` 函数，如下:
 
@@ -553,6 +505,7 @@ fn transferFrom(
 use helloERC20::ERC20::ERC20;
 use helloERC20::ERC20::IERC20Dispatcher;
 use helloERC20::ERC20::IERC20DispatcherTrait;
+use helloERC20::ERC20::ERC20::{Event, Approval};
 
 use array::ArrayTrait;
 use traits::Into;
@@ -574,10 +527,7 @@ const DECIMALS: u8 = 18_u8;
 #[test]
 #[available_gas(2000000)]
 fn test_initializer() {
-    let mut calldata = Default::default();
-    calldata.append(NAME);
-    calldata.append(SYMBOL);
-    calldata.append(DECIMALS.into());
+    let mut calldata = array![NAME, SYMBOL, DECIMALS.into()];
     let (erc20_address, _) = deploy_syscall(
         ERC20::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
     )
@@ -595,7 +545,7 @@ fn test_initializer() {
 
 > 此处利用了 cairo 对短字符串的支持，使用了 `'Test'` 等进行字符串定义，这些字符串会被直接转化为 `felt252` 类型。
 
-为了进行测试，我们导入了大量依赖，其中最核心的依赖为 `helloERC20::ERC20::IERC20Dispatcher` 和 `helloERC20::ERC20::IERC20DispatcherTrait` 。读者可能感觉我们似乎没有在 `ERC20` 合约内实现这两个模块，实际上，这两个模块是由 `IERC20` 接口衍生获得的，是 cairo 语言自动生成的。此模块用于后文对部署合约的函数调用。
+为了进行测试，我们导入了大量依赖，其中最核心的依赖为 `helloERC20::ERC20::IERC20Dispatcher` 和 `helloERC20::ERC20::IERC20DispatcherTrait` 。读者可能感觉我们似乎没有在 `ERC20` 合约内实现这两个模块，实际上，这两个模块是由 `IERC20` 接口衍生获得的，是 cairo 语言自动生成的。此模块用于后文对部署合约的函数调用。此处导入的 `use helloERC20::ERC20::ERC20::{Event, Approval};` 是为后文抛出事件测试准备的
 
 > 可能有读者好奇如果写出这么多依赖，对于我来说，大部分都是写完代码观察编译器报错后补充的，当然还有一部分来自参考代码
 
@@ -625,11 +575,11 @@ contract_address := pedersen(
 
 而 `deploy_from_zero` 则是 StarkNet 账户抽象的核心，其允许用户使用零用户部署合约，即不在 EOA 帮助的情况下部署合约，我们会在后文内详细讨论此问题。
 
-在上述测试代码中，我们使用 `Default::default()` 获得数组类型，通过 `append` 使其具有合约初始化的参数，完成 calldata 构造后，我们使用 `deploy_syscall` 函数进行合约部署。最后，我们将部署的合约包装在 `IERC20Dispatcher` 内以方便后文直接调用。
+在上述测试代码中，我们使用 `array![NAME, SYMBOL, DECIMALS.into()]` 获得数组类型，完成 calldata 构造后，我们使用 `deploy_syscall` 函数进行合约部署。最后，我们将部署的合约包装在 `IERC20Dispatcher` 内以方便后文直接调用。
 
 此处使用了 `DECIMALS.into()` 实现类型转换，`calldata` 为 `Array<felt252>` 而 `DECIMALS` 为 `u8` 类型，所以 `DECIMALS` 无法直接 `append` 到 `calldata` 中。在 Cairo 中，存在一类 `trait` 被称为 `into` ，该 `trait` 的功能是将不符合标准的类型转化为函数要求的类型，所以此处我们调用 `DECIMALS.into()` 实现了 `u8` 到 `felt252` 的自动转换。但需要注意的是，不是任意类型都可以使用 `into` 进行转换。而后文使用的 `try_into` 功能类似，但其会在转换失败后返回 `Option` 类型，我们可以使用 `unwrap` 函数获取 `Option` 内包装的数据。当然，如果转换失败，`unwrap`方法也会抛出异常。
 
-在 `deploy_syscall` 函数中，我们也是有 `span` 实现了 `Array<felt252>` 到 `Span<felt252>` 的转化。此处使用的 `Span<felt252>` 是 `Array<felt252>` 的快照(`snapshots`)。在 Cairo 中，官方建议函数之间传递数组使用 `Span<T>` 类型以避免变量借代等问题。
+在 `deploy_syscall` 函数中，我们也使用 `span` 函数实现了 `Array<felt252>` 到 `Span<felt252>` 的转化。此处使用的 `Span<felt252>` 是 `Array<felt252>` 的快照(`snapshots`)。在 Cairo 中，官方建议函数之间传递数组使用 `Span<T>` 类型以避免变量借代等问题。
 
 对于具体的 `assert` 相等判断部分较为简单，不再赘述。
 
@@ -665,14 +615,12 @@ _allowance[msg.sender][spender] = amount;
 然后，我们编写测试代码，我们首先增加一个特殊测试辅助函数 `setUp` ，该函数用于初始化 ERC20 合约，并设置一个用于合约调用的地址，如下:
 
 ```rust
-fn setUp() -> (ContractAddress, IERC20Dispatcher) {
+fn setUp() -> (ContractAddress, IERC20Dispatcher, ContractAddress) {
     let caller = contract_address_const::<1>();
     set_contract_address(caller);
 
-    let mut calldata = Default::default();
-    calldata.append(NAME);
-    calldata.append(SYMBOL);
-    calldata.append(DECIMALS.into());
+    let mut calldata = array![NAME, SYMBOL, DECIMALS.into()];
+
     let (erc20_address, _) = deploy_syscall(
         ERC20::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
     )
@@ -680,11 +628,13 @@ fn setUp() -> (ContractAddress, IERC20Dispatcher) {
 
     let mut erc20_token = IERC20Dispatcher { contract_address: erc20_address };
 
-    (caller, erc20_token)
+    (caller, erc20_token, erc20_address)
 }
 ```
 
 此处的 `set_contract_address` 函数需要使用 `use starknet::testing::set_contract_address;` 语句导入。该函数的作用是将该语句后的所有函数调用的测试合约地址修正为 `caller` 。
+
+> 此处读者需要理解 cairo 的测试基本原理，cairo 的测试可以认为是我们将测试代码和 ERC20 代币合约一起部署到测试环境中，测试代码对 ERC20 代币合约进行调用，所以此处我们使用 `set_contract_address` 实现修改 ERC20 代币合约内的 `get_caller_address` 的值
 
 在 `src/tests/ERC20_test.cairo` 中，我们使用 `ERC20_test.cairo` 为基础对部署的 ERC20 代币合约进行测试，所以我们需要修改 `ERC20_test.cairo` 的地址来改变 ERC20 代币合约调用者的地址，此处我们使用 `set_contract_address` 函数将 `ERC20_test.cairo` 的地址修正为 `contract_address_const::<1>()` 实现了对代币合约调用者的修改。
 
@@ -694,7 +644,7 @@ fn setUp() -> (ContractAddress, IERC20Dispatcher) {
 #[test]
 #[available_gas(2000000)]
 fn test_approve() {
-    let (caller, erc20_token) = setUp();
+    let (caller, erc20_token, erc20_address) = setUp();
 
     let spender: ContractAddress = contract_address_const::<2>();
     let amount: u256 = u256_from_felt252(2000);
@@ -702,10 +652,15 @@ fn test_approve() {
     erc20_token.approve(spender, amount);
 
     assert(erc20_token.allowance(caller, spender) == amount, 'Approve should eq 2000');
+    assert_eq(
+        @starknet::testing::pop_log(erc20_address).unwrap(),
+        @Event::Approval(Approval { owner: caller, spender: spender, value: amount }),
+        'Approve Emit'
+    )
 }
 ```
 
-较为简单，不再赘述。
+注意，此处 `assert_eq` 需要使用 `use test::test_utils::assert_eq;` 进行导入，我们使用了 `@starknet::testing::pop_log` 实现了对合约抛出事件的监控，我们使用 `assert_eq` 对监控到的事件和我们预计抛出的事件进行了相等性测试。这也是为什么我们要在 ERC20 合约代码中实现 `PartialEq` 宏。
 
 接下来，我们编写 `transfer` 系列代码，但在编写 `transfer` 系列代码前。为了方便后期测试，我们引入 `mint` 函数，如下:
 
@@ -742,15 +697,12 @@ fn transfer(ref self: ContractState, to: ContractAddress, amount: u256) -> bool 
 #[test]
 #[available_gas(2000000)]
 fn test_err_transfer() {
-    let from = setUp();
+    let (from, erc20_token, _) = setUp();
     let to = contract_address_const::<2>();
     let amount: u256 = u256_from_felt252(2000);
 
-    ERC20::mint(amount);
-    ERC20::transfer(to, u256_from_felt252(3000));
-
-    assert(ERC20::balanceOf(from) == u256_from_felt252(0), 'Balance from = 0');
-    assert(ERC20::balanceOf(to) == amount, 'Balance to = 2000');
+    erc20_token.mint(amount);
+    erc20_token.transfer(to, u256_from_felt252(3000));
 }
 ```
 
@@ -792,11 +744,7 @@ fn transferFrom(
     let caller = get_caller_address();
     let allowed: u256 = self._allowances.read((from, caller));
 
-    let ONES_MASK = 0xffffffffffffffffffffffffffffffff_u128;
-
-    let is_max = (allowed.low == ONES_MASK) & (allowed.high == ONES_MASK);
-
-    if !is_max {
+    if !(allowed == BoundedInt::max()) {
         self._allowances.write((from, caller), allowed - amount);
         self
             .emit(
@@ -815,9 +763,9 @@ fn transferFrom(
 }
 ```
 
-此处涉及到 `u256` 即 `uint256` 的最大值判断问题，正如上文所述，`u256` 事实上是由 `u128` 拼接获得的，所以其本质是一个结构体，我们可以提供 `u256.low` 和 `u256.high` 的方法去访问其前 128 位和后 128 位。此处使用了 `(allowed.low == ONES_MASK) & (allowed.high == ONES_MASK);` 来判断 `allowed` 是否为 `u256` 的最大值。
+此处涉及到 `u256` 即 `uint256` 的最大值判断问题，我们使用 `BoundedInt::max()` 来获取任意数字类型的最大值，使用此函数需要使用 `use integer::BoundedInt;` 进行导入，此处进行了类型推断，自动推断出此处需要 `u256` 的最大值。
 
-当然，我们可以通过以下函数生成 u256 的最大值，如下:
+当然，由于 u256 实际上是通过两个 `u128` 拼接获得的，我们可以通过以下函数生成 u256 的最大值，如下:
 
 ```rust
 fn MAX_U256() -> u256 {
