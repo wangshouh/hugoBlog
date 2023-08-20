@@ -1,5 +1,5 @@
 ---
-title: "Cairo 2 实战入门:编写测试部署ERC-20代币智能合约"
+title: "Cairo 实战入门:编写测试部署ERC-20代币智能合约"
 date: 2023-07-06T11:47:33Z
 tags: [cario,ERC-20]
 math: true

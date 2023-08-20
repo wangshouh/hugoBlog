@@ -1,5 +1,5 @@
 ---
-title: "Cairo 2 实战入门:可升级合约与跨链信息发送"
+title: "Cairo 实战入门:可升级合约与跨链信息发送"
 date: 2023-07-29T14:45:33Z
 tags: [cario,solidity]
 ---
