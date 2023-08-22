@@ -404,6 +404,7 @@ interactiveAddress                         | count(interactiveAddress)
 
 获得如下检索结果:
 
+```
  txTo                                       | symbol
 --------------------------------------------+--------
  "56178a0d5f301baf6cf3e1cd53d9863437345bf9" | "AAVE"
@@ -411,6 +412,7 @@ interactiveAddress                         | count(interactiveAddress)
  "56178a0d5f301baf6cf3e1cd53d9863437345bf9" | "RAD"
  "56178a0d5f301baf6cf3e1cd53d9863437345bf9" | "USDC"
  "56178a0d5f301baf6cf3e1cd53d9863437345bf9" | "WETH"
+```
 
 我们基本可以确认 `fa103c21ea2df71dfb92b0652f8b1d795e51cdef` 和 `56178a0d5f301baf6cf3e1cd53d9863437345bf9` 为同一人的两个地址，其中 `fa103c21ea2df71dfb92b0652f8b1d795e51cdef` 作为资产暂存地址。
 
@@ -432,7 +434,7 @@ interactiveAddress                         | count(interactiveAddress)
 
 在正式进行搜索前，我们需要获得 Binance 的存款地址。为方便后文讨论，我们仅假设用户只使用 [Binance 14](https://etherscan.io/address/28c6c06298d514db089934071355e5743bf21d60) 进行存款操作。
 
-> 事实上， Binance 应该拥有 42 个用于交互的地址。这些地址可以在此包含所有 Etherscan Tag 标签的[JSON 文件]([https://github.com/brianleect/etherscan-labels/raw/main/combined/combinedLabels.json) 内获得。
+> 事实上， Binance 应该拥有 42 个用于交互的地址。这些地址可以在此包含所有 Etherscan Tag 标签的[JSON 文件](https://github.com/brianleect/etherscan-labels/raw/main/combined/combinedLabels.json) 内获得。
 
 我们首先通过文档发现以下定义:
 
