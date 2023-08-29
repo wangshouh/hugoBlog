@@ -80,3 +80,5 @@ params:
         url: "mailto:wongshouhao@outlook.com"
       - name: Telegram
         url: "https://t.me/web3list"
+      - name: Twitter
+        url: "https://twitter.com/wong_ssh"
