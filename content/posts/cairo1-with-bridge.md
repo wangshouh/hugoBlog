@@ -96,15 +96,13 @@ fn upgrade(self: @ContractState, new_class_hash: ClassHash) {
 一个简单的例子如下:
 
 ```rust
-        let mut message_payload: Array<felt252> = ArrayTrait::new();
-        message_payload.append(WITHDRAW_MESSAGE);
-        message_payload.append(l1_recipient.into());
-        message_payload.append(amount.low.into());
-        message_payload.append(amount.high.into());
+let mut message_payload = array![
+    l1_recipient.into(), amount.low.into(), amount.high.into()
+];
 
-        send_message_to_l1_syscall(
-            to_address: read_initialized_l1_bridge(), payload: message_payload.span()
-        );
+send_message_to_l1_syscall(
+    to_address: self.l1_token.read(), payload: message_payload.span()
+);
 ```
 
 当我们在 cairo 合约中调用 `send_message_to_l1_syscall` 函数时， starknet 节点会收到 `to_address` 和 `payload` 的信息，其中 `to_address` 是 L1 信息接收地址，而 `payload` 为发送的信息内容。节点收到上述信息后，会使用以下公式计算 hash 值:
