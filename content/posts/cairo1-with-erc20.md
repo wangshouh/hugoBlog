@@ -35,22 +35,7 @@ scarb -V
 
 > 此处存在一个 scarb 自带的 cairo 版本与 starknet 区块链支持版本的差异问题，读者可以通过 [Starknet environments](https://docs.starknet.io/documentation/starknet_versions/version_notes/) 确定当前测试网和主网支持的版本，可以在 [Scarb Releases](https://github.com/software-mansion/scarb/releases) 中查看 scarb 自带的 cairo 版本
 
-最后，我们安装 `vscode` 中的开发插件，值得注意的是，目前开发插件需要自行编译安装，使用 [download-directory](https://download-directory.github.io/?url=https%3A%2F%2Fgithub.com%2Fstarkware-libs%2Fcairo%2Ftree%2Fmain%2Fvscode-cairo) 工具下载 `vscode-cairo` 文件夹，并在其中运行以下命令:
-
-```bash
-sudo npm install --global @vscode/vsce
-npm install
-vsce package
-code --install-extension cairo1*.vsix
-```
-
-如果读者遇到错误，请参考 [文档](https://github.com/starkware-libs/cairo/tree/main/vscode-cairo)，或者直接使用下文我编译好的插件。
-
-如果读者不想自己编译 `cairo1*.vsix` 文件，我提供了一个编译后的插件，点击 [此处](https://files.catbox.moe/0reyvh.vsix) 进行下载。此插件版本对应 `v1.1.0`，请读者注意时效性。当然，我相信未来我们可以直接在拓展市场下载此插件。
-
-下载后仅需要运行 `code --install-extension cairo1*.vsix`，使用以下方法导入安装:
-
-![visx install](https://img.gejiba.com/images/a4c7fcaae3378cc3d8ba84e85d6fbf5f.png)
+最后，我们安装 `vscode` 中的开发插件，值得注意的是，目前开发插件已可以通过直接在 VSCode 拓展市场下载，用户可前往 [此链接](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1) 下载。
 
 安装完成后，进入插件的设置页面，如下图:
 
@@ -92,8 +77,8 @@ code --install-extension cairo1*.vsix
 
 在本文编写时，`cairo 0` 并没有语法文档，只有官方提供的两个教程：
 
-1. [Hello, Cairo](https://www.cairo-lang.org/docs/hello_cairo/index.html)
-2. [How Cairo Works](https://www.cairo-lang.org/docs/how_cairo_works/index.html)
+1. [Hello, Cairo](https://docs.cairo-lang.org/0.12.0/hello_cairo/index.html)
+2. [How Cairo Works](https://docs.cairo-lang.org/0.12.0/how_cairo_works/index.html)
 
 前者属于实战入门，而后者则是自底向上的分析。读者可根据自身爱好选择教程。我推荐读者阅读后者，因为后者涉及大量对 CairoVM 的底层分析，这些内容是不会随语言特性改变而改变的。
 
@@ -985,7 +970,3 @@ root@LAPTOP helloERC20 (main)# cast from-utf8 "HE2"
 相信读者完成本文的所有代码编程后，就可以基本掌握 cairo 合约编程技术。在编写本文时，笔者多次因缺乏资料而意欲放弃，最后凭借 [quaireaux](https://github.com/keep-starknet-strange/quaireaux) 等项目走出来困境。事实证明，在没有文档的情况下，还是可以写代码的，只是需要消耗大量时间。
 
 在完成本节内容后，我建议还没有学习过 rust 的 solidity 工程师抓紧时间学习 rust 。目前 rust 几乎成为了区块链领域中的主导语言。虽然在 cairo 0 时期，starknet 开发团队使用 python 构建了大部分工具，但进入 cairo 1 时期，不仅将 cairo 语法完全迁移至 rust ，也将开发工具使用了 rust 重写。而 sui 等公链支持的 move 语言也被认为是 rust 系语言。
-
-我个人还是比较看好 cairo 语言发展的，其自带的测试框架是极其优秀的。但目前最大问题仍是开发工具的不足，我相信 starknet 团队未来一定会使用 rust 完全重写开发框架。
-
-本文写于 2023 年 4 月 17 日，使用 `cairo 1.0.0-alpha7` 完成。在 2023 年 6 月 11 日进行了更新，使用了 `cairo 1.1.0` 。在 2023 年 7 月 7 日使用 `Cairo v2.0.1` 更新内容。
