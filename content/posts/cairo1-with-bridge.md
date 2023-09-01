@@ -498,18 +498,18 @@ use starknet::eth_address::EthAddressIntoFelt252;
 
 ```rust
 fn transfer_to_L1(ref self: ContractState, l1_recipient: EthAddress, amount: u256) {
-    self.burn(amount);
+    self.burn_helper(amount);
 
     let caller_address = get_caller_address();
 
-    let mut message_payload: Array<felt252> = ArrayTrait::new();
-    message_payload.append(l1_recipient.into());
-    message_payload.append(amount.low.into());
-    message_payload.append(amount.high.into());
+    let mut message_payload = array![
+        l1_recipient.into(), amount.low.into(), amount.high.into()
+    ];
 
     send_message_to_l1_syscall(
         to_address: self.l1_token.read(), payload: message_payload.span()
     );
+
     self
         .emit(
             Event::TransferToL1(
@@ -521,6 +521,50 @@ fn transfer_to_L1(ref self: ContractState, l1_recipient: EthAddress, amount: u25
 
 代码比较简单，在 L2 上烧毁用户资产，之后将接收方和发送资产金额作为跨链信息发送到核心合约中。
 
+对于跨链部分，我们需要对此函数进行跨链测试，注意此测试需要 cairo 版本大于或等于 `2.2.0` 。测试部分如下:
+
+```rust
+#[test]
+#[available_gas(2000000)]
+fn test_l2_to_l1_messages() {
+    let mut erc20_token = ERC20::unsafe_new_contract_state();
+
+    let l1_token = EthAddress { address: 0x1234 };
+    let l1_address = EthAddress { address: 0x4567 };
+
+    let contract_address = contract_address_const::<0x1>();
+    let amount = 2000_u256;
+
+    set_contract_address(contract_address);
+
+    erc20_token.set_l1_token(l1_token);
+    erc20_token.mint(5000);
+    erc20_token.transfer_to_L1(l1_address, amount);
+
+    let except_message: Array<felt252> = array![
+        l1_address.into(), amount.low.into(), amount.high.into()
+    ];
+
+    assert_eq(
+        @starknet::testing::pop_l2_to_l1_message(contract_address).unwrap(),
+        @(l1_token.into(), except_message.span()),
+        'Message l1_token amount'
+    )
+}
+```
+
+此处，我们直接使用 `unsafe_new_contract_state` 方法获得实体化的合约，注意，使用此方法无法对合约进行一些初始化操作。如果读者需要对合约进行初始化请勿使用此方法部署。
+
+> 我个人不提倡在复杂测试环境内使用 `unsafe_new_contract_state` ，除非测试非常简单。本文引入此函数主要是为了拓展开发者的视野，大部分情况下使用 [之前](https://blog.wssh.trade/posts/cairo1-with-erc20/) 介绍过的 `deploy_syscall` 部署即可
+
+我们使用 `pop_l2_to_l1_message` 来监听合约抛出的发往 L1 的信息，该函数的定义如下:
+
+```rust
+fn pop_l2_to_l1_message(address: ContractAddress) -> Option<(felt252, Span<felt252>)> {}
+```
+
+其返回值第一项 `felt252` 为 L1 信息接受合约而 `Span<felt252>` 代表具体抛出的信息。此处使用 `Span<T>` 类型是为了避免所有权问题，读者可认为此类型为 `Array<flet252>` 只读指针。
+
 完成上述工作后，我们开始部署此合约。这种跨链合约显然无法较为简单的进行本地测试，直接使用测试网可能是一个更好的选择。
 
 我们使用以下命令进行编译:
@@ -528,8 +572,6 @@ fn transfer_to_L1(ref self: ContractState, l1_recipient: EthAddress, amount: u25
 ```bash
 scarb build
 ```
-
-关于部署的具体流程，读者可参考 [Cairo 2 实战入门:编写测试部署ERC-20代币智能合约](https://blog.wssh.trade/posts/cairo1-with-erc20/)
 
 部署完成后，读者可以调用 `set_l1_token` 函数设置一个 L1 地址，设置完成后，调用 `transfer_to_L1` 函数，读者可以点击 [此链接](https://testnet.starkscan.co/tx/0x36811d58cb4ef9bf804c0c22a0152797dd2bd69613fe4964dfd39756f82d68#overview) 查看示例交易。
 
