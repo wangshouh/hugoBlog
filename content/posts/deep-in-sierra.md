@@ -48,7 +48,7 @@ fn transfer(to: ContractAddress, amount: u256) -> bool {
     let from = get_caller_address();
 
     if _balances::read(from) < amount {
-    	False
+        False
     }
     _balances::write(from, _balances::read(from) - amount);
     ...
@@ -468,3 +468,448 @@ return([16], [17]); // 16
 后续操作与正常返回类似，主要进行内存位置迁移和返回。
 
 通过以上可能包含错误的 Sierra 代码分析可以发现，Sierra 构造的 **绝对不会运行中断的程序** 的基础在于 `core::panics::PanicResult` 类型，基于此类型可以同时包装错误和正确结果的性质，我们可以在每个函数内生成错误处理函数，当函数执行发生错误时，将错误向上传播最终返回给调用者。在这个过程中，`gas` 记录模块也可以正常运行记录函数消耗的 gas 以实现对错误交易收费的目标。而 STARK 证明也可以正常生成，也实现了错误交易可生成证明的需求。
+
+## Why Cairo
+
+本节是更加切合 Cairo 开发者的一节，正如本节标题所示，本节内容主要讨论一些 cairo 语法的底层内容。本节部分内容参考了 [Under the hood of Cairo 1.0: Exploring Sierra Part 3: Become a better Cairo developer with Sierra](https://medium.com/nethermind-eth/under-the-hood-of-cairo-1-0-exploring-sierra-1220f6dbcf9) 。
+
+注意 Sierra 的给出的变量ID ，如 `[1]` 等其实并不代表在内存中的真实排布，很多情况下，这些变量 ID 只是一个用于所有权分析的工具。
+
+### 可变引用 Mutable References
+
+给出以下代码:
+
+```rust
+fn main() -> felt252 {
+    let mut x = 1;
+    increment(ref x);
+    x
+}
+
+fn increment(ref x: felt252) {
+    x += 1;
+}
+```
+
+我们在 `increment` 函数中使用 `ref` 对变量 `x` 进行了标识，说明该函数接受可变引用，且会在函数内部对 `x` 的值进行自增操作。我们使用 `scarb build` 将其编译为 sierra 代码，如下:
+
+```rust
+felt252_const<1>() -> ([0]); // 0
+store_temp<felt252>([0]) -> ([3]); // 1
+function_call<user@helloSierra::increment>([3]) -> ([1], [2]); // 2
+drop<Unit>([2]) -> (); // 3
+store_temp<felt252>([1]) -> ([4]); // 4
+return([4]); // 5
+
+felt252_const<1>() -> ([1]); // 6
+felt252_add([0], [1]) -> ([2]); // 7
+struct_construct<Unit>() -> ([3]); // 8
+store_temp<felt252>([2]) -> ([4]); // 9
+store_temp<Unit>([3]) -> ([5]); // 10
+return([4], [5]); // 11
+
+helloSierra::main@0() -> (felt252);
+helloSierra::increment@6([0]: felt252) -> (felt252, Unit);
+```
+
+首先，我们看函数定义，发现 `increment` 的定义被展开为 `helloSierra::increment@6([0]: felt252) -> (felt252, Unit);` 。此处的 `Unit` 参数实际上无返回值函数的默认返回值。简单来说，Sierra 中所有函数都会存在返回值，如果我们在 cairo 中没有进行返回值定义，则会返回 `Unit` 作为默认值。但是此处除了默认增加的 `Unit` 外，还增加了 `felt252` 作为返回值。这就是 `ref` 的真实作用。当函数某一参数存在 `ref` 标识时，Sierra 会自动将此参数列为返回值。
+
+事实上，当我们调用使用 `ref` 参数时，我们只是将参数传入函数并将返回的新的参数存储以取代原参数。
+
+### 快照 Snapshots
+
+快照一般用于数组 `Array<T>` 和结构体等类型中，可以认为快照属于一种不可变引用。不可变引用往往会在关于“所有权”的场景下使用。关于 Cairo 的所有权规则，读者可以参考 [What Is Ownership?](https://book.cairo-lang.org/ch03-01-what-is-ownership.html) 文章。简单来说，一个变量符合以下所有权规则:
+
+1. 每一个值都对应一个变量作为所有者
+2. 每一个值有且仅有一个所有者
+3. 当所有者离开作用域后，值会被释放
+
+事实上，在 Cairo 中，我们无需太过于关心所有权规则，Rust 的所有权规则对应的 Rust 无 GC 的设计而且与堆栈有较大关系，但在 Cairo 中，没有堆栈设计。Cairo 采用所有权规则很大程度上只是使用 `Linear Type System` 的副作用，事实上是为了避免内存的重复写入。
+
+在大部分情况下，开发者只需要记住一个复杂变量，如数组或结构体直接作为函数参数后无法使用第二次，如下包含错误的代码:
+
+```rust
+fn main(){
+    let mut x = array![1, 2];
+
+    error_calculate_length(x);
+    
+    x.append(3);
+}
+
+fn error_calculate_length(x: Array<felt252>) -> u32 {
+    x.len()
+}
+```
+
+此处 `x.append(3);` 会出现报错，因为 `error_calculate_length` 已经消耗了 `x` 变量。
+
+可能有读者好奇，为什么 `flet252` 等变量没有这个特性，并拿出来以下代码:
+
+```rust
+fn main() -> felt252 {
+    let mut x = 20;
+    error_add(x);
+    x + 1
+}
+
+fn error_add(x: felt252) -> felt252 {
+    x + 1
+}
+```
+
+与上文给出的存在报错的代码不同，此处并没有报错。这是为什么？其实可以通过此代码对应的 Sierra 代码获得原因，Sierra 代码如下:
+
+```rust
+felt252_const<20>() -> ([0]); // 0
+dup<felt252>([0]) -> ([0], [2]); // 1
+store_temp<felt252>([2]) -> ([2]); // 2
+function_call<user@helloSierra::error_add>([2]) -> ([1]); // 3
+...
+```
+
+是因为在调用函数前进行了 `dup` 操作，复制了一份变量用于函数调用。在 Cairo 代码层面上而言，是因为 `flet252` 类型实现了 `Clone` 这个 `trait` ，会在进行函数调用时会自动复制，所以无需担心所有权问题。
+
+继续介绍 `Array` 的报错问题，一个修复版本可以参考以下代码:
+
+```rust
+use core::array::ArrayTrait;
+fn main() -> u32 {
+    let mut x = array![1, 2];
+
+    calculate_length(@x);
+
+    x.append(3);
+
+    calculate_length(@x)
+}
+
+fn calculate_length(x: @Array<felt252>) -> u32 {
+    x.len()
+}
+```
+
+此处我们将 `calculate_length` 的参数变量 `@Array<felt252>` 类型，该类型是 `Array<felt252>` 的引用。我们给出上述代码的 Sierra 代码:
+
+```rust
+array_new<felt252>() -> ([0]); // 0
+felt252_const<1>() -> ([1]); // 1
+store_temp<felt252>([1]) -> ([1]); // 2
+array_append<felt252>([0], [1]) -> ([2]); // 3
+felt252_const<2>() -> ([3]); // 4
+store_temp<felt252>([3]) -> ([3]); // 5
+array_append<felt252>([2], [3]) -> ([4]); // 6
+snapshot_take<Array<felt252>>([4]) -> ([5], [6]); // 7
+store_temp<Snapshot<Array<felt252>>>([6]) -> ([6]); // 8
+array_len<felt252>([6]) -> ([7]); // 9
+drop<u32>([7]) -> (); // 10
+
+felt252_const<3>() -> ([8]); // 11
+store_temp<felt252>([8]) -> ([8]); // 12
+array_append<felt252>([5], [8]) -> ([9]); // 13
+snapshot_take<Array<felt252>>([9]) -> ([10], [11]); // 14
+drop<Array<felt252>>([10]) -> (); // 15
+store_temp<Snapshot<Array<felt252>>>([11]) -> ([11]); // 16
+array_len<felt252>([11]) -> ([12]); // 17
+store_temp<u32>([12]) -> ([13]); // 18
+return([13]); // 19
+
+helloSierra::main@0() -> (u32);
+```
+
+此处没有展示 `calculate_length` 函数的 Sierra 实现，因为该函数由于较为简单，所以编译器进行了内联处理。我们可以看到实现不可变引用的核心函数为 `snapshot_take<Array<felt252>>`，此函数返回值为可变数组 `[5]` 与数组快照 `[6]`，我们可以使用前者继续进行原数组的操作，也可以使用后者进行原数组的只读操作。
+
+我们可以发现数组快照 `@Array<felt252>` 存在特殊的 `store_temp<Snapshot<Array<felt252>>>` 方法，与其他函数不同，此函数调用后变量在内存的位置不会改变。随后我们调用 `array_len<felt252>` 方法获得数组快照的长度。读者可以发现 `@Array<felt252>` 似乎可以使用 `Array<felt252>` 的方法，事实也正是如此，我们甚至可以执行以下代码:
+
+```rust
+@x.append(3);
+```
+
+上述代码会被编译为:
+
+```rust
+felt252_const<3>() -> ([8]); // 11
+store_temp<felt252>([8]) -> ([8]); // 12
+array_append<felt252>([5], [8]) -> ([9]); // 13
+```
+
+与正常的 `Array<felt252>` 执行追加的方法是一致的。简单来说，`@Array<felt252>` 就是将原有的 `Array<felt252>` 进行了复制操作，并使用复制出的数组进行函数调用操作以实现在不进行所有权转移的情况下进行函数调用操作。
+
+在 Cairo 中，存在一个几乎与 `@Array<felt252>` 等价的类型，即 `Span<felt252>` ，该类型定义如下:
+
+```rust
+struct Span<T> {
+    snapshot: @Array<T>
+}
+```
+
+该类型几乎具有 `Array<felt252>` 的全部特性，除了无法使用 `append` 方法。我们给出一段使用 `Span<T>` 类型的代码:
+
+```rust
+fn main() -> u32 {
+    let mut x = array![1, 2, 3];
+
+    calculate_length(x.span());
+
+    x.append(3);
+
+    calculate_length(x.span())
+}
+
+fn calculate_length(x: Span<felt252>) -> u32 {
+    x.len()
+}
+```
+
+其对应的部分 Sierra 代码如下:
+
+```rust
+...
+snapshot_take<Array<felt252>>([6]) -> ([7], [8]); // 10
+struct_construct<core::array::Span::<core::felt252>>([8]) -> ([9]); // 11
+struct_deconstruct<core::array::Span::<core::felt252>>([9]) -> ([10]); // 12
+store_temp<Snapshot<Array<felt252>>>([10]) -> ([10]); // 13
+array_len<felt252>([10]) -> ([11]); // 14
+drop<u32>([11]) -> (); // 15
+...
+```
+
+此处省略了 `x` 的初始化流程，此处的 `[6]` 即为初始化后的数组 `x` ，此处的 `12`/`13`/`14` 对应了我们编写的 `calculate_length` 函数，由于该函数较为简单，所以 Sierra 编译器进行自动的内联。
+
+我们可以发现当 `Span<felt252>` 进入函数后会立即执行 `struct_deconstruct<core::array::Span::<core::felt252>>` 操作对其进行解引用操作取出其中的 `@Array<T>` 并使用 `store_temp<Snapshot<Array<felt252>>>` 进行存储。
+
+实际上，`Span<felt252>` 就是等价于 `@Array<252>`，但需要注意的是标准库内对 `Span<felt252>` 实现了较多的 `trait`，大部分情况下，我们可以看到使用 `Span<T>` 是多于 `@Array<T>` 类型的。
+
+关于 `Span<T>` 所具有具体 `trait` ，可以参考 [标准库](https://github.com/starkware-libs/cairo/blob/main/corelib/src/array.cairo)。
+
+在某些场景下，我们可以需要 `@felt252` 类型，如 `test::test_utils::assert_eq` 函数，该函数定义如下:
+
+```rust
+#[inline]
+fn assert_eq<T, +PartialEq<T>>(a: @T, b: @T, err_code: felt252) {
+    assert(a == b, err_code);
+}
+```
+
+原因在于此函数 `assert_eq` 可能会接受数组等类型的未实现 `Clone` 的变量，所以使用 `@T` 可以避免很多所有权问题，这样带来的后果就是，我们需要对 `felt252` 等类型也使用其快照形式。
+
+> 此处的 `T, +PartialEq<T>` 是要求输入此函数的类型需要使用 `PartialEq` 的 `trait`，Cairo 内的原生数据类型都已经实现了此 trait，对于用户定义到结构体，可以使用 `#[derive(PartialEq)]` 创建默认实现
+
+
+在此处，我们给出一个简单的总结:
+
+1. 对函数进行按值传参会导致值的所有权转移，但对于 `felt252` 等简单类型无需考虑
+2. 如果不希望所有权转移且确定函数不会修改值的内容，使用 `@` 快照传参
+3. 如果不希望所有权转移且确定函数会修改值的内容，使用 `ref` 传参
+
+### 解引用 Desnap Operator
+
+当我们使用结构体时，我们可能会以快照的形式将其传入函数，但我们往往需要获取结构体内某个字段的具体值，此时我们需要引入解引用的操作符。
+
+```rust
+#[derive(Drop)]
+struct Rectangle {
+    height: u64,
+    width: u64,
+}
+
+fn main() -> u64 {
+    let rec = Rectangle { height: 3, width: 10 };
+    let area = calculate_area(@rec);
+    area
+}
+
+fn calculate_area(rec: @Rectangle) -> u64 {
+    *rec.height * *rec.width
+}
+```
+
+此处我们使用 `#[derive(Drop)]` 为结构体自动派生 `trait`，派生出的 `Drop` 是为了 Cairo 可以在 `Rectangle` 离开作用域后进行自动删除。`Drop` 是最基本的 `trait` 之一，任何结构体似乎都需要实现此 `trait`，否则会出现报错。
+
+```rust
+dup<helloSierra::Rectangle>([1]) -> ([1], [2]); // 21
+struct_deconstruct<helloSierra::Rectangle>([2]) -> ([3], [4]); // 22
+drop<u64>([4]) -> (); // 23
+rename<u64>([3]) -> ([5]); // 24
+struct_deconstruct<helloSierra::Rectangle>([1]) -> ([6], [7]); // 25
+drop<u64>([6]) -> (); // 26
+rename<u64>([7]) -> ([8]); // 27
+store_temp<RangeCheck>([0]) -> ([11]); // 28
+store_temp<u64>([5]) -> ([12]); // 29
+store_temp<u64>([8]) -> ([13]); // 30
+
+...
+```
+
+以上片段截取了 `calculate_area` 函数的实现，我们可以看到解引用操作是先将结构体使用 `dup` 进行复制，然后通过解构结构体来获得 `rec.height` 和 `rec.width`。这段代码存在一定的优化空间，优化后的代码如下:
+
+```rust
+#[derive(Drop)]
+struct Rectangle {
+    height: u64,
+    width: u64,
+}
+
+#[generate_trait]
+impl RectangleImpl of RectangleTrait {
+    #[inline(always)]
+    fn calculate_area(self: @Rectangle) -> u64 {
+        *self.height * *self.width
+    }
+}
+
+fn main() -> u64 {
+    let rec = Rectangle { height: 3, width: 10 };
+    let area = rec.calculate_area();
+
+
+    area
+}
+```
+
+此处我们为 `Rectangle` 结构体实现了 `calculate_area` 并且增加了 `#[inline(always)]` 标识，该标识声明函数内联。此代码仅会消耗 3170 gas。我们给出以上代码的 Sierra 实现:
+
+```rust
+dup<helloSierra::Rectangle>([5]) -> ([5], [6]); // 6
+struct_deconstruct<helloSierra::Rectangle>([6]) -> ([7], [8]); // 7
+drop<u64>([8]) -> (); // 8
+rename<u64>([7]) -> ([9]); // 9
+struct_deconstruct<helloSierra::Rectangle>([5]) -> ([10], [11]); // 10
+drop<u64>([10]) -> (); // 11
+rename<u64>([11]) -> ([12]); // 12
+store_temp<RangeCheck>([0]) -> ([15]); // 13
+store_temp<u64>([9]) -> ([16]); // 14
+store_temp<u64>([12]) -> ([17]); // 15
+function_call<user@core::integer::U64Mul::mul>([15], [16], [17]) -> ([13], [14]); // 16
+...
+```
+
+此处 `calculate_area` 运行的基本原理与非内联版本是基本一致的，但是由于使用了内联函数，所以类似 `PanicResult` 处理可以放在一起执行。
+
+非内联版本中，我们可以看到多次 `PanicResult` 的处理:
+
+```rust
+function_call<user@helloSierra::calculate_area>([8], [9]) -> ([6], [7]); // 7
+enum_match<core::panics::PanicResult::<(core::integer::u64,)>>([7]) { fallthrough([10]) 16([11]) }; // 8
+branch_align() -> (); // 9
+struct_deconstruct<Tuple<u64>>([10]) -> ([12]); // 10
+struct_construct<Tuple<u64>>([12]) -> ([13]); // 11
+enum_init<core::panics::PanicResult::<(core::integer::u64,)>, 0>([13]) -> ([14]); // 12
+store_temp<RangeCheck>([6]) -> ([15]); // 13
+store_temp<core::panics::PanicResult::<(core::integer::u64,)>>([14]) -> ([16]); // 14
+return([15], [16]); // 15
+branch_align() -> (); // 16
+enum_init<core::panics::PanicResult::<(core::integer::u64,)>, 1>([11]) -> ([17]); // 17
+store_temp<RangeCheck>([6]) -> ([18]); // 18
+store_temp<core::panics::PanicResult::<(core::integer::u64,)>>([17]) -> ([19]); // 19
+return([18], [19]); // 20
+
+dup<helloSierra::Rectangle>([1]) -> ([1], [2]); // 21
+...
+function_call<user@core::integer::U64Mul::mul>([11], [12], [13]) -> ([9], [10]); // 31
+enum_match<core::panics::PanicResult::<(core::integer::u64,)>>([10]) { fallthrough([14]) 40([15]) }; // 32
+branch_align() -> (); // 33
+struct_deconstruct<Tuple<u64>>([14]) -> ([16]); // 34
+struct_construct<Tuple<u64>>([16]) -> ([17]); // 35
+enum_init<core::panics::PanicResult::<(core::integer::u64,)>, 0>([17]) -> ([18]); // 36
+store_temp<RangeCheck>([9]) -> ([19]); // 37
+store_temp<core::panics::PanicResult::<(core::integer::u64,)>>([18]) -> ([20]); // 38
+return([19], [20]); // 39
+branch_align() -> (); // 40
+enum_init<core::panics::PanicResult::<(core::integer::u64,)>, 1>([15]) -> ([21]); // 41
+store_temp<RangeCheck>([9]) -> ([22]); // 42
+store_temp<core::panics::PanicResult::<(core::integer::u64,)>>([21]) -> ([23]); // 43
+return([22], [23]); // 44
+```
+
+而在内联版本内，对于 `PanicResult` 的处理集中在了一起:
+
+```rust
+...
+function_call<user@core::integer::U64Mul::mul>([15], [16], [17]) -> ([13], [14]); // 16
+enum_match<core::panics::PanicResult::<(core::integer::u64,)>>([14]) { fallthrough([18]) 25([19]) }; // 17
+branch_align() -> (); // 18
+struct_deconstruct<Tuple<u64>>([18]) -> ([20]); // 19
+struct_construct<Tuple<u64>>([20]) -> ([21]); // 20
+enum_init<core::panics::PanicResult::<(core::integer::u64,)>, 0>([21]) -> ([22]); // 21
+store_temp<RangeCheck>([13]) -> ([23]); // 22
+store_temp<core::panics::PanicResult::<(core::integer::u64,)>>([22]) -> ([24]); // 23
+return([23], [24]); // 24
+branch_align() -> (); // 25
+enum_init<core::panics::PanicResult::<(core::integer::u64,)>, 1>([19]) -> ([25]); // 26
+store_temp<RangeCheck>([13]) -> ([26]); // 27
+store_temp<core::panics::PanicResult::<(core::integer::u64,)>>([25]) -> ([27]); // 28
+return([26], [27]); // 29
+```
+
+节省了大量的处理 `PanicResult` 带来的 gas 消耗。
+
+### Box 指针
+
+在 Cairo 中，`Box<T>` 指针是一个较少见的数据类型，其功能有以下几点:
+
+
+1. 当有大量数据并希望在确保数据不被拷贝的情况下转移所有权的时候，如 `ExecutionInfo`
+2. 当希望拥有一个值并只关心它的类型是否实现了特定 `trait` 而不是其具体类型的时候，如 `nullable_from_box` 等
+
+此处我们仅讨论 `1`，因为较为常见。
+
+我们给出以下示例代码:
+
+```rust
+use starknet::{get_execution_info, get_caller_address};
+use starknet::{ContractAddress, contract_address_const};
+
+fn main() -> ContractAddress {
+    get_caller_address()
+}
+```
+
+事实上，我们只关注 `get_caller_address` 的部分实现，我们给出所需要研究的 Cairo 代码:
+
+```rust
+#[derive(Copy, Drop)]
+struct ExecutionInfo {
+    block_info: Box<BlockInfo>,
+    tx_info: Box<TxInfo>,
+    caller_address: ContractAddress,
+    contract_address: ContractAddress,
+    entry_point_selector: felt252,
+}
+
+#[derive(Copy, Drop, Serde)]
+struct BlockInfo {
+    block_number: u64,
+    block_timestamp: u64,
+    sequencer_address: ContractAddress,
+}
+
+fn get_execution_info() -> Box<ExecutionInfo> {
+    get_execution_info_syscall().unwrap_syscall()
+}
+
+fn get_caller_address() -> ContractAddress {
+    get_execution_info().unbox().caller_address
+}
+```
+
+> 以上代码来自 [标准库](https://github.com/starkware-libs/cairo/blob/main/corelib/src/starknet/info.cairo)
+
+进行编译后，我们提取 `get_caller_address` 对应的部分 Sierra 代码:
+
+```rust
+...
+branch_align() -> (); // 22
+struct_deconstruct<Tuple<Box<core::starknet::info::ExecutionInfo>>>([7]) -> ([9]); // 23
+unbox<core::starknet::info::ExecutionInfo>([9]) -> ([10]); // 24
+struct_deconstruct<core::starknet::info::ExecutionInfo>([10]) -> ([11], [12], [13], [14], [15]); // 25
+drop<Box<core::starknet::info::BlockInfo>>([11]) -> (); // 26
+drop<Box<core::starknet::info::TxInfo>>([12]) -> (); // 27
+drop<ContractAddress>([14]) -> (); // 28
+drop<felt252>([15]) -> (); // 29
+struct_construct<Tuple<ContractAddress>>([13]) -> ([16]); // 30
+...
+```
+
+可以看到处于类型为 `Box<ExecutionInfo>` 可以使用 `unbox` 进行拆箱，然后使用常规的 `struct_deconstruct` 进行解构操作。我本人目前没有见过 `Box<T>` 的大规模使用，所以此处只能列举出这一个较为简单的例子。如果读者见到过复杂的基于 `Box<T>` 的项目可以将代码发送给我。
+
