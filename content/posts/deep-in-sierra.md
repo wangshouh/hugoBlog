@@ -913,3 +913,8 @@ struct_construct<Tuple<ContractAddress>>([13]) -> ([16]); // 30
 
 可以看到处于类型为 `Box<ExecutionInfo>` 可以使用 `unbox` 进行拆箱，然后使用常规的 `struct_deconstruct` 进行解构操作。我本人目前没有见过 `Box<T>` 的大规模使用，所以此处只能列举出这一个较为简单的例子。如果读者见到过复杂的基于 `Box<T>` 的项目可以将代码发送给我。
 
+## 总结
+
+本文介绍 Sierra 引入的原因，并给出一些较为复杂的 Cairo 语法的 Sierra 解释，希望这些内容可以帮助 Cairo 开发者进一步了解和理解 Cairo 语法。
+
+Sierra 作为更接近 CASM 的中间表示层可以有效帮助开发者优化 gas 和理解特殊语法。
