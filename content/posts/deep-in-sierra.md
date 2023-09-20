@@ -422,7 +422,7 @@ enum_match<core::panics::PanicResult::<(core::integer::u8,)>>([4]) { fallthrough
 
 我们可以看到第 12 行代码处存在 `branch_align` 用于标识跳转终点。
 
-> 此处可能有读者好奇 `enum_match` 如何区分 `Result` 内是否包含错误？由于目前 CASM 的资料较少，个人推测可能采用了类似 `Rust` 的处理方法，即增加标志位，通过标志位判定 `Result` 为 `Ok` 或是 `Err` 类型。
+> 此处可能有读者好奇 `enum_match` 如何区分 `Result` 内是否包含错误？Cairo 采用了类似 `Rust` 的处理方法，即增加标志位，通过标志位判定 `Result` 为 `Ok` 或是 `Err` 类型，当标志位为 1 时，代表返回结果包含错误
 
 我们首先分析 `[4]` 不包含错误时，会执行以下 Sierra 代码:
 
