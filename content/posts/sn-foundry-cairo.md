@@ -10,6 +10,8 @@ tags: [cario,ERC-20]
 
 本文的主要内容实际上是介绍 `cairo v2.3` 引入的 [Components](https://community.starknet.io/t/cairo-components/101136) 重大更新，但考虑 `Starknet Foundry` 的活跃开发，所以本文使用了 `Starknet Foundry` 作为开发框架，而不是与之前的文章一样使用 Cairo 自带的框架。
 
+本文所有代码均可以在 [erc20_component](https://github.com/wangshouh/erc20_component) 仓库内找到。
+
 ## 前置准备
 
 读者可以在 Linux 或者 Mac 系统终端内运行以下命令:
