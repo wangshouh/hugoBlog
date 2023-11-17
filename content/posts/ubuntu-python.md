@@ -1,5 +1,5 @@
 ---
-title: "Ubuntu Python 多版本安装 "
+title: "Ubuntu Python 多版本安装"
 date: 2023-07-05T11:47:33Z
 tags: [python]
 ---
