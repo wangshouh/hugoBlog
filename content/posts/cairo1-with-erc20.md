@@ -99,15 +99,15 @@ scarb -V
 
 ## Hello World 与测试
 
-本节所有代码都可以在 [helloERC20](https://github.com/wangshouh/helloERC20) github 仓库内找到。
+本节所有代码都可以在 [hello_erc20](https://github.com/wangshouh/helloERC20) github 仓库内找到。
 
 在了解基本的 CairoVM 的基础知识后，我们进入真正的编程阶段。首先，我们需要初始化项目，使用以下命令初始化包:
 
 ```bash
-scarb new helloERC20
+scarb new hello_erc20
 ```
 
-使用 `cd helloERC20` 进入项目目录，我们可以看到以下目录结构:
+使用 `cd hello_erc20` 进入项目目录，我们可以看到以下目录结构:
 
 ```bash
 .
@@ -120,7 +120,7 @@ scarb new helloERC20
 
 ```toml
 [crate_roots]
-helloERC20 = "src"
+hello_erc20 = "src"
 ```
 
 该配置将为 `cairo` 编译器等工具指明项目入口和顶层包的名称。更多关于 `cairo_project.toml`  作用的详细内容，我们会在后文介绍 `use` 关键词时给出。
@@ -161,7 +161,7 @@ fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
 这是一个斐波那契数列计算函数，我们可以对其进行测试。请读者在 `tests/` 文件夹下创建 `fib_test.cairo`，写入以下内容:
 
 ```rust
-use helloERC20::fib;
+use hello_erc20::fib;
 
 #[test]
 fn fib_test() {
@@ -172,11 +172,11 @@ fn fib_test() {
 
 其中宏 `#[test]` 标识 `fib_test` 为测试函数，`assert` 代表测试相等条件，`'fib5 = 5'` 为测试失败后的提示。
 
-此处，我们主要需要讨论 `use helloERC20::fib;` ，这是一个路径导入语句，作用是将位于 `lib.cairo` 中的 `fib` 函数导入。
+此处，我们主要需要讨论 `use hello_erc20::fib;` ，这是一个路径导入语句，作用是将位于 `lib.cairo` 中的 `fib` 函数导入。
 
-`cairo` 的导入与 Rust 有所不同。我们需要以编译器的视角看问题， cairo 编译器在启动编译后，会首先寻找 `cairo_project.toml` ，找到 `helloERC20 = "src"` 后，会进入 `src` 目录并记 `src` 目录名称为 `helloERC20` 。然后进入 `lib.cairo` 文件寻找待编译文件。
+`cairo` 的导入与 Rust 有所不同。我们需要以编译器的视角看问题， cairo 编译器在启动编译后，会首先寻找 `cairo_project.toml` ，找到 `hello_erc20 = "src"` 后，会进入 `src` 目录并记 `src` 目录名称为 `hello_erc20` 。然后进入 `lib.cairo` 文件寻找待编译文件。
 
-根据上述流程，我们可以认为 `use helloERC20::fib` 等价于导入 `src/lib.cairo` 中的 `fib` 作用域。可能有读者不理解 `use` 关键词含义，该关键词会将 `helloERC20::fib` 导入作用域，然后我们可以直接调用 `fib` 函数。值得注意的是，`use` 不止可以导入函数，也可以导入一个模块，我们会在后文进行展示。
+根据上述流程，我们可以认为 `use hello_erc20::fib` 等价于导入 `src/lib.cairo` 中的 `fib` 作用域。可能有读者不理解 `use` 关键词含义，该关键词会将 `hello_erc20::fib` 导入作用域，然后我们可以直接调用 `fib` 函数。值得注意的是，`use` 不止可以导入函数，也可以导入一个模块，我们会在后文进行展示。
 
 > 如果读者无法理解，请继续阅读，我会对后文每一个路径导入进行详细分析。当然，读者也可以尝试分析 [quaireaux](https://github.com/keep-starknet-strange/quaireaux/tree/main) 复杂项目的路径导入问题，如果读者可以理解 `quaireaux` 的路径导入，那么就基本可以理解大部分项目的路径导入方法。
 > 
@@ -208,9 +208,9 @@ mod tests;
 
 ```bash
 running 1 tests
-test helloERC20::tests::fib_test::fib_test ... fail
+test hello_erc20::tests::fib_test::fib_test ... fail
 failures:
-   helloERC20::tests::fib_test::fib_test - panicked with [375233589013918064796019 ('Out of gas'), ].
+   hello_erc20::tests::fib_test::fib_test - panicked with [375233589013918064796019 ('Out of gas'), ].
 
 Error: test result: FAILED. 0 passed; 1 failed; 0 ignored
 ```
@@ -218,7 +218,7 @@ Error: test result: FAILED. 0 passed; 1 failed; 0 ignored
 测试出现了臭名昭著的 `Out of gas` 报错，这是因为我们在测试过程中未加入可用 gas ，请读者修改 `tests/fib_test.cairo`，如下:
 
 ```rust
-use helloERC20::fib;
+use hello_erc20::fib;
 
 #[test]
 #[available_gas(2000000)]
@@ -232,7 +232,7 @@ fn fib_test() {
 
 ```bash
 running 1 tests
-test helloERC20::tests::fib_test::fib_test ... ok
+test hello_erc20::tests::fib_test::fib_test ... ok
 test result: ok. 1 passed; 0 failed; 0 ignored; 0 filtered out;
 ```
 
@@ -242,7 +242,7 @@ test result: ok. 1 passed; 0 failed; 0 ignored; 0 filtered out;
 
 ```rust
 use debug::PrintTrait;
-use helloERC20::fib;
+use hello_erc20::fib;
 
 fn main() {
     let fib5 = fib(0, 1, 5);
@@ -323,7 +323,7 @@ mod ERC20_test;
 mod ERC20;
 ```
 
-> 如果读者感觉上述初始化云里雾里，请参考 [github 仓库](https://github.com/wangshouh/helloERC20)
+> 如果读者感觉上述初始化云里雾里，请参考 [github 仓库](https://github.com/wangshouh/hello_erc20)
 
 完成上述任务后，我们开始编写 ERC20 合约，我们使用了编写和测试的逻辑，编写完部分函数后就会立即进行测试，所以后文代码中的编写和测试会交替出现，请读者仔细观察。
 
@@ -487,10 +487,10 @@ fn transferFrom(
 请读者在 `src/tests/ERC20_test.cairo` 中输入以下内容:
 
 ```rust
-use helloERC20::ERC20::ERC20;
-use helloERC20::ERC20::IERC20Dispatcher;
-use helloERC20::ERC20::IERC20DispatcherTrait;
-use helloERC20::ERC20::ERC20::{Event, Approval};
+use hello_erc20::ERC20::ERC20;
+use hello_erc20::ERC20::IERC20Dispatcher;
+use hello_erc20::ERC20::IERC20DispatcherTrait;
+use hello_erc20::ERC20::ERC20::{Event, Approval};
 
 use array::ArrayTrait;
 use traits::Into;
@@ -530,7 +530,7 @@ fn test_initializer() {
 
 > 此处利用了 cairo 对短字符串的支持，使用了 `'Test'` 等进行字符串定义，这些字符串会被直接转化为 `felt252` 类型。
 
-为了进行测试，我们导入了大量依赖，其中最核心的依赖为 `helloERC20::ERC20::IERC20Dispatcher` 和 `helloERC20::ERC20::IERC20DispatcherTrait` 。读者可能感觉我们似乎没有在 `ERC20` 合约内实现这两个模块，实际上，这两个模块是由 `IERC20` 接口衍生获得的，是 cairo 语言自动生成的。此模块用于后文对部署合约的函数调用。此处导入的 `use helloERC20::ERC20::ERC20::{Event, Approval};` 是为后文抛出事件测试准备的
+为了进行测试，我们导入了大量依赖，其中最核心的依赖为 `hello_erc20::ERC20::IERC20Dispatcher` 和 `hello_erc20::ERC20::IERC20DispatcherTrait` 。读者可能感觉我们似乎没有在 `ERC20` 合约内实现这两个模块，实际上，这两个模块是由 `IERC20` 接口衍生获得的，是 cairo 语言自动生成的。此模块用于后文对部署合约的函数调用。此处导入的 `use hello_erc20::ERC20::ERC20::{Event, Approval};` 是为后文抛出事件测试准备的
 
 > 可能有读者好奇如果写出这么多依赖，对于我来说，大部分都是写完代码观察编译器报错后补充的，当然还有一部分来自参考代码
 
@@ -572,8 +572,8 @@ contract_address := pedersen(
 
 ```bash
 running 2 tests
-test helloERC20::tests::fib_test::fib_test ... ok
-test helloERC20::tests::ERC20_test::test_initializer ... ok
+test hello_erc20::tests::fib_test::fib_test ... ok
+test hello_erc20::tests::ERC20_test::test_initializer ... ok
 test result: ok. 2 passed; 0 failed; 0 ignored; 0 filtered out;
 ```
 
@@ -657,7 +657,7 @@ fn mint(ref self: ContractState, amount: u256) {
 }
 ```
 
-由于此函数测试较为简单，不再给出测试代码，读者可以前往 [github 仓库](https://github.com/wangshouh/helloERC20/blob/main/src/tests/ERC20_test.cairo) 阅读。
+由于此函数测试较为简单，不再给出测试代码，读者可以前往 [github 仓库](https://github.com/wangshouh/hello_erc20/blob/main/src/tests/ERC20_test.cairo) 阅读。
 
 我们给出 `transfer` 的最简实现，如下:
 
@@ -676,7 +676,7 @@ fn transfer(ref self: ContractState, to: ContractAddress, amount: u256) -> bool 
 
 此处的 `self.emit` 用于 `event` 的释放。
 
-对于此函数的正向测试，请读者自行参考 [仓库](https://github.com/wangshouh/helloERC20/blob/main/src/tests/ERC20_test.cairo#L55)。此函数是本合约中第一个可能会抛出异常的函数，我们认为该函数在用户转账数额大于其余额时应该产生报错。我们尝试编写此测试:
+对于此函数的正向测试，请读者自行参考 [仓库](https://github.com/wangshouh/hello_erc20/blob/main/src/tests/ERC20_test.cairo#L55)。此函数是本合约中第一个可能会抛出异常的函数，我们认为该函数在用户转账数额大于其余额时应该产生报错。我们尝试编写此测试:
 
 ```rust
 #[test]
@@ -695,14 +695,14 @@ fn test_err_transfer() {
 
 ```bash
 running 6 tests
-test helloERC20::tests::ERC20_test::test_approve ... ok
-test helloERC20::tests::fib_test::fib_test ... ok
-test helloERC20::tests::ERC20_test::test_initializer ... ok
-test helloERC20::tests::ERC20_test::test_mint ... ok
-test helloERC20::tests::ERC20_test::test_err_transfer ... fail
-test helloERC20::tests::ERC20_test::test_transfer ... ok
+test hello_erc20::tests::ERC20_test::test_approve ... ok
+test hello_erc20::tests::fib_test::fib_test ... ok
+test hello_erc20::tests::ERC20_test::test_initializer ... ok
+test hello_erc20::tests::ERC20_test::test_mint ... ok
+test hello_erc20::tests::ERC20_test::test_err_transfer ... fail
+test hello_erc20::tests::ERC20_test::test_transfer ... ok
 failures:
-   helloERC20::tests::ERC20_test::test_err_transfer - panicked with [39879774624085075084607933104993585622903 ('u256_sub Overflow'), 23583600924385842957889778338389964899652 ('ENTRYPOINT_FAILED'), ].
+   hello_erc20::tests::ERC20_test::test_err_transfer - panicked with [39879774624085075084607933104993585622903 ('u256_sub Overflow'), 23583600924385842957889778338389964899652 ('ENTRYPOINT_FAILED'), ].
 ```
 
 但是问题来了，`fail` 测试看上去不太好看，而且这个错误是我们已知的，该怎么办？答案是引入 `should_panic` 宏，用法如下:
@@ -850,6 +850,14 @@ Deploy this account by running:
 
 使用 [faucet](https://faucet.goerli.starknet.io/) 向账户地址进行充值。
 
+后续操作需要调用 starknet 的 RPC 操作，所以建议读者此处使用环境变量设置 RPC ，如下:
+
+```bash
+export STARKNET_RPC=https://starknet-testnet.public.blastapi.io
+```
+
+> 读者可根据 [Full nodes & API services](https://docs.starknet.io/documentation/tools/api-services/) 文档自行选择其他服务商或搭建节点服务
+
 使用 `starkli account deploy ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json` 部署账户:
 
 ```bash
@@ -889,11 +897,11 @@ Transaction 0x06b17658670c9d3c6c1d3ef8e235249eb0cc66cf40bd172335faff98b0b636bc c
 
 ```toml
 [package]
-name = "helloERC20" # the name of the package
+name = "hello_erc20" # the name of the package
 version = "0.1.0"    # the current version, obeying semver
 
 [dependencies]
-starknet = ">=2.0.0-rc0"
+starknet = ">=2.1.0"
 
 [[target.starknet-contract]]
 allowed-libfuncs = true
@@ -915,17 +923,28 @@ allowed-libfuncs = true
 .
 ├── CACHEDIR.TAG
 └── dev
-    ├── helloERC20.starknet_artifacts.json
-    ├── helloERC20_ERC20.json
-    └── helloERC20_ERC20.sierra.json
+    ├── hello_erc20.starknet_artifacts.json
+    └── hello_erc20_ERC20.contract_class.json
 ```
 
-使用以下命令进行 `declare` 操作，如下:
+在 `dev` 目录中使用以下命令进行 `declare` 操作，如下:
 
 ```bash
-starkli declare --keystore ~/.starknet_accounts/key.json --account ~/.starknet_accounts/starkli.json target/dev/helloERC20_ERC20.sierra.json```
+starkli declare --keystore ~/.starknet_accounts/key.json --account ~/.starknet_accounts/starkli.json hello_erc20_ERC20.contract_class.json
 ```
 
+此命令输出如下:
+
+```bash
+Sierra compiler version not specified. Attempting to automatically decide version to use...
+Network detected: goerli-1. Using the default compiler version for this network: 2.1.0. Use the --compiler-version flag to choose a different version.
+Declaring Cairo 1 class: 0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9
+Compiling Sierra class to CASM with compiler version 2.1.0...
+CASM class hash: 0x05477b480c295555edd05ae23f2ea759a138484fb2997e9816bd1f30073021fb
+Contract declaration transaction: 0x0696d341a19c275f019deb710bc8fca523b08f94c71094f76f9323f2c34c4040
+Class hash declared:
+0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9
+```
 
 值得注意的是，如果您完全照抄了我的代码，可能会出现 `StarknetErrorCode.CLASS_ALREADY_DECLARED` 的错误，如下:
 
@@ -942,16 +961,19 @@ Not declaring class as it's already declared.
 我们尝试使用此命令部署合约:
 
 ```bash
-starkli deploy --keystore ~/.starknet_accounts/key.json --account ~/.starknet_accounts/starkli.json 0x0473de2fe7d86ae45909172f359479a2a7c04cb892925ffd25fbc968da8aafbf 0x48454c4c4f32 0x484532 18
+starkli deploy --keystore ~/.starknet_accounts/key.json --account ~/.starknet_accounts/starkli.json 0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9 str:HELLO str:HE 18
 ```
 
-此函数会直接使用 `class hash` 进行合约部署，`--inputs` 指明了合约构造器参数，此处仅允许输入整数类型，所以我们需要将字符串类型的 `name` 和 `symbol` 转化为 16 进制形式。如果读者安装了 Solidity 的 Foundry 开发框架，可以使用以下命令获得编码结果:
+> 如果读者感觉每次输入 `--keystore` 和 `--account` 较为麻烦，可以尝试使用 `export STARKNET_KEYSTORE=~/.starknet_accounts/key.json` 和 `export STARKNET_ACCOUNT=~/.starknet_accounts/starkli.json` 将配置写入环境变量
+
+上述命令输出如下:
 
 ```bash
-root@LAPTOP helloERC20 (main)# cast from-utf8 "HELLO2"
-0x48454c4c4f32
-root@LAPTOP helloERC20 (main)# cast from-utf8 "HE2"
-0x484532
+Deploying class 0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9 with salt 0x0522bde321ea548f4e0713f080da581a4e40cf29dcd430675b0fcb4531061f1b...
+The contract will be deployed at address 0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a
+Contract deployment transaction: 0x00c3a7c03681d6d5479190f5f6525c12b018824b9df2ff8c66a033d26d9cdcd2
+Contract deployed:
+0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a
 ```
 
 读者可以使用 `Transaction hash` ，前往任一区块链浏览器查看交易状态。较为著名的区块链浏览器有:
@@ -961,7 +983,7 @@ root@LAPTOP helloERC20 (main)# cast from-utf8 "HE2"
 
 由于本文使用了较新的 Cairo 2 编程语言，在本文编写时，StarkScan 并没有兼容，所以建议使用 voyager 进行合约操作。
 
-合约最终部署位置为 `0x04375195089e9684ed18b7cf77cf3e6c7e64faf23b017501c9cbe645101e81e3`。点击 [此网址](https://testnet.starkscan.co/contract/0x0398dd27515818daa8dcbf57f18befefd42d4d98405a3a736394314d39c4c29e#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
+合约最终部署位置为 `0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a`。点击 [此网址](https://testnet.starkscan.co/contract/0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
 
 ![Hello ERC20](https://img.gejiba.com/images/880d7d4e22758bcc9e788c51792b3535.png)
 
