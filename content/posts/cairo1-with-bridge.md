@@ -19,7 +19,7 @@ StarkNet 作为以太坊 L2 项目，其部署在以太坊 [核心合约](https:
 我们可以将跨链任务拆解为两部分:
 
 1. 部署以太坊 ERC20 代币并实现 `transfer_to_L2` 函数
-2. 在 HelloERC20 cairo 智能合约基础上实现 `transferToL1` 函数
+2. 在 hello_erc20 cairo 智能合约基础上实现 `transferToL1` 函数
 
 本文所有代码都可在 [helloCairoBridge](https://github.com/wangshouh/helloCairoBridge) 仓库内找到。
 
@@ -374,7 +374,7 @@ export STARKNET_KEYSTORE=~/.starknet_accounts/key.json
 
 在了解基本原理后，我们需要进行合约编程，正如本文开头所说，此任务可以分解为以下两部分:
 
-1. 在 HelloERC20 cairo 智能合约基础上实现 `transferToL1` 函数
+1. 在 hello_erc20 cairo 智能合约基础上实现 `transferToL1` 函数
 1. 部署以太坊 ERC20 代币并实现 `transfer_to_L2` 函数
 
 在真实的编程环境中，我建议读者先完成 L2 -> L1 的跨链，因为此部分跨链是异步的，我们可以 fork 核心合约状态来进行测试。而 L1 -> L2 的跨链调用是自动的，该部分仅需要对 L2 cairo 合约进行简单修改即可。
