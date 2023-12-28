@@ -116,181 +116,151 @@ scarb new hello_erc20
     └── lib.cairo
 ```
 
-此目录结构内仍缺少一些项目配置，请读者增加 `cairo_project.toml` 文件，并在内部输入以下内容:
-
-```toml
-[crate_roots]
-hello_erc20 = "src"
-```
-
-该配置将为 `cairo` 编译器等工具指明项目入口和顶层包的名称。更多关于 `cairo_project.toml`  作用的详细内容，我们会在后文介绍 `use` 关键词时给出。
-
-请读者在 `src` 文件夹下创建 `tests.cairo` 文件，此文件为测试入口，所有在此文件中给出的模块都会被测试。此文件暂时为空，但我们马上会向其内部输入内容。
-
-在 `src` 文件夹下创建 `tests` 文件夹，该文件夹内放置编写后的单元测试。最终，我们可以获得以下项目结构:
-
-```
-.
-├── Scarb.toml
-├── cairo_project.toml
-└── src
-    ├── lib.cairo
-    └── tests.cairo
-```
-
-这是目前最标准的项目结构。
-
-我们接下来介绍每个文件和文件夹的作用，如下:
-
-1. `lib.cairo` 作为 `create` 的根，是编译器查找需要编译的代码的起点
-2. `tests.cairo` 作为测试的入口存在，内部所有给出的模块都会被测试，我们马上会展示其用法
-
-此处出现了一个新概念 `create`，对于 Rust 开发者而言，这是一个熟悉的概念。`create` 是编译器一次编译的所有内容。
-
 打开 `lib.cairo` ，读者会看到如下代码:
 
 ```rust
-fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
-    match n {
-        0 => a,
-        _ => fib(b, a + b, n - 1),
+fn main() -> felt252 {
+    fib(16)
+}
+
+fn fib(mut n: felt252) -> felt252 {
+    let mut a: felt252 = 0;
+    let mut b: felt252 = 1;
+    loop {
+        if n == 0 {
+            break a;
+        }
+        n = n - 1;
+        let temp = b;
+        b = a + b;
+        a = temp;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::fib;
+
+    #[test]
+    fn it_works() {
+        assert(fib(16) == 987, 'it works!');
     }
 }
 ```
 
-这是一个斐波那契数列计算函数，我们可以对其进行测试。请读者在 `tests/` 文件夹下创建 `fib_test.cairo`，写入以下内容:
+这是一个斐波那契数列计算函数，并附带了一个简单测试。
 
-```rust
-use hello_erc20::fib;
+其中宏 `#[test]` 标识 `it_works` 为测试函数，`assert` 代表测试相等条件，`'it works!'` 为测试失败后的提示。
 
-#[test]
-fn fib_test() {
-    let fib5 = fib(0, 1, 5);
-    assert(fib5 == 5, 'fib5 != 5')
-}
-```
+此处，我们主要需要讨论 `use super::fib;` ，这是一个路径导入语句，作用是将位于 `lib.cairo` 中的 `fib` 函数导入。我们可以看到 `tests` 的上一级模块内包含 `fib` 函数，所以此处使用了 `use super::fib;` 导入 `fib` 函数。
 
-其中宏 `#[test]` 标识 `fib_test` 为测试函数，`assert` 代表测试相等条件，`'fib5 = 5'` 为测试失败后的提示。
+`cairo` 的导入与 Rust 有所不同。我们需要以编译器的视角看问题， cairo 编译器在启动编译后，进入 `src` 目录并记 `src` 目录名称为 `hello_erc20` 。然后进入 `lib.cairo` 文件寻找待编译文件。
 
-此处，我们主要需要讨论 `use hello_erc20::fib;` ，这是一个路径导入语句，作用是将位于 `lib.cairo` 中的 `fib` 函数导入。
-
-`cairo` 的导入与 Rust 有所不同。我们需要以编译器的视角看问题， cairo 编译器在启动编译后，会首先寻找 `cairo_project.toml` ，找到 `hello_erc20 = "src"` 后，会进入 `src` 目录并记 `src` 目录名称为 `hello_erc20` 。然后进入 `lib.cairo` 文件寻找待编译文件。
-
-根据上述流程，我们可以认为 `use hello_erc20::fib` 等价于导入 `src/lib.cairo` 中的 `fib` 作用域。可能有读者不理解 `use` 关键词含义，该关键词会将 `hello_erc20::fib` 导入作用域，然后我们可以直接调用 `fib` 函数。值得注意的是，`use` 不止可以导入函数，也可以导入一个模块，我们会在后文进行展示。
+根据上述流程，我们可以认为 `use super::fib` 等价于导入 `src/lib.cairo` 中的 `fib` 作用域，所以此处我们可以将 `tests` 中的 `use super::fib;` 替换为 `use hello_erc20::fib;`。可能有读者不理解 `use` 关键词含义，该关键词会将 `super::fib` 导入作用域，然后我们可以直接调用 `fib` 函数。值得注意的是，`use` 不止可以导入函数，也可以导入一个模块，我们会在后文进行展示。
 
 > 如果读者无法理解，请继续阅读，我会对后文每一个路径导入进行详细分析。当然，读者也可以尝试分析 [quaireaux](https://github.com/keep-starknet-strange/quaireaux/tree/main) 复杂项目的路径导入问题，如果读者可以理解 `quaireaux` 的路径导入，那么就基本可以理解大部分项目的路径导入方法。
 > 
-> 此部分最好的学习材料是 [Cairo Book Chapter 6](https://cairo-book.github.io/ch06-00-managing-cairo-projects-with-packages-crates-and-modules.html)，建议读者参考
+> 此部分最好的学习材料是 [Cairo Book Chapter 7](https://book.cairo-lang.org/ch07-00-managing-cairo-projects-with-packages-crates-and-modules.html)，建议读者参考
 
-完成上述流程后，在 `tests.cairo` 中键入以下内容:
+我们可以使用 `scarb cairo-run` 运行 `main` 函数，输出如下:
+
+```bash
+   Compiling hello_erc20 v0.1.0 (hello_erc20/Scarb.toml)
+    Finished release target(s) in 1 second
+     Running hello_erc20
+Run completed successfully, returning [987]
+```
+
+也可以使用 `scarb test` 执行项目内的所有测试，输出如下:
+
+```bash
+     Running cairo-test hello_erc20
+   Compiling test(hello_erc20_unittest) hello_erc20 v0.1.0 (hello_erc20/Scarb.toml)
+    Finished release target(s) in 2 seconds
+testing hello_erc20 ...
+running 1 tests
+test hello_erc20::tests::it_works ... ok (gas usage est.: 46860)
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 filtered out;
+```
+
+我们可以看到命令行内也输出了函数的 gas 消耗。
+
+完成上述流程后，我们希望使我们的系统更加模块化，我们希望将所有的测试放在 `tests` 文件夹内，我们首先创建 `tests` 文件夹，并创建同名的 cairo 文件 `tests.cairo` 。我们需要在 `tests` 文件夹内创建用于斐波那契数列测试的 `fib_test.cairo`，并且在 `tests.cairo` 中键入以下内容:
 
 ```cairo
 mod fib_test;
 ```
 
-正如前文所述，`tests.cairo` 是一个测试入口文件，我们使用 `mod fib_test;` 在此文件内标识待测试文件。我们可以认为 `mod fib_test;` 相当于告诉测试工具请将 `tests/fib_test.cairo` 文件中的测试函数运行。更加正式的说，`mod mod fib_test;` 的作用是声明模块。
- 
-在根目录允许 `cairo-test .` 命令(不要忽略 `.`)，然后，我们发现输入如下:
+正如前文所述，`tests.cairo` 是一个测试入口文件，我们使用 `mod fib_test;` 在此文件内标识待测试文件。我们可以认为 `mod fib_test;` 相当于告诉测试工具请将 `tests/fib_test.cairo` 文件中的测试函数运行。更加正式的说，`mod fib_test;` 的作用是声明模块。
 
-```bash
-running 0 tests
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 filtered out;
-```
-
-显然，测试工具没有找到任何一个测试。正如上文所述，编译器仅编译 `lib.cairo` 中给出的模块，显然，`tests.cairo` 目前未被写入 `lib.cairo` 所以编译器没有编译测试函数，自然，测试工具也没有发现测试函数。我们需要修正 `lib.cairo`，请读者在文件末尾增加以下内容:
-
-```rust
-#[cfg(test)]
-mod tests;
-```
-
-此处更改会将 `tests.cairo` 引入 `lib.cairo` ，这样编译器和测试工具都可以编写和运行测试函数。再次运行 `cairo-test .` 命令，我们发现一个报错:
-
-```bash
-running 1 tests
-test hello_erc20::tests::fib_test::fib_test ... fail
-failures:
-   hello_erc20::tests::fib_test::fib_test - panicked with [375233589013918064796019 ('Out of gas'), ].
-
-Error: test result: FAILED. 0 passed; 1 failed; 0 ignored
-```
-
-测试出现了臭名昭著的 `Out of gas` 报错，这是因为我们在测试过程中未加入可用 gas ，请读者修改 `tests/fib_test.cairo`，如下:
+我们将 `lib.cairo` 中的测试代码进行转移，如下:
 
 ```rust
 use hello_erc20::fib;
 
 #[test]
-#[available_gas(2000000)]
-fn fib_test() {
-    let fib5 = fib(0, 1, 5);
-    assert(fib5 == 5, 'fib5 != 5')
+fn it_works() {
+    assert(fib(16) == 987, 'it works!');
 }
 ```
 
-此处，我们使用 `#[available_gas(2000000)]` 宏为测试环境增加了 `2000000 gas`。再次运行测试命令，输出如下:
+此时 `lib.cairo` 内的测试部分需要修改为:
 
-```bash
-running 1 tests
-test hello_erc20::tests::fib_test::fib_test ... ok
-test result: ok. 1 passed; 0 failed; 0 ignored; 0 filtered out;
+```rust
+#[cfg(test)]
+mod tests;
 ```
 
-目前，测试功能虽然会记录 gas 消耗，但没有直接给出。
+此处更改会将 `tests.cairo` 引入 `lib.cairo` ，这样编译器和测试工具都可以编写和运行测试函数。再次运行 `scarb test` 命令，我们发现编译器可以寻找到所有的测试并且完成测试。在之后，我们增加测试时，会在 `tests` 内编写测试代码，并修改 `tests.cairo` 文件增加测试声明。
 
-在 Hello World 的最后，我们可用尝试编译一下整个项目，为了更加直观的给出编译和运行的过程，请读者创建 `src/main.cairo` 并写入以下内容:
-
-```rust
-use debug::PrintTrait;
-use hello_erc20::fib;
-
-fn main() {
-    let fib5 = fib(0, 1, 5);
-    fib5.print();
-}
-``` 
-
-此处引入了 `debug::PrintTrait;` 该模块用于输出 `debug` 信息，此处用此函数充当 `print` 。在 `lib.cairo` 中，写入以下内容:
+在 Hello World 的最后，我们进一步模块化项目，我们将 `main` 函数分离出来，删除 `lib.cairo` 中的 `main` 函数，并增加 `mod main;` 声明，最终 `lib.cairo` 的构成如下:
 
 ```rust
-use option::OptionTrait;
-
-fn fib(a: felt252, b: felt252, n: felt252) -> felt252 {
-    gas::withdraw_gas_all(get_builtin_costs()).expect('Out of gas');
-    match n {
-        0 => a,
-        _ => fib(b, a + b, n - 1),
+mod main;
+fn fib(mut n: felt252) -> felt252 {
+    let mut a: felt252 = 0;
+    let mut b: felt252 = 1;
+    loop {
+        if n == 0 {
+            break a;
+        }
+        n = n - 1;
+        let temp = b;
+        b = a + b;
+        a = temp;
     }
 }
-
-mod main;
 
 #[cfg(test)]
 mod tests;
 ```
 
-正如上文所述，此处的 `mod main;` 是为了帮助编译器找到 `main.cairo` 文件。
+创建 `src/main.cairo` 并写入以下内容:
 
-运行 `cairo-run --available-gas 300000 .` 命令，输出如下:
+```rust
+use hello_erc20::fib;
 
-```bash
-[DEBUG]                                (raw: 5)
-
-Run completed successfully, returning []
-Remaining gas: 280410
+fn main() {
+    println!("FIB16 is {}", fib(16))
+}
 ```
 
-我们可以看到输出了结果 `5` 。
+此处引入了 `println!` 用于终端打印输出结果。
 
-> 值得注意的是，此处的 `--available-gas` 为必选项，否则会运行失败
+运行 `scarb cairo-run` 命令，输出如下:
 
-如果读者对底层感兴趣，可以尝试使用 `cairo-run --available-gas 300000 --print-full-memory .` 此处使用 `--print-full-memory` 可以打印出内存结构。之前介绍 `cairoVM` 时，我们已经支出 cairoVM 的内存结构是不可变的，所以我们可以根据运行结束后的内存情况来推测运行过程中的事件。当然，直接输出的内存可能很难读懂，如果读者经过 cairo 0 的相关训练，可能可以读懂一部分。
+```bash
+FIB16 is 987
+Run completed successfully, returning []
+```
+
+我们可以看到输出了结果 `987` 。
+
+如果读者对底层感兴趣，可以尝试使用 `scarb cairo-run --print-full-memory` 此处使用 `--print-full-memory` 可以打印出内存结构。之前介绍 `cairoVM` 时，我们已经支出 cairoVM 的内存结构是不可变的，所以我们可以根据运行结束后的内存情况来推测运行过程中的事件。当然，直接输出的内存可能很难读懂，如果读者经过 cairo 0 的相关训练，可能可以读懂一部分。
 
 ## ERC20 合约编程
 
-关于 `cairo` 智能合约编程最为核心文档是 [Cairo Contracts](https://github.com/starkware-libs/cairo/blob/main/docs/reference/src/components/cairo/modules/language_constructs/pages/contracts.adoc) 和 [Cairo book](https://cairo-book.github.io/ch99-00-starknet-smart-contracts.html)，请读者务必阅读这两份文档内容。本文的 ERC20 代币合约主要参考了 [starkware 官方实现](https://github.com/starkware-libs/cairo/blob/main/crates/cairo-lang-starknet/test_data/erc20.cairo) 和 [openzeppline 实现](https://github.com/OpenZeppelin/cairo-contracts/blob/cairo-1/src/openzeppelin/token/erc20.cairo) 。需要注意的是，starknet 已有 ERC20 代币规范被称为 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
-
-> openzeppline 目前的实现位于 `cairo-1` 分支，读者阅读时可能此分支已被合并进入主分支。此处需要注意 SNIP 2 的命名规范与 cairo 1 的命名规范不符，但大部分钱包都兼容于 SNIP 2 规范，所以后文我们仍使用了不符合 cairo 1 规范的 SNIP 2 规范进行命名
+关于 `cairo` 智能合约编程最为核心文档是 [Cairo Contracts](https://github.com/starkware-libs/cairo/blob/main/docs/reference/src/components/cairo/modules/language_constructs/pages/contracts.adoc) 和 [Cairo book](https://book.cairo-lang.org/title-page.html)，请读者务必阅读这两份文档内容。本文的 ERC20 代币合约主要参考了 [starkware 官方实现](https://github.com/starkware-libs/cairo/blob/main/crates/cairo-lang-starknet/cairo_level_tests/contracts/erc20.cairo)。需要注意的是，starknet 已有 ERC20 代币规范被称为 [SNIP 2](https://github.com/starknet-io/SNIPs/blob/main/SNIPS/snip-2.md) 。
 
 本文主要基于 solmate 版本的 [ERC20 智能合约](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol) 的具体逻辑。
 
@@ -299,15 +269,14 @@ Remaining gas: 280410
 ```
 .
 ├── Scarb.toml
-├── cairo_project.toml
 ├── src
-│   ├── ERC20.cairo
-│   ├── lib.cairo
-│   ├── main.cairo
-│   ├── tests
-│   │   ├── ERC20_test.cairo
-│   │   └── fib_test.cairo
-│   └── tests.cairo
+│   ├── ERC20.cairo
+│   ├── lib.cairo
+│   ├── main.cairo
+│   ├── tests
+│   │   ├── ERC20_test.cairo
+│   │   └── fib_test.cairo
+│   └── tests.cairo
 ```
 
 请读者在 `tests.cairo` 中写入以下内容:
@@ -324,6 +293,20 @@ mod ERC20;
 ```
 
 > 如果读者感觉上述初始化云里雾里，请参考 [github 仓库](https://github.com/wangshouh/helloERC20)
+
+最后，我们需要配置 `Scarb.toml` 使其支持智能合约，请写入以下配置:
+
+```toml
+[package]
+name = "hello_erc20"
+version = "0.1.0"
+edition = "2023_10"
+
+# See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest.html
+
+[dependencies]
+starknet = ">=2.4.0"
+```
 
 完成上述任务后，我们开始编写 ERC20 合约，我们使用了编写和测试的逻辑，编写完部分函数后就会立即进行测试，所以后文代码中的编写和测试会交替出现，请读者仔细观察。
 
@@ -418,6 +401,8 @@ struct Approval {
 
 最后，我们利用 `#[event]` 宏声明了两个事件。此处需要在 `enum Event` 枚举类型内写入合约内所有 event 的名字。接下来，我们使用结构体具体定义了 event 包含的数据，此处可以使用 `#[key]` 标识可检索变量，类似 solidity 中的 `index` 关键词。在此处，我们也使用了 `#[derive(Drop, PartialEq, starknet::Event)]` 宏为 event 增加了一些接口的默认实现，此处的 `PartialEq` 是为后文进行测试准备的。
 
+> `PartialEq` 可以为事件结构体自动衍生一个相等判断属性，这意味着我们后面可以使用 `assert` 进行测试断言
+
 接下来，我们编写构造器和基础的 `view` 函数，如下:
 
 ```rust
@@ -466,12 +451,16 @@ impl IERC20Impl of super::IERC20<ContractState> {
 
 该部分也较为简单，基本都是 `read` 读取操作。此处，我们对上文定义的 `super::IERC20<ContractState>` 进行了实现。此处允许 `IERC20Impl` 对多个接口进行实现，但需要注意的是不允许 `IERC20Impl` 实现的多接口内的存在重名函数。
 
-> 此处使用了 `#[external(v0)]` 宏对 `IERC20Impl` 进行修饰。这也是目前唯一的修饰符，在未来可能会增加更多修饰符。
+> 此处使用了 `#[external(v0)]` 宏对 `IERC20Impl` 进行修饰。目前 starknet 已支持多种修饰符，具体可以参考 [ABI 的一些写法](https://blog.wssh.trade/posts/sn-foundry-cairo/#abi-%E7%9A%84%E4%B8%80%E4%BA%9B%E5%86%99%E6%B3%95)。
 
 完成上述构造器后，我们可以尝试编写测试函数，但由于目前合约没有实现全部的接口，所以会出现编译报错，请读者在合约内增加无实现函数来避免编译报错。如下:
 
 ```rust
 fn mint(ref self: ContractState, amount: u256) {}
+
+fn approve(ref self: ContractState, spender: ContractAddress, amount: u256) -> bool {
+    true
+}
 
 fn transfer(ref self: ContractState, to: ContractAddress, amount: u256) -> bool {
     true
@@ -492,37 +481,29 @@ use hello_erc20::ERC20::IERC20Dispatcher;
 use hello_erc20::ERC20::IERC20DispatcherTrait;
 use hello_erc20::ERC20::ERC20::{Event, Approval};
 
-use array::ArrayTrait;
-use traits::Into;
-use result::ResultTrait;
-use traits::TryInto;
-use option::OptionTrait;
-
-use starknet::contract_address_const;
 use starknet::contract_address::ContractAddress;
-use starknet::testing::{set_caller_address, set_contract_address};
 use starknet::syscalls::deploy_syscall;
-use starknet::SyscallResultTrait;
-use starknet::class_hash::Felt252TryIntoClassHash;
+
+use core::test::test_utils::assert_eq;
 
 const NAME: felt252 = 'Test';
 const SYMBOL: felt252 = 'TET';
 const DECIMALS: u8 = 18_u8;
 
 #[test]
-#[available_gas(2000000)]
 fn test_initializer() {
     let mut calldata = array![NAME, SYMBOL, DECIMALS.into()];
+
     let (erc20_address, _) = deploy_syscall(
         ERC20::TEST_CLASS_HASH.try_into().unwrap(), 0, calldata.span(), false
     )
         .unwrap();
 
-    let mut erc20_token = IERC20Dispatcher { contract_address: erc20_address };
+    let erc20_token = IERC20Dispatcher { contract_address: erc20_address };
 
-    assert(erc20_token.name() == NAME, 'Name should be NAME');
-    assert(erc20_token.symbol() == SYMBOL, 'Symbol should be SYMBOL');
-    assert(erc20_token.decimals() == 18_u8, 'Decimals should be 18');
+    assert_eq(@erc20_token.name(), @NAME, 'Name should be NAME');
+    assert_eq(@erc20_token.symbol(), @SYMBOL, 'Symbol should be SYMBOL');
+    assert_eq(@erc20_token.decimals(), @18_u8, 'Decimals should be 18');
 }
 ```
 
@@ -564,20 +545,30 @@ contract_address := pedersen(
 
 此处使用了 `DECIMALS.into()` 实现类型转换，`calldata` 为 `Array<felt252>` 而 `DECIMALS` 为 `u8` 类型，所以 `DECIMALS` 无法直接 `append` 到 `calldata` 中。在 Cairo 中，存在一类 `trait` 被称为 `into` ，该 `trait` 的功能是将不符合标准的类型转化为函数要求的类型，所以此处我们调用 `DECIMALS.into()` 实现了 `u8` 到 `felt252` 的自动转换。但需要注意的是，不是任意类型都可以使用 `into` 进行转换。而后文使用的 `try_into` 功能类似，但其会在转换失败后返回 `Option` 类型，我们可以使用 `unwrap` 函数获取 `Option` 内包装的数据。当然，如果转换失败，`unwrap`方法也会抛出异常。
 
+> `try_into` 往往用于一些危险的类型转换，如 `u16` 转 `u8` 等
+
 在 `deploy_syscall` 函数中，我们也使用 `span` 函数实现了 `Array<felt252>` 到 `Span<felt252>` 的转化。此处使用的 `Span<felt252>` 是 `Array<felt252>` 的快照(`snapshots`)。在 Cairo 中，官方建议函数之间传递数组使用 `Span<T>` 类型以避免变量借代等问题。
 
-对于具体的 `assert` 相等判断部分较为简单，不再赘述。
+对于具体的 `assert_eq` 相等判断部分较为简单，但需要注意的是 `assert_eq` 需要使用 `use core::test::test_utils::assert_eq;` 单独导入，且其定义如下:
 
-在项目根目录下运行 `cairo-test --starknet .` 命令，输出如下:
-
-```bash
-running 2 tests
-test hello_erc20::tests::fib_test::fib_test ... ok
-test hello_erc20::tests::ERC20_test::test_initializer ... ok
-test result: ok. 2 passed; 0 failed; 0 ignored; 0 filtered out;
+```rust
+#[inline]
+fn assert_eq<T, +PartialEq<T>>(a: @T, b: @T, err_code: felt252) {
+    assert(a == b, err_code);
+}
 ```
 
-此处我们使用 `--starknet` 标识符，该标识符意味着 cairo-test 在测试时引入 `starknet` 环境。一般来说，只要涉及到合约测试，`--starknet` 标识是必要的。
+此处我们可以看到 `assert_eq` 接受的类型为 `@T` 类型，这意味我们需要手动使用 `@` 符号手动转换一些类型，如 `@erc20_token.name()` 和 `@NAME` 等
+
+在项目根目录下运行 `scarb test` 命令，输出如下:
+
+```bash
+testing hello_erc20 ...
+running 2 tests
+test hello_erc20::tests::fib_test::it_works ... ok (gas usage est.: 46860)
+test hello_erc20::tests::ERC20_test::test_initializer ... ok (gas usage est.: 467510)
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 filtered out;
+```
 
 我们首先编写较为容易测试的 `approve` 函数，编写代码如下:
 
@@ -617,7 +608,7 @@ fn setUp() -> (ContractAddress, IERC20Dispatcher, ContractAddress) {
 }
 ```
 
-此处的 `set_contract_address` 函数需要使用 `use starknet::testing::set_contract_address;` 语句导入。该函数的作用是将该语句后的所有函数调用的测试合约地址修正为 `caller` 。
+此处的 `set_contract_address` 函数需要使用 `use starknet::testing::set_contract_address;` 语句导入。该函数的作用是将该语句后的所有函数调用的测试合约地址修正为 `caller` 。而 `contract_address_const` 用于生成固定地址，需要使用 `use starknet::contract_address_const;` 导入。
 
 > 此处读者需要理解 cairo 的测试基本原理，cairo 的测试可以认为是我们将测试代码和 ERC20 代币合约一起部署到测试环境中，测试代码对 ERC20 代币合约进行调用，所以此处我们使用 `set_contract_address` 实现修改 ERC20 代币合约内的 `get_caller_address` 的值
 
@@ -627,7 +618,6 @@ fn setUp() -> (ContractAddress, IERC20Dispatcher, ContractAddress) {
 
 ```rust
 #[test]
-#[available_gas(2000000)]
 fn test_approve() {
     let (caller, erc20_token, erc20_address) = setUp();
 
@@ -645,7 +635,7 @@ fn test_approve() {
 }
 ```
 
-注意，此处 `assert_eq` 需要使用 `use test::test_utils::assert_eq;` 进行导入，我们使用了 `@starknet::testing::pop_log` 实现了对合约抛出事件的监控，我们使用 `assert_eq` 对监控到的事件和我们预计抛出的事件进行了相等性测试。这也是为什么我们要在 ERC20 合约代码中实现 `PartialEq` 宏。
+注意，此处 `assert_eq` 需要使用 `use test::test_utils::assert_eq;` 进行导入，而 `u256_from_felt252` 需要使用 `use core::integer::u256_from_felt252;` 导入。我们使用了 `@starknet::testing::pop_log` 实现了对合约抛出事件的监控，我们使用 `assert_eq` 对监控到的事件和我们预计抛出的事件进行了相等性测试。这也是为什么我们要在 ERC20 合约代码中实现 `PartialEq` 宏。
 
 接下来，我们编写 `transfer` 系列代码，但在编写 `transfer` 系列代码前。为了方便后期测试，我们引入 `mint` 函数，如下:
 
@@ -680,7 +670,6 @@ fn transfer(ref self: ContractState, to: ContractAddress, amount: u256) -> bool 
 
 ```rust
 #[test]
-#[available_gas(2000000)]
 fn test_err_transfer() {
     let (from, erc20_token, _) = setUp();
     let to = contract_address_const::<2>();
@@ -694,22 +683,22 @@ fn test_err_transfer() {
 进行测试，结果如下:
 
 ```bash
-running 6 tests
-test hello_erc20::tests::ERC20_test::test_approve ... ok
-test hello_erc20::tests::fib_test::fib_test ... ok
-test hello_erc20::tests::ERC20_test::test_initializer ... ok
-test hello_erc20::tests::ERC20_test::test_mint ... ok
-test hello_erc20::tests::ERC20_test::test_err_transfer ... fail
-test hello_erc20::tests::ERC20_test::test_transfer ... ok
+running 7 tests
+test hello_erc20::tests::fib_test::it_works ... ok (gas usage est.: 46860)
+test hello_erc20::tests::ERC20_test::test_mint ... ok (gas usage est.: 589950)
+test hello_erc20::tests::ERC20_test::test_err_transfer ... fail (gas usage est.: 744260)
+test hello_erc20::tests::ERC20_test::test_initializer ... ok (gas usage est.: 467510)
+test hello_erc20::tests::ERC20_test::test_approve ... ok (gas usage est.: 582860)
+test hello_erc20::tests::ERC20_test::test_FailtransferFrom ... ok (gas usage est.: 1048330)
+test hello_erc20::tests::ERC20_test::test_transfer ... ok (gas usage est.: 1060820)
 failures:
-   hello_erc20::tests::ERC20_test::test_err_transfer - panicked with [39879774624085075084607933104993585622903 ('u256_sub Overflow'), 23583600924385842957889778338389964899652 ('ENTRYPOINT_FAILED'), ].
+   hello_erc20::tests::ERC20_test::test_err_transfer - Panicked with (0x753235365f737562204f766572666c6f77 ('u256_sub Overflow'), 0x454e545259504f494e545f4641494c4544 ('ENTRYPOINT_FAILED')).
 ```
 
 但是问题来了，`fail` 测试看上去不太好看，而且这个错误是我们已知的，该怎么办？答案是引入 `should_panic` 宏，用法如下:
 
 ```rust
 #[test]
-#[available_gas(2000000)]
 #[should_panic(expected: ('u256_sub Overflow', 'ENTRYPOINT_FAILED', ))]
 fn test_err_transfer() {
     ...
@@ -748,7 +737,7 @@ fn transferFrom(
 }
 ```
 
-此处涉及到 `u256` 即 `uint256` 的最大值判断问题，我们使用 `BoundedInt::max()` 来获取任意数字类型的最大值，使用此函数需要使用 `use integer::BoundedInt;` 进行导入，此处进行了类型推断，自动推断出此处需要 `u256` 的最大值。
+此处涉及到 `u256` 即 `uint256` 的最大值判断问题，我们使用 `BoundedInt::max()` 来获取任意数字类型的最大值，使用此函数需要使用 `use core::integer::BoundedInt;` 进行导入，此处进行了类型推断，自动推断出此处需要 `u256` 的最大值。
 
 当然，由于 u256 实际上是通过两个 `u128` 拼接获得的，我们可以通过以下函数生成 u256 的最大值，如下:
 
