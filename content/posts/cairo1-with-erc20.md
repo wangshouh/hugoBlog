@@ -323,7 +323,7 @@ mod ERC20_test;
 mod ERC20;
 ```
 
-> 如果读者感觉上述初始化云里雾里，请参考 [github 仓库](https://github.com/wangshouh/hello_erc20)
+> 如果读者感觉上述初始化云里雾里，请参考 [github 仓库](https://github.com/wangshouh/helloERC20)
 
 完成上述任务后，我们开始编写 ERC20 合约，我们使用了编写和测试的逻辑，编写完部分函数后就会立即进行测试，所以后文代码中的编写和测试会交替出现，请读者仔细观察。
 
