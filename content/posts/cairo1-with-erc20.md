@@ -842,17 +842,16 @@ Deploy this account by running:
 后续操作需要调用 starknet 的 RPC 操作，所以建议读者此处使用环境变量设置 RPC ，如下:
 
 ```bash
-export STARKNET_RPC=https://starknet-testnet.public.blastapi.io
+export STARKNET_RPC=https://free-rpc.nethermind.io/goerli-juno
 ```
 
-> 读者可根据 [Full nodes & API services](https://docs.starknet.io/documentation/tools/api-services/) 文档自行选择其他服务商或搭建节点服务
+> 读者可根据 [Full nodes & API services](https://docs.starknet.io/documentation/tools/api-services/) 文档自行选择其他服务商或搭建节点服务，注意节点服务商的 RPC 版本将会影响命令执行
 
 使用 `starkli account deploy ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json` 部署账户:
 
 ```bash
 root@LAPTOP # starkli account deploy ~/.starknet_accounts/starkli.json --keystore ~/.starknet_accounts/key.json
 
-WARNING: no valid provider option found. Falling back to using the sequencer gateway for the goerli-1 network.
 Enter keystore password: The estimated account deployment fee is 0.000005063280307272 ETH. However, to avoid failure, fund at least:
     0.000007594920460908 ETH
 to the following address:
@@ -886,11 +885,14 @@ Transaction 0x06b17658670c9d3c6c1d3ef8e235249eb0cc66cf40bd172335faff98b0b636bc c
 
 ```toml
 [package]
-name = "hello_erc20" # the name of the package
-version = "0.1.0"    # the current version, obeying semver
+name = "hello_erc20"
+version = "0.1.0"
+edition = "2023_10"
+
+# See more keys and their definitions at https://docs.swmansion.com/scarb/docs/reference/manifest.html
 
 [dependencies]
-starknet = ">=2.1.0"
+starknet = ">=2.4.0"
 
 [[target.starknet-contract]]
 allowed-libfuncs = true
@@ -912,8 +914,10 @@ allowed-libfuncs = true
 .
 ├── CACHEDIR.TAG
 └── dev
+    ├── hello_erc20.sierra.json
     ├── hello_erc20.starknet_artifacts.json
-    └── hello_erc20_ERC20.contract_class.json
+    ├── hello_erc20_ERC20.contract_class.json
+    └── hello_erc20_unittest.test.json
 ```
 
 在 `dev` 目录中使用以下命令进行 `declare` 操作，如下:
@@ -925,20 +929,19 @@ starkli declare --keystore ~/.starknet_accounts/key.json --account ~/.starknet_a
 此命令输出如下:
 
 ```bash
-Sierra compiler version not specified. Attempting to automatically decide version to use...
-Network detected: goerli-1. Using the default compiler version for this network: 2.1.0. Use the --compiler-version flag to choose a different version.
-Declaring Cairo 1 class: 0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9
-Compiling Sierra class to CASM with compiler version 2.1.0...
-CASM class hash: 0x05477b480c295555edd05ae23f2ea759a138484fb2997e9816bd1f30073021fb
-Contract declaration transaction: 0x0696d341a19c275f019deb710bc8fca523b08f94c71094f76f9323f2c34c4040
+Declaring Cairo 1 class: 0x03a03848d08e2eb8ebffa1da26ef8f64175ad73aed6ed5c75bd7b0c4f8ebed4b
+Compiling Sierra class to CASM with compiler version 2.4.0...
+CASM class hash: 0x061cffc0fe65e0e74d78845e691e731a21a0b81f7263adca4617efc78a512456
+Contract declaration transaction: 0x01495ea4f1ad4978513ca70a9650cc59ea47e7b26081ef2efc9c6fb33a9d05af
 Class hash declared:
-0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9
+0x03a03848d08e2eb8ebffa1da26ef8f64175ad73aed6ed5c75bd7b0c4f8ebed4b
 ```
 
-值得注意的是，如果您完全照抄了我的代码，可能会出现 `StarknetErrorCode.CLASS_ALREADY_DECLARED` 的错误，如下:
+值得注意的是，如果您完全照抄了我的代码，可能会出现如下内容:
 
 ```bash
-Not declaring class as it's already declared.
+Not declaring class as it's already declared. Class hash:
+0x03a03848d08e2eb8ebffa1da26ef8f64175ad73aed6ed5c75bd7b0c4f8ebed4b
 ```
 
 您可以通过修改 `mint` 函数的名字，或者增加部分函数解决这一问题。
@@ -958,11 +961,10 @@ starkli deploy --keystore ~/.starknet_accounts/key.json --account ~/.starknet_ac
 上述命令输出如下:
 
 ```bash
-Deploying class 0x015470d854ba85f29cde01fd3943698c33ffcb92c5ebdb6048b9547cd6a03eb9 with salt 0x0522bde321ea548f4e0713f080da581a4e40cf29dcd430675b0fcb4531061f1b...
-The contract will be deployed at address 0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a
-Contract deployment transaction: 0x00c3a7c03681d6d5479190f5f6525c12b018824b9df2ff8c66a033d26d9cdcd2
+The contract will be deployed at address 0x05007818fb1d449b205ba6043d3bb3819684a091e841fbd90d36d490f4978ebe
+Contract deployment transaction: 0x06dbbcb3b30dd66d93f2e86738791579d563160f823c4f9a8dbd7739098dfcd4
 Contract deployed:
-0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a
+0x05007818fb1d449b205ba6043d3bb3819684a091e841fbd90d36d490f4978ebe
 ```
 
 读者可以使用 `Transaction hash` ，前往任一区块链浏览器查看交易状态。较为著名的区块链浏览器有:
@@ -972,7 +974,7 @@ Contract deployed:
 
 由于本文使用了较新的 Cairo 2 编程语言，在本文编写时，StarkScan 并没有兼容，所以建议使用 voyager 进行合约操作。
 
-合约最终部署位置为 `0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a`。点击 [此网址](https://testnet.starkscan.co/contract/0x0091efcd6807d63d83ceb1ce1912c039d7533cfbe54e820711ce406e726b2d4a#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
+合约最终部署位置为 `0x05007818fb1d449b205ba6043d3bb3819684a091e841fbd90d36d490f4978ebe`。点击 [此网址](https://testnet.starkscan.co/contract/0x05007818fb1d449b205ba6043d3bb3819684a091e841fbd90d36d490f4978ebe#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
 
 ![Hello ERC20](https://img.gejiba.com/images/880d7d4e22758bcc9e788c51792b3535.png)
 
