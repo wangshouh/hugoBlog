@@ -72,7 +72,7 @@ def lehmer_xor_random(x, m, a, c):
     return (a * x + c) & (m-1)
 ```
 
-上述算法使用了 $x \bmod 2^n = x \& (2^n-1)$ 简化计算，在 EVM 内，`&` 计算仅消耗 3 gas，而 `mod` 计算则消耗 5 gas。
+上述算法使用了 $x \bmod 2^n = x \\& (2^n-1)$ 简化计算，在 EVM 内，`&` 计算仅消耗 3 gas，而 `mod` 计算则消耗 5 gas。
 
 事实上，为了更好的随机性，我们应当选择 $m = 2^n + 1$ 且 $c = 0$，即使用 $(aX) \bmod (w+1)$ 生成随机序列，此处的 $w = 2^n$ 。
 
@@ -84,8 +84,8 @@ def lehmer_xor_random(x, m, a, c):
 
 $$
 \begin{align}
-aX &= qw + r &\mod (w + 1) \\
-&= q(w + 1) + (r - q) &\mod (w + 1) \\
+aX &= qw + r &\mod (w + 1) \\\
+&= q(w + 1) + (r - q) &\mod (w + 1) \\\
 &= (r - q) &\mod (w + 1)
 \end{align}
 $$
@@ -331,14 +331,14 @@ $$
 
 $$
 \begin{split}
-s &\times (r2 + r3) \\
-&= (2^{192} + 2^{128} + 2^{64} + 1) \times (u_1 \times 2^{192} + u_2 \times 2^{128} + u_3 \times 2^{64} + u_4) \\
-&= u_1 \times 2^{384} \\
-&\phantom{=} + (u_1 + u_2) \times 2^{320} \\
-&\phantom{=} + (u_1 + u_2 + u_3) \times 2^{256} \\
-&\phantom{=} + (u_1 + u_2 + u_3 + u_4) \times 2^{192} \\
-&\phantom{=} + (u_2 + u_3 + u_4) \times 2^{128} \\
-&\phantom{=} + (u_3 + u_4) \times 2^{64} \\
+s &\times (r2 + r3) \\\
+&= (2^{192} + 2^{128} + 2^{64} + 1) \times (u_1 \times 2^{192} + u_2 \times 2^{128} + u_3 \times 2^{64} + u_4) \\\
+&= u_1 \times 2^{384} \\\
+&\phantom{=} + (u_1 + u_2) \times 2^{320} \\\
+&\phantom{=} + (u_1 + u_2 + u_3) \times 2^{256} \\\
+&\phantom{=} + (u_1 + u_2 + u_3 + u_4) \times 2^{192} \\\
+&\phantom{=} + (u_2 + u_3 + u_4) \times 2^{128} \\\
+&\phantom{=} + (u_3 + u_4) \times 2^{64} \\\
 &\phantom{=} + u_4
 \end{split}
 $$
