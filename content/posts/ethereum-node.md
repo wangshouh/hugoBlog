@@ -18,6 +18,8 @@ tags: [ethereum]
 
 ## 快照下载
 
+**我发现使用快照可能导致同步问题，这可能是由于 merkle 压缩镜像时出现的错误。我不建议使用此方案**
+
 由于快照下载需要消耗大量时间，所以我建议首先安装 `tmux` ，然后在 `tmux` 的终端内进行下载。使用以下命令安装 `tmux` 工具:
 
 ```bash
@@ -137,7 +139,7 @@ services:
 
 ![Reth logs](https://blogimage.4everland.store/RETHLogs.png)
 
-在某些情况下，您可能在日志内看到以下报错，请尝试将 `/mainnet_data/db` 内我们下载的快照版本 `mdbx.dat` 重命名为 `mdbx.dat1`。等待 Reth 重启后生成一个新的 `mdbx.dat`，然后删除 Reth 生成的 `mdbx.dat` 将我们前文重命名的 `mdbx.dat1` 改回 `mdbx.dat` 名称。我们就可以发现 Reth 可以正常启动。
+在使用快照的情况下，您可能在日志内看到以下报错，请尝试将 `/mainnet_data/db` 内我们下载的快照版本 `mdbx.dat` 重命名为 `mdbx.dat1`。等待 Reth 重启后生成一个新的 `mdbx.dat`，然后删除 Reth 生成的 `mdbx.dat` 将我们前文重命名的 `mdbx.dat1` 改回 `mdbx.dat` 名称。我们就可以发现 Reth 可以正常启动。
 
 ```
 thread 'main' panicked at /project/crates/node-core/src/node_config.rs:684:14:
