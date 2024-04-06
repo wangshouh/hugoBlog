@@ -20,7 +20,7 @@ aliases: ["/2022/06/06/metamask-login/"]
 
 用户对什么数据进行签名？这应该由开发者决定，签名内容应该在后端生成后发给前端，之后前端用户对其进行签名，再将签名后的数据与个人以太坊账户地址一同回传给后端，后端对数据进行验签，判断数据是否与以太坊账户地址相同。如果相同，则返回登录凭证，在此教程中，我们将返回JWT。如果不同，则返回登录失败消息。总体流程如下图所示：
 
-![MetaMask Login](https://s-bj-3358-blog.oss.dogecdn.com/svg/metamask-login.svg)
+![MetaMask Login](https://blogimage.4everland.store/metamask-login.svg)
 
 ## 登录按钮实现（前端）
 

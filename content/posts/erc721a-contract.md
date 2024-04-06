@@ -670,7 +670,7 @@ function _packedOwnershipOf(uint256 tokenId) private view returns (uint256 packe
 
 该函数的基本逻辑如下:
 
-![packedOwnershipOf](https://s-bj-3358-blog.oss.dogecdn.com/svg/packedOwnershipOf.drawio.svg)
+![packedOwnershipOf](https://blogimage.4everland.store/packedOwnershipOf.drawio.svg)
 
 通过上述流程图，读者应该可以理解查询 `packed` 的流程，其中的核心步骤是 `for` 循环代码块内的回溯。正如在 [mint](#铸造) 所说明的，`_packedOwnerships` 内仅存储 `startTokenId` ，所以此处使用 `--tokenId` 进行回溯查询。
 

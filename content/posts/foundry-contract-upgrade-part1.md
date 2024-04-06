@@ -329,7 +329,7 @@ cast call $V2 "getNumberOfVotes()(uint256)"
 
 EIP-897是由`openzeppelin-labs`提出一种可更新合约的编写方式。它使用`delegatecall`函数通过代理运行的方式实现可升级合约。具体思路是首先编写代理合约，代理合约中含有`fallback()`函数，将所有请求转发至此函数内运行。`fallback`函数内通过`solidity assembly`提供的底层方法将`calldata`(即用户请求数据)转发到逻辑函数内运行，运行完毕后再将数据返回给用户。示意图如下:
 
-![proxyContract](https://s-bj-3358-blog.oss.dogecdn.com/svg/proxyContract.svg)
+![proxyContract](https://blogimage.4everland.store/proxyContract.svg)
 
 此示意图没有考虑存储模型，如果读者的项目不涉及存储则可以使用。
 
@@ -560,7 +560,7 @@ contract ProxyEasy is ProxyStorage {
 
 如果你需要编写更加复杂的合约，你必须保持合约中的变量排列顺序。根据上文给出的原理，一旦合约内的变量顺序改变，则会导致存储槽之间的冲突，进一步导致变量覆写的出现。可以使用继承现有逻辑数据存储合约的方式保证合约变量实例化属性不会改变。加入你需要加入更多的变量，你需要将变量声明全部放在一个新的合约内，在此处我们称为`NewDataLayout`，最终形成的继承关系如下图:
 
-![Inherit DataLayout](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-23-172842.svg)
+![Inherit DataLayout](https://blogimage.4everland.store/InheritDataLayout.svg)
 
 这是一种较为优雅的解决方案，可以有效避免读者在编写升级合约时发生变量存储冲突的情况。
 
@@ -836,17 +836,17 @@ contract DataLayout is LibraryLockDataLayout {
 
 在此我们给出合约的继承关系图:
 
-![contract-inherit](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-22-204139.svg)
+![Contract Inherit](https://blogimage.4everland.store/ContractInherit.svg)
 
 上图中，给出`LibraryLockDataLayout`与`LibraryLock`都是用于数据存储的合约，`LibraryLock`和`NumberStorage`都是依赖于数据存储合约的数据处理合约。而`Owned`和`Proxiable`则是纯粹的工具合约，在合约升级时不需要考虑。
 
 在我们代码中，`NumberStorageUp`合约是对`NumberStorage`合约最简单的升级，因为升级过程不涉及变量变化，所以我们只需要更改`NumberStorage`的逻辑即可。继承关系图如下:
 
-![NumberStorageUp](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-22-205153.svg)
+![NumberStorageUp](https://blogimage.4everland.store/NumberStorageUp.svg)
 
 假设你的`NumberStorage`升级过程中需要增加新的变量，你需要将新增加的变量定义在一个新的合约中，在此处我们将这个存储新变量的合约称为`NewDataLayout`，我们需要该新合约继承过去的存储合约。最终形成的继承图如下:
 
-![Add Variable](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-22-205730.svg)
+![Add Variable](https://blogimage.4everland.store/NumberStorageAddVariable.svg)
 
 在此处给出一个`NewDataLayout`的示例:
 ```solidity

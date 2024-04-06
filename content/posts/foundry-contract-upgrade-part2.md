@@ -128,11 +128,11 @@ event AdminChanged(address previousAdmin, address newAdmin);
 
 代理合约的基础架构如下:
 
-![ProxySystem](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-25-195542.svg)
+![ProxySystem](https://blogimage.4everland.store/ProxySystem.svg)
 
 此图过于简单，我们在此列出UML图:
 
-![Contract UML](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-25-210049.svg)
+![Contract UML](https://blogimage.4everland.store/ProxySystemUML.svg)
 
 在UML图中，以`#`开头的函数代表此函数仅能在合约内调用`internal`; `+`开头的函数或变量代表`public`; `-`开头的函数或变量代表`private`，即不能在合约外调用; 斜体函数名为抽象函数，即在当前合约内仅注明了函数名，我们需要在继承合约内实现。注意此图中省略了部分函数，如果想获得详细信息，请查阅[文档](https://docs.openzeppelin.com/contracts/4.x/api/proxy)。
 
@@ -212,7 +212,7 @@ function implementation() public view virtual override returns (address) {
 
 通过上述一系列操作，最终的效果就是当代理合约进行`delegatecall`操作时，合约会调用`_implementation()`函数获取逻辑合约地址。`_implementation()`函数在`ERC1967Upgrade`进行了实现，该实现要求逻辑合约。
 
-![Beacon FlowChart](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-26-103729.svg)
+![Beacon FlowChart](https://blogimage.4everland.store/BeaconUpgrade.svg)
 
 当然上述流程仅给出了获取逻辑合约地址的流程，其他流程与我们之前熟悉的`EIP-1822`相同。
 
@@ -732,7 +732,7 @@ enum FacetCutAction {Add, Replace, Remove}
 1. _facetAddress 切面合约地址
 1. _functionSelectors 需要增加的函数的集合
 
-![Add function](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-29-213039.svg)
+![Add function](https://blogimage.4everland.store/diamondAddFunc.svg)
 
 上图给出了`addFunctions`的逻辑框架，但缺少了部分赋值和计算的细节。其中较难理解的是`functionSelectorPosition`和`facetAddressPosition`。前者是函数选择器在`cetFunctionSelectors.functionSelectors`中的位置; 后者是切面合约地址在`facetAddresses`中的地址。
 
@@ -742,7 +742,7 @@ enum FacetCutAction {Add, Replace, Remove}
 
 `removeFunctions`所需要的参数与`addFunctions`相同，该函数的核心是它迭代调用的另一个函数`removeFunction`。`removeFunction`的作用原理如下:
 
-![removeFunction](https://s-bj-3358-blog.oss.dogecdn.com/svg/mermaid-diagram-2022-07-30-212724.svg)
+![removeFunction](https://blogimage.4everland.store/diamondRemoveFunc.svg)
 
 总体而言，代码复杂的地方在于多映射关系之间的互相关系。我们首先通过`selectorToFacetAndPosition`获得需要删除的函数的位置，然后通过`facetFunctionSelectors`获得此地址下`functionSelectors`集合最后的索引位置。由于`solidity`没有提供按索引删除集合元素的功能，我们只能使用`pop`函数删除最后一个元素。如果需要删除的函数就在对应`functionSelectors`的最后，我们可以直接使用`pop`删除。如果不在最后，我们需要使用其他手段。在代码实现中，作者通过将原来的最后函数先提取出来，使用原最后一个函数覆盖需要替换的函数。这样的话需要删除的函数就被原最后一个函数覆盖了，就可以使用`pop`删除。
 

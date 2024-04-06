@@ -234,7 +234,7 @@ func (pool *TxPool) add(tx *types.Transaction, local bool) (replaced bool, err e
 
 整个流程可以使用以下流程图说明:
 
-![Tx Add Flow](https://s-bj-3358-blog.oss.dogecdn.com/svg/txAdd.drawio.svg)
+![Tx Add Flow](https://blogimage.4everland.store/txAdd.drawio.svg)
 
 ```go
 hash := tx.Hash()
@@ -545,7 +545,7 @@ func (pool *TxPool) addTxs(txs []*types.Transaction, local, sync bool) []error
 
 此函数的流程图如下:
 
-![AddTxs](https://s-bj-3358-blog.oss.dogecdn.com/svg/addTxs.drawio.svg)
+![AddTxs](https://blogimage.4everland.store/addTxs.drawio.svg)
 
 `addTxs`函数首先对交易进行了一个简单的验证，具体代码如下:
 ```go
@@ -643,7 +643,7 @@ reorgShutdownCh chan struct{}  // requests shutdown of scheduleReorgLoop
 
 一个简单的示例图，如下:
 
-![scheduleReorgLoop](https://s-bj-3358-blog.oss.dogecdn.com/svg/scheduleReorgLoop.drawio.svg)
+![scheduleReorgLoop](https://blogimage.4everland.store/scheduleReorgLoop.drawio.svg)
 
 在这些`channel`中，较难理解的是`reorgDoneCh`和`reorgShutdownCh`，这两个变量的设计是为了保证并发的正确性。我们首先介绍`reorgDoneCh`变量，此变量非常奇怪属于`chan chan struct{}`类型。
 
@@ -1335,4 +1335,4 @@ pool.pendingNonces.setAll(nonces)
 
 考虑到读者可以希望自己阅读源代码，此处给出关于交易的核心函数流程图，为了简单，此流程图省略了部分数据结构，如下:
 
-![Tx Function Flow](https://s-bj-3358-blog.oss.dogecdn.com/svg/txFunction.drawio.svg)
+![Tx Function Flow](https://blogimage.4everland.store/txFunction.drawio.svg)
