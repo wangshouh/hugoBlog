@@ -68,7 +68,7 @@ $$
 一个复杂函数对应的泰勒展开可以使用以下公式计算:
 
 $$
-f(a)+{\frac {f'(a)}{1!}}(x-a)+{\frac {f''(a)}{2!}}(x-a)^{2}+{\frac {f'''(a)}{3!}}(x-a)^{3}+\cdots
+f(a)+{\frac {f^{\prime}(a)}{1!}}(x-a)+{\frac {f^{\prime \prime}(a)}{2!}}(x-a)^{2}+{\frac {f{\prime \prime \prime}(a)}{3!}}(x-a)^{3}+\cdots
 $$
 
 打开 `sagemath` 的终端，使用以下命令进行计算:
