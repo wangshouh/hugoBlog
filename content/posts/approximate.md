@@ -125,7 +125,7 @@ $p_0 + p_1 x + p_2 x^2 + p_3 x^3 + p_4 x^4 = y_i$
 
 我们需要求解以下矩阵:
 
-$$
+\\\\[
 \begin{bmatrix}
    1 & x_0 & x_0^2 & x_0^3 & x_0^4 \\\\
    1 & x_1 & x_1^2 & x_1^3 & x_1^4 \\\\
@@ -149,7 +149,8 @@ p_0 \\\\ p_1 \\\\ p_2 \\\\ p_3 \\\\ p_4
 \begin{bmatrix}
 y_0 \\\\ y_1 \\\\ y_2 \\\\ y_3 \\\\ y_4
 \end{bmatrix}
-$$
+
+\\\\]
 
 以上给出的包含 $x$ 的矩阵被称为 [Vandermonde matrix](https://en.wikipedia.org/wiki/Vandermonde_matrix) ，我们可以将上述计算使用以下公式表述:
 
