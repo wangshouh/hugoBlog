@@ -132,24 +132,15 @@ $$
    1 & x_2 & x_2^2 & x_2^3 & x_2^4 \\\\
    1 & x_3 & x_3^2 & x_3^3 & x_3^4 \\\\
    1 & x_4 & x_4^2 & x_4^3 & x_4^4 \\\\
-\end{bmatrix}
-
-\cdot
-$$
-
-$$
+\end{bmatrix} \cdot
 \begin{bmatrix}
-p_0 \\ p_1 \\ p_2 \\ p_3 \\ p_4
-\end{bmatrix}
-
-
-=
-
-
+p_0 \\\\ p_1 \\\\ p_2 \\\\ p_3 \\\\ p_4
+\end{bmatrix}=
 \begin{bmatrix}
-y_0 \\ y_1 \\ y_2 \\ y_3 \\ y_4
+y_0 \\\\ y_1 \\\\ y_2 \\\\ y_3 \\\\ y_4
 \end{bmatrix}
 $$
+
 
 以上给出的包含 $x$ 的矩阵被称为 [Vandermonde matrix](https://en.wikipedia.org/wiki/Vandermonde_matrix) ，我们可以将上述计算使用以下公式表述:
 
@@ -323,16 +314,10 @@ $$
    1 & x_2 & x_2^2 & -y_2 \cdot x_2 & -y_2 \cdot x_2^2 \\\\
    1 & x_3 & x_3^2 & -y_3 \cdot x_3 & -y_3 \cdot x_3^2 \\\\
    1 & x_4 & x_4^2 & -y_4 \cdot x_4 & -y_4 \cdot x_4^2 \\\\
-\end{bmatrix}
-
-\cdot
-
+\end{bmatrix} \cdot
 \begin{bmatrix}
 p_0 \\\\ p_1 \\\\ p_2 \\\\ q_0\\\\ q_1
-\end{bmatrix}
-
-=
-
+\end{bmatrix} =
 \begin{bmatrix}
 y_0 \\\\ y_1 \\\\ y_2 \\\\ y_3 \\\\ y_4
 \end{bmatrix}
