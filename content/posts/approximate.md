@@ -2,6 +2,7 @@
 title: "多项式逼近及其应用:理论与计算"
 date: 2023-11-15T10:47:30Z
 tags: [math]
+math: true
 ---
 
 ## 概述
