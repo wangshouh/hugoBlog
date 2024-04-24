@@ -16,6 +16,10 @@ aliases: ["/2022/11/12/smart-contract-tool/"]
 
 本文章主要面向使用`solidity`语言进行太坊或以太坊兼容链智能合约开发的程序员。
 
+目前，已经有人对以太坊常用工具进行了汇总，读者可以参考 [Swiss Knife](https://swiss-knife.xyz/) 网站，如下:
+
+![Swiss Knife](https://blogimage.4everland.store/SwissKnife.png)
+
 ## 编辑器配置
 
 作为智能合约开发者，拥有一个配置良好的编辑器可以大幅度提高合约开发效率。由于目前智能合约开发刚刚起步，并没有使用专业的IDE，但通用编辑器`VSCode`配合各种插件可以拥有非常好的开发体验。在此处，我建议按照以下插件:
@@ -89,9 +93,17 @@ cat test.evm | evmdis > test.output
 ```
 此命令会将反汇编结果输送到`test.output`中，如果您的系统内安装了`VSCode`可以使用`code test.output`在`vscode`内打开此文件，最终输出如下:
 
-![EthDis Output]()
+![EthDis Output](https://blogimage.4everland.store/ethdisOutput.png)
 
 读者可以通过分析合约最开始的跳转表配合`cast 4byte`命令获得合约包含的函数，比如使用`cast 4byte 0x18160DDD`可以分析获得此合约包含`totalSupply()`函数。
+
+对于部分未开源合约，我们可能需要阅读其字节码版本或者字节码的反汇编版本。对于字节码的阅读，我推荐使用 [bytegraph](https://bytegraph.xyz/) 工具，该工具会展示字节码之间的调用关系，更加方便读者阅读字节码。
+
+![ByteGraph](https://blogimage.4everland.store/bytegraph.png)
+
+对于反汇编字节码，我个人比较推荐 [dedaub](https://app.dedaub.com) 的反汇编工具，该工具是我目前使用过的最好的反汇编工具。但是需要注意，目前使用此服务需要进行登录。
+
+![Dedaub Decompiled](https://blogimage.4everland.store/DedaubDecompiled.png)
 
 ## 链上合约调用分析
 
@@ -163,28 +175,7 @@ cast block latest --rpc-url https://rpc.ankr.com/eth
 ```
 在此处，我们省略输出。此命令事实上使用了`eth_getBlockByNumber`接口，具体定义读者可自行参考[文档](https://ethereum.github.io/execution-apis/api-documentation/)。
 
-上述方式的致命确定在于由于RPC服务商的速率限制，我们无法大批量请求获得相关数据，简单测试，我们可以得到以下性能对比表:
-
-| 服务商 | 每秒可获得的区块数 |
-| ----- | -------- |
-| Alchemy | 0.17 |
-| Cloudflare | 1 |
-| Infura | 4.75 |
-| Quicknode | 0.78 |
-
-上表数据来源[Launching 0xFast Stream](https://manishrjain.com/launching-0xfast-stream)
-
-如果读者希望使用此方法获得完整的以太坊区块数据需要大量时间，在此处，我们可以使用`0xFast Stream`提供的极速区块数据下载服务，此服务可以每秒下载 220 个区块，使用方法也非常简单，读者可自行点击以下链接:
-
-1. https://eth-uswest.0xfast.com/stream/free?range=latest 获取最新区块数据
-1. https://eth-uswest.0xfast.com/stream/free?range=1 获取单一区块数据
-1. https://eth-uswest.0xfast.com/stream/free?range=1-10获取系列区块数据
-
-> 上文链接中的10进制字符均可替换为16进制数，如 https://eth-uswest.0xfast.com/stream/free?range=0x1
-
-此服务返回`JSON`编码的区块数据，更多内容可参考[Launching 0xFast Stream](https://manishrjain.com/launching-0xfast-stream)文章。
-
-此服务提供一个`status`状态页面，读者可参考 [0xfast status](https://status.0xfast.com/) 以判断是否服务宕机。
+目前 RPC 服务商支持直接使用加密货币支付且价格最低的是 [dRPC](https://drpc.org?ref=174727) 提供的服务，该服务开源直接使用以太坊地址登录，且允许用户直接使用 Arbitrum 内的 USDT 等稳定币进行预充值。
 
 ## 总结
 
