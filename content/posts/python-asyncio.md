@@ -108,7 +108,7 @@ Code runtime: 1.01
 
 显然，此代码运行速度更快，且输出结果也与同步版本不符，其运行流程图如下:
 
-![Asynio Example](https://img.wongssh.cf/file/wongsshblog/svg/countAsynio.svg)
+![Asynio Example](https://img.gopic.xyz/countAsynio.svg)
 
 在`asynio.gather`函数运行后，第一个`count()`函数启动，运行并输出`One`，但其运行到`await asyncio.sleep(1)`会运行`asyncio.sleep`暂停运行，将控制权交还给主函数，主函数继续运行下一个`count()`函数，重复上一流程。当第一个`count()`函数暂停满 1 秒后，它会取得运行权限，将`Two`进行输出，其他`count()`函数类似。
 

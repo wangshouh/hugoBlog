@@ -338,7 +338,7 @@ function setLiquidationThreshold(
 
 在具体的写入过程中，我们遵循以下流程图:
 
-![Write Bitmap](https://img.wongssh.cf/file/wongsshblog/svg/writebitmap.svg)
+![Write Bitmap](https://img.gopic.xyz/writebitmap.svg)
 
 相信读者在读完上图后尽可以很好的理解合约源代码。
 
@@ -464,13 +464,13 @@ reserveCache.currScaledVariableDebt = reserveCache
 
 `currScaledVariableDebt`和`nextScaledVariableDebt`均被暂时定义为通过`IVariableDebtToken`接口调取`scaledTotalSupply`获得的值。我们有必要指定此值的具体来历，使用`Solidity Visual Developer`通过的`inherbitance`功能查询`IVariableDebtToken`的继承关系，生成下图:
 
-![Inherbit svg](https://img.wongssh.cf/file/wongsshblog/svg/inherbit.svg)
+![Inherbit svg](https://img.gopic.xyz/inherbit.svg)
 
 > 注意，此图为倒置图，被继承合约在下，继承合约在上，或称子合约在上
 
 对`VariableDebtToken`的函数绘制相关图像(`graph this`)获得如下图像:
 
-![VariableDebitToken func](https://img.wongssh.cf/file/wongsshblog/svg/variabledebtToken.svg)
+![VariableDebitToken func](https://img.gopic.xyz/variabledebtToken.svg)
 
 通过回溯代码，我们发现`scaledTotalSupply`被定义在`src/protocol/tokenization/base/ScaledBalanceTokenBase.sol`中，具体代码如下:
 ```solidity
@@ -536,7 +536,7 @@ function getSupplyData()
 
 生成相关调用图，如下图:
 
-![getSupplyData func](https://img.wongssh.cf/file/wongsshblog/contract/getSupplyData.svg)
+![getSupplyData func](https://img.gopic.xyz/getSupplyData.svg)
 
 通过调用图，我们发现`getSupplyData`的`super.totalSupply()`来自`IStableDebtToken`，显然这是一个接口其不存在具体实现，我个人认为此处是此插件的绘图错误。自己查找相关继承关系，我们发现实际上`totalSupply`被定义在`IncentivizedERC20`中，其功能与常规`ERC-20`合约对`totalSupply`的定义一致。
 
