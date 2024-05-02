@@ -438,7 +438,7 @@ struct ReserveCache {
 
 ![Cache with ReserveData](https://img.gejiba.com/images/8ec11d055d00539559508dfa0d24d8a9.png)
 
-在后文介绍具体代码时，我们会跳过直接相等的这九种数据字段，接下来我们逐一分析每个字段的来源。
+在后文介绍具体代码时，我们会跳过直接相等的这九种数据字段，接下来我们逐一分析每个字段的来源。以下代码都来自于 `cache` 函数，其文件地址为 `src/protocol/libraries/logic/ReserveLogic.sol`。
 
 ```solidity
 reserveCache.reserveFactor = reserveCache
