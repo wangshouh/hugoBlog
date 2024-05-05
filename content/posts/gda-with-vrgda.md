@@ -9,7 +9,7 @@ math: true
 
 VRGDA(Variable Rate GDAs) 是一种渐进式荷兰式拍卖(Gradual Dutch Auctions, GDAs)的扩展，其作用是在超长代币发行期间保持一个合理价格的且定期的流动性释放。而普通的 GDAs 则是只可以保证代币出售的价格合理，但不能保证代币在合适的时间释放。
 
-本文将首先介绍渐进式荷兰式拍卖 GDAs，然后引入 VRGDA ，最后简单介绍 GOO 的相关内容。
+本文将首先介绍渐进式荷兰式拍卖 GDAs，然后引入 VRGDA。本文主要参考了 [Gradual Dutch Auctions](https://www.paradigm.xyz/2022/04/gda) 和 [Variable Rate GDAs](https://www.paradigm.xyz/2022/08/vrgda) 文章，相比于上述两篇文章，本文的介绍增加了一定数学的推导，但对于 VRGDA 内较为复杂的 Logistic Issuance Schedule，本文并没有加以介绍。
 
 ## 渐进式荷兰式拍卖 GDAs
 
@@ -217,7 +217,7 @@ function getVRGDAPrice(int256 timeSinceStart, uint256 sold) public view virtual 
 第 n 个 NFT 的 VRGDA 的价格计算公式:
 
 $$
-\mathtt{linear\_vrgda}(t) = p_0 (1 - k)^{t - \frac{n}{r}}
+\mathtt{linear\\_vrgda}(t) = p_0 (1 - k)^{t - \frac{n}{r}}
 $$
 
 下图展示了当 $n = 2$ 和 $n = 3$ 时的线性 VRGDA 的价格情况:
@@ -235,7 +235,7 @@ $$
 此时，计划发行函数为 $f(t) = \sqrt{t}$ ，此时 $s_n = n^2$ ，那么 VRGDA 的价格计算公式如下:
 
 $$
-\mathtt{linear\_vrgda}(t) = p_0 (1 - k)^{t - n^2}
+\mathtt{linear\\_vrgda}(t) = p_0 (1 - k)^{t - n^2}
 $$
 
 其价格图像如下，绿线的参数为 $n = 1$ 而黑线参数为 $n = 2$:
