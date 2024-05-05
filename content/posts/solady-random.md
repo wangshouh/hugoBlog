@@ -18,6 +18,8 @@ math: true
 
 本文在编写过程中主要参考了 [计算机程序设计艺术 第二卷 半数值算法](https://book.douban.com/subject/1231891/) ，但本文会给出相关算法的 Python 实现以及更加详细的分析。
 
+值得注意的是，本文给出的随机数依旧是伪随机数仍可以被提前预测，使用前请读者认真评估经济安全性。在 [ERC7527](https://eips.ethereum.org/EIPS/eip-7527) 内，本文给出的正态分布随机数仅用于 `wrap` 操作，即仅用于给出买入报价，而不用于给出卖出报价，在此场景下，正态分布随机数是具有经济安全性的，即使该随机数被预测仍可以保证系统内的资产不产生损失。
+
 ## 均匀分布随机数生成
 
 我们希望生成一个数值位于 $[a, b]$ 区间内的随机数，要求随机数生成算法产生的随机数为此区间内的任一数字，且要求各数字被随机数算法产生的概率相同。
@@ -139,8 +141,6 @@ $$
 2. $a$ 是一个模 $m$ 原根(Primitive root modulo m)
 
 上述条件过于抽象，论文 [Computationally easy, spectrally good multipliers for congruential pseudorandom number generators](https://onlinelibrary.wiley.com/doi/10.1002/spe.3030) 给出了一系列经过验证的良好参数选择。读者可以在论文最后找到作者总结的表格，我们使用的是 `MCG` 系列表格，此处的 `MCG` 即指 $X_{n + 1} = a X_n \bmod m$ 形式，而 `LCG` 则指 $X_{n+1} = (a X_n + c) \mod m$ 形式。
-
-> 读者可以使用 [此链接](https://blogimage.4everland.store/Softw%20Pract%20Exp%20-%202021%20-%20Steele%20-%20Computationally%20easy%20spectrally%20good%20multipliers%20for%20congruential%20pseudorandom%20number.pdf) 下载此论文的镜像版本。
 
 当 $m = 2^{64}$ 时，良好的参数选择如下:
 
