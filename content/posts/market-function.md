@@ -77,7 +77,7 @@ $$
 2. 流动性的管理。伴随着对 AMM 曲线的研究深入，发现了一系列可能导致 LP 损失的因素，比如大名鼎鼎的无常损失(Impermanent Loss)。这导致 LP 管理变成了一项复杂工作。
 3. MEV 的恶意攻击。在以太坊内，对 AMM 曲线的 MEV 是极其发达的，大部分 MEV 操作都会使得不同的参与方受损。比较恶意的对 AMM 曲线的 MEV 是三明治攻击，对于任何不设置滑点的交易，都会被三明治攻击，最终的结果是用户损失大量资产。
 
-实际上，对于使用 AMM 曲线作为资产定价的最大问题仍是在于初始流动性的提供，对于早期项目方而言，发行资产一定需要大量的资产进行初始流动性提供，对于 MEME 币项目方而言，在非 FOMO 的时间节点很难有充足的流动性。
+实际上，对于使用 AMM 曲线作为资产定价的最大问题仍是在于初始流动性的提供，对于早期项目方而言，发行资产一定需要大量的资产进行初始流动性提供，对于 Meme 币项目方而言，在非 FOMO 的时间节点很难有充足的流动性。
 
 当然，AMM 曲线的另一个特性是只能对 ERC20 资产对进行定价，使用 AMM 曲线对 NFT 等资产进行定价则需要使用一些特殊方案，这些 AMM 曲线定价 NFT 的方案究其本质都是使用了 NFT 碎片化的思想，比如 ERC404 资产，我们很难真正的称这些由 AMM 曲线定价的 NFT 是一个真正的 NFT。
 
@@ -106,7 +106,7 @@ $$
 
 事实上，这些曲线都可以归结为亚线性、线性和超线性。
 
-与 AMM 曲线方案相比，Bonding Curve 最大的优势在于完全不依赖于初始流动性，代币发行方并不需要准备大量流动性，而是可以直接进行代币发行，靠用户注入流动性来维护价格。这极其有利于所谓的策展市场(Curation Markets)。策展市场是早期以太坊的讨论议题之一，其目的是允许团体更有效地协调并从他们围绕共同目标共同创造的价值中获利的模型。最简单的案例就是目前的 pump.fun。策展人发行 MEME，其他参与者按照 Bonding Curve 买入发行的 MEME 代币。而 friend tech 也是策展市场的案例之一。
+与 AMM 曲线方案相比，Bonding Curve 最大的优势在于完全不依赖于初始流动性，代币发行方并不需要准备大量流动性，而是可以直接进行代币发行，靠用户注入流动性来维护价格。这极其有利于所谓的策展市场(Curation Markets)。策展市场是早期以太坊的讨论议题之一，其目的是允许团体更有效地协调并从他们围绕共同目标共同创造的价值中获利的模型。最简单的案例就是目前的 pump.fun。策展人发行 MEME，其他参与者按照 Bonding Curve 买入发行的 Meme 代币。而 friend tech 也是策展市场的案例之一。
 
 如果读者希望获得更加详细的信息，请参考 [Introducing Curation Markets: Trade Popularity of Memes & Information (with code)!](https://medium.com/@simondlr/introducing-curation-markets-trade-popularity-of-memes-information-with-code-70bf6fed9881) 一文，值得一提的是该文成文于 2017 年。
 
@@ -181,13 +181,13 @@ $$
 
 上文我们已经介绍了如何进行买入报价，但还没有介绍如何进行卖出报价。卖出报价实际上就是上一次的买入成交价。在合约内，我们会维护一个价格列表，每一次成家后都将成交价追加到价格列表后，而当用户卖出时，就直接使用价格列表的最后一个价格作为用户的卖出报价。在具体的价格表现上，就会出现用户的买入和卖出存在一定的对称性。
 
-![ERC7527 Unwrap](https://blogimage.4everland.store/ERC7527Unwrap.png)
+![ERC7527 Unwrap](https://img.gopic.xyz/StackWrapPrice.png)
 
 在引入以上 Agency 报价公式后，就可以避免 Bonding Curve 完全透明的价格曲线，所有的价格确定都是用户通过买入和卖出驱动的，所以用户不再仅与报价函数博弈，更多的是与其他用户进行博弈。比如用户不会仅选择等待策略，因为在报价上涨阶段就有可能出现成交。最终在动态博弈下会产生比 Bonding Curve 更加复杂的博弈场景。下图展示了随机模拟下的 App NFT 的成交价格情况:
 
 ![ERC7527 Price](https://img.gopic.xyz/ERC7527Price.png)
 
-与 Bonding Curve 相比，我们可以将上述报价过程视为 Bonding Curve 与拍卖机制的结合，拍卖过程的博弈刚好弥补了 Bonding Curve 过于透明化的机制。但另一方面也保留了 Bonding Curve 的其他优势。用户通过 `wrap` 获取 App NFT 后，Agency 所代表叙事就与其经济利益息息相关，基于经济利益的驱动，用户有可能参与 Agency 所对应的叙事的构建。而 Agency 的 TVL 也刚好反映了 Agency 所对应叙事的价值。比如用户可以选择使用 Agency 发行 MEME NFT。用户认可此 MEME 就会使用 `wrap` 操作用钱投票，并积极推动其他用户参与。而 Agency 的 TVL 则直接反映了当前 MEME 的市场价值。
+与 Bonding Curve 相比，我们可以将上述报价过程视为 Bonding Curve 与拍卖机制的结合，拍卖过程的博弈刚好弥补了 Bonding Curve 过于透明化的机制。但另一方面也保留了 Bonding Curve 的其他优势。用户通过 `wrap` 获取 App NFT 后，Agency 所代表叙事或者映射的实体就与其经济利益息息相关，基于经济利益的驱动，用户有可能参与 Agency 所对应的叙事或者实体的构建。而 Agency 的 TVL 也刚好反映了 Agency 所对应叙事的价值。比如用户可以选择使用 Agency 发行 Meme NFT。用户认可此 Meme 就会使用 `wrap` 操作用钱投票，并积极推动其他用户参与。而 Agency 的 TVL 则直接反映了当前 Meme 的市场价值。
 
 与拍卖方案相比，ERC7527 方案的另一大优势在于资产具有充分的流动性，用户可以选择直接在二级市场内换手，如果二级市场流动性并不充足，那么用户可以选择直接通过 Agency 的 `unwrap` 机制销毁 NFT 获得底层资产。而且 Agency 内的资产并无法被代币发行方提取，一定程度上避免了代币发行方的 Rug 行为。
 
