@@ -29,7 +29,7 @@ require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1)
 上述代码内存在四个变量，其含义如下:
 
 - `balance0Adjusted` 用户向池子里发送 x 资产后，池子里的 x 资产的数量减去发送给池子的 x 资产的 0.3% 的手续费
-- `balance1Adjusted` 用户向池子里发送 x 资产后，池子里的 x 资产的数量减去发送给池子的 x 资产的 0.3% 的手续费
+- `balance1Adjusted` 用户向池子里发送 y 资产后，池子里的 y 资产的数量减去发送给池子的 y 资产的 0.3% 的手续费
 - `_reserve0` x 资产在池子内部的储备
 - `_reserve1` y 资产在池子内部的储备
 
