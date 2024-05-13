@@ -100,7 +100,7 @@ $$
 
 当用户决定进入市场时，假如用户需要购买 $k$ 数量的发行代币，我们会使用曲线下的积分计算用户所需要的供应代币的数量。当然，我们会使用一些方案简化积分计算。该过程涉及到一系列数学推导，如果读者对其感兴趣，请阅读 [Bonding Curves In Depth: Intuition & Parametrization](https://medium.com/relevant-community/bonding-curves-in-depth-intuition-parametrization-d3905a681e0a) 一文中的 **Computing Buy and Sell Prices** 章节。
 
-下图展示了一些常见的用于 Bonding Curve 的曲线。左上角为 Sigmoid 曲线，其曲线的函数表达为 $y = \frac{1}{1-e^{-x}}$，右上角为幂函数曲线，其函数表达式为 $y = m \cdot x^n$。右下角为特殊函数曲线，其数学表达式为 $y = m(1+25\\%)^{log_2x}+b$，其经济学含义为当代币供应量每增加一倍，代币的价格就增加 25%。如果读者对此特殊函数十分感兴趣，请阅读 [On Single Bonding Curves for Continuous Token Models](https://medium.com/thoughtchains/on-single-bonding-curves-for-continuous-token-models-a167f5ffef89) 一文。而右下角为常数函数。
+下图展示了一些常见的用于 Bonding Curve 的曲线。左上角为 Sigmoid 曲线，其曲线的函数表达为 $y = \frac{1}{1-e^{-x}}$，右上角为幂函数曲线，其函数表达式为 $y = m \cdot x^n$。左下角为特殊函数曲线，其数学表达式为 $y = m(1+25\\%)^{log_2x}+b$，其经济学含义为当代币供应量每增加一倍，代币的价格就增加 25%。如果读者对此特殊函数十分感兴趣，请阅读 [On Single Bonding Curves for Continuous Token Models](https://medium.com/thoughtchains/on-single-bonding-curves-for-continuous-token-models-a167f5ffef89) 一文。而右下角为常数函数。
 
 ![Sigmoid](https://img.gopic.xyz/BondingCurveShapes.webp)
 
