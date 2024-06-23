@@ -1,6 +1,7 @@
 ---
 title: "ERC7527: Premium 驱动的去中心化定价"
 date: 2024-06-22T18:45:30Z
+math: true
 ---
 
 ## 概述
@@ -13,7 +14,7 @@ date: 2024-06-22T18:45:30Z
 
 在 [上一篇文章](https://blog.wssh.trade/posts/market-function/) 中，我们介绍了目前常见的纯链上定价模型，其中也介绍了 ERC7527 的特殊的连续报价模型并给出了该模型的数学表示，但上一篇文章对于 ERC7527 的介绍是较为简单的，在本节中，我们将着重介绍 ERC7527 的原理、协议细节。
 
-ERC7527 提出了一种通过发行 **ERC7527 代币** 给应用定价的新范式。ERC7527 代币的价格实际上就量化了应用的市值(应用市值 = ERC7527 价格 $\times$ 数量)。这种方法将对应用的定价转化为了对 ERC7527 代币的定价。ERC7527 代币的定价分为以下两个部分:
+ERC7527 提出了一种通过发行 **ERC7527 代币** 给应用定价的新范式。ERC7527 代币的价格实际上就量化了应用的市值($\text{应用市值} = \text{ERC7527 价格} \times \text{数量}$)。这种方法将对应用的定价转化为了对 ERC7527 代币的定价。ERC7527 代币的定价分为以下两个部分:
 
 1. 报价。ERC7527 提供了对外买入(`wrap`)和卖出(`unwrap`)报价的接口，允许开发者自己实现
 2. 定价。基于 ERC7527 的 FOAMM(Function Oracle Automated Market Maker) 通过 `wrap` 添加内部流动性实现了买入定价，或通过 `unwrap` 移除内部流动性实现了卖出定价。这种方案无需依赖外部的流动性提供者
@@ -118,12 +119,14 @@ ERC7527 代币的报价应随着 ERC7527 代币持有量的增加而增加会带
 我们会在后文具体介绍解决方案。
 
 首先，满足宏观要求实际上很简单，我们需要在报价模型内纳入定价($p_{n-1}$)作为因子。然后，对于微观需求，我们可以将函数分段来解决问题。最终，我们可以获得以下报价函数:
+
 $$
 p_n = \begin{cases}
-\frac{2}{1+e^{\lambda_{up} \Delta_{m}}} \cdot p_{n-1} + c & \Delta_m \le \Delta_{target} \\
-p_{n-1}e^{-\lambda_{down} \Delta_{m}} &\Delta_m > \Delta_{target}
+\frac{2}{1+e^{\lambda_{up} \Delta_{m}}} \cdot p_{n-1} + c & \Delta_m \le \Delta_{target} \\\\
+p_{max}e^{-\lambda_{down} \Delta_{m}} &\Delta_m > \Delta_{target}
 \end{cases}
 $$
+
 关于此报价函数的参数的具体含义，读者可以参考 [上一篇文章](https://blog.wssh.trade/posts/market-function/#erc7527) 内给出的介绍。我们在此处直接给出此定价函数的图像:
 
 ![ERC7527 Auction](https://img.gopic.xyz/AuctionStep1.png)
