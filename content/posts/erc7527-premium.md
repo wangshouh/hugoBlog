@@ -186,7 +186,7 @@ AI 应用也可以进一步使用分红措施激励用户。AI 应用直接在�
 
 在技术实现上，ERC7527 代币存在对 ERC721 的继承，这意味着 ERC7527 代币可以借助 ERC6551 协议生成 ERC6551 账户合约。而我们可以通过一些技术方案将 ERC7527 代币的 ERC6551 账户跨链到以太坊二层。具体技术实现路径如下:
 
-![ERC6551 Bridge](https://img.gopic.xyz/ERC6551BridgeFix.svg)
+![ERC6551 Bridge](https://img.gopic.xyz/ERC6551BridgeFixFix.svg)
 
 当用户持有 ERC7527 代币后，可以调用位于以太坊主网内的 ERC6551 工厂合约来为 ERC7527 代币部署 ERC6551 账户，然后使用 ERC6551 账户调用部署在主网内的 ERC6551 桥接合约，桥合约会通过跨链桥调用位于以太坊二层内的 ERC6551 工厂合约为用户部署一个位于二层的 ERC6551 账户。ERC6551 跨链部分存在一个最简实现，开发者可以参考 [ERC6551Mirror](https://github.com/wangshouh/erc6551Bridge) 内的代码，此仓库使用 Chainlink CCIP 实现了 ERC6551 的跨链操作。
 
