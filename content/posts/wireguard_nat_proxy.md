@@ -143,8 +143,8 @@ New-NetNat -Name <NATOutsideName> -InternalIPInterfaceAddressPrefix <NAT subnet 
 以安卓客户端为例，展示效果：
 使用 Wireguard 前，网络 IP 为中国移动，如下图
 
-![Before](https://i.imgur.com/5pvOqFg.jpeg)
+![Before](https://img.gopic.xyz/NotWithWireguard.jpeg)
 
 使用 Wireguard 链接 windows 客户端后，网络 IP 显示为 windows 的联通 IP ，如下图
 
-![After](https://i.imgur.com/N3dmLL5.jpeg)
+![After](https://img.gopic.xyz/WithWireguard.jpeg)
