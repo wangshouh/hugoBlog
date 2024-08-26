@@ -2,6 +2,7 @@
 title: Solidity Gas 优化清单及其原理：存储、内存与操作符
 date: 2024-08-26T02:37:27Z
 tags: [foundry,solidity]
+math: true
 ---
 
 ## 概述
