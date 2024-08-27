@@ -299,6 +299,8 @@ $$
 
 对于内存的读取，我们使用 `MLOAD` 操作码，该操作码接受 `offset` 参数，从指定位置向后读取 256bit 数据。而对于内存写入，我们使用 `MSTORE` 操作码，该操作码接受 `offset` 参数，该参数决定从内存那个位置开始写入，同时接受 `value` 参数，确定内存写入内容。这两个操作码都使用上文介绍的内存占用实际成本计算 gas 费用。在 gas 计算时，我们可以认为 `MLOAD` 操作码是 `MSTORE` 操作码的变体，其 `value` 为 256 bit 长度的全零数据。
 
+### Calldata 使用
+
 基于上述内容，我们可以发现直接把 `calldata` 的数据全部写入到 `memory` 中是一种浪费行为，一种更好的方案是保持参数位于 `calldata` 中，当我们需要的时候再进行读取。
 
 我们首先给出该方案的概述:
@@ -334,6 +336,40 @@ contract CalldataGood {
 ![Calldata With Memory Gas](https://blogimage.4everland.store/calldataWithMemory.png)
 
 我们可以看到 `CalldataGood` 相比于 `CalldataBad` 节省了 155 gas
+
+### 避免 Memory 扩展
+
+在上文内，我们介绍了使用内存的 Gas 消耗情况，我们可以观察到当使用的内存越多时，消耗的 gas 越多，所以我们应该避免使用大量内存。在 Solidity 内，Solidity 会实现垃圾回收以避免更多内存的使用，但在某些情况下，Solidity 会出现了垃圾回收失效的情况导致大量内存消耗。
+
+在知名 Gas 优化专家 [optimizoor](https://x.com/optimizoor/) 的[一篇推文](https://x.com/optimizoor/status/1825913380244435408)内，给出了以下代码:
+
+![](https://img.gopic.xyz/AbiEncodeGas.jpg)
+
+> 在上文代码内，我们发现使用了 `for (uint256 i = 0; i != n; ++i)` 的语句，而不是常见的 `for (uint256 i = 0; i < n; ++i)` 语句，这是因为前者更加节省 gas。关于其节省 gas 的具体原理，我们会在后文加以介绍
+
+我们可以看到伴随着哈希次数的增加 `NotEfficient` 内的 `compute` 函数消耗的 gas 指数级增加，这是因为 `abi.encode` 方法会导致 solidity 为编码后的数据重新分配内存，但该分配出的内存并不会被 solidity 的垃圾回收机制监控到，这导致每次调用 `abi.encode` 都会分配一个新的内存，这导致内存的膨胀。
+
+而优化版本内使用的 `EfficientHashLib` 内部的 `hash` 函数的相关实现代码如下:
+
+```solidity
+/// @dev Returns `keccak256(abi.encode(value0, value1))`.
+function hash(bytes32 value0, bytes32 value1) internal pure returns (bytes32 result) {
+    /// @solidity memory-safe-assembly
+    assembly {
+        mstore(0x00, value0)
+        mstore(0x20, value1)
+        result := keccak256(0x00, 0x40)
+    }
+}
+```
+
+我们可以看到此代码将输入置于 `0x00` 和 `0x20` 空间，然后直接进行了 `keccak256` 的哈希操作。可能有读者好奇这个操作结束后，没有对空闲内存指针进行处理，该内联汇编是内存的安全的吗？结论是此内联汇编是内存安全的，这是因为上述代码仅使用 `0x00-0x40` 部分的内存，查看 [Layout in Memory](https://docs.soliditylang.org/en/latest/internals/layout_in_memory.html#layout-in-memory) 文档，我们可以看到如下结果:
+
+- `0x00` - `0x3f` (64 bytes): scratch space for hashing methods
+- `0x40` - `0x5f` (32 bytes): currently allocated memory size (aka. free memory pointer)
+- `0x60` - `0x7f` (32 bytes): zero slot
+
+可以看到 `0x00 - 0x3f` 就是用于哈希函数的空间，占用此处内存并不会导致任何意外情况的发生。
 
 ## 操作符优化
 
