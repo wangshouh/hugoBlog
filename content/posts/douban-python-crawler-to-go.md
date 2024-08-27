@@ -24,7 +24,7 @@ go mod init github.com/wangshouh/python2go
 ```
 `init`后的参数为包名，您可以自行设定，一般使用网站名称+包名的形式，更多关于`go mod`的信息可以参考[官网教程](https://go.dev/doc/tutorial/create-module)
 
-![python2go-terminal.png](https://img.wang.232232.xyz/img/2022/07/05/python2go-terminal.png)
+![python2go-terminal.png](https://acjgpfqbqr.cloudimg.io/_s3_/python2go-terminal.png)
 
 接下来，我们创建如下两个文件夹`douban`和`doubanTest`，前者用来存储主要的爬虫模块，后者用来进行测试程序是否可以正确运行。最终的目录结构如下：
 
@@ -176,21 +176,21 @@ go run main.go
 
 需要注意终端位置是否位于`doubanTest`文件夹内。
 
-![testOutput.png](https://img.wang.232232.xyz/img/2022/07/05/testOutput.png)
+![testOutput.png](https://acjgpfqbqr.cloudimg.io/_s3_/testOutput.png)
 
 ## 解析页面获取信息
 
 对于爬虫程序而言，访问并获得页面信息只是第一步，最重要的应该是信息提取的步骤，在此教程中，我们主要抓取下文红框中的内容并输出为JSON格式。
 
-![doubanExample.png](https://img.wang.232232.xyz/img/2022/07/05/doubanExample.png)
+![doubanExample.png](https://acjgpfqbqr.cloudimg.io/_s3_/doubanExample.png)
 
 目标结果：
 
-![target.png](https://img.wang.232232.xyz/img/2022/07/05/target.png)]
+![target.png](https://acjgpfqbqr.cloudimg.io/_s3_/target.png)
 
 我们需要知道爬虫抓取的元素的特征，通过开发者工具的`Inspector`我们可以很快确定抓取的目标。
 
-![crawlerTags.png](https://img.wang.232232.xyz/img/2022/07/05/crawlerTagsd85312b28a70413e.png)
+![crawlerTags.png](https://acjgpfqbqr.cloudimg.io/_s3_/crawlerTags.png)
 
 正如上图所见，豆瓣的搜索结果位于`div.result-list`中，`Title`位于`div.content > div.title > a`; `RatingNum`位于`span.rating_nums`; `subjectCast`位于`span.subject-cast`; `Introduction`位于`div.content > p`。
 

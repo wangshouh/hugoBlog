@@ -213,10 +213,10 @@ async function handleRequest(request) {
 首先，启动`wrangler`的开发功能，使用`wrangler dev`启动测试环境。使用Postman向`http://localhost:8787`发送`PUT`请求，要求`body`符合上述数据结构。
 
 Postman截图如下：
-![postmandev.png](https://img.wang.232232.xyz/img/2022/06/25/postmandev.png)
+![postmandev.png](https://img.gopic.xyz/postmandev.png)
 
 wrangler终端输出如下
-![wranglerdev.png](https://img.wang.232232.xyz/img/2022/06/25/wranglerdev.png)
+![wranglerdev.png](https://img.gopic.xyz/wranglerdev.png)
 
 通过Postman或wrangler控制台输出，我们可以判断此段代码是可以正常运行的。
 

@@ -142,7 +142,7 @@ contract VoteFirst {
 
 值得注意的是，由于在此合约内使用了`call`函数，导致存储合约接收到的`msg.value`不再是用户的地址而是`VoteFirst`合约的地址，如果希望在`VoteFirst`合约内加入有关用户地址的代码，请在`VoteFirst`内将`msg.value`直接作为参数传递给`VoteFirst`而不是在`EternalStorage`合约内使用`msg.value`属性。下图很好的说明了这一点:
 
-![Call](https://img.wang.232232.xyz/img/2022/07/19/callAddress34aa16020bf82c2a.png)
+![Call](https://acjgpfqbqr.cloudimg.io/_s3_/CallFix.png)
 
 此图来自[WTFSolidity 第23讲 delegatecall](https://github.com/AmazingAng/WTFSolidity/tree/main/23_Delegatecall#delegatecall)
 
@@ -477,7 +477,7 @@ cast send --private-key $LOCAL_ACCOUNT $ERR_PROXY "setNumber(uint256)" 100
 >
 > 这一问题其实很好解决，读者可自行查阅`delegatecall`函数的功能。该函数使用的运行环境正是发起`delegatecall`方法的合约。可以参考下图:
 
-![Delegatecall Picture](https://img.wang.232232.xyz/img/2022/07/20/delegatecallc19b967e1be09876.png)
+![Delegatecall Picture](https://acjgpfqbqr.cloudimg.io/_s3_/delegateCall.png)
 
 *此图来自[Solidity极简入门: 23. Delegatecall](https://github.com/AmazingAng/WTFSolidity/tree/main/23_Delegatecall)
 
@@ -669,7 +669,7 @@ contract MyScript is Script {
 
 比较有意思的是，在部署过程中，出现了两个合约同时部署在同一个区块的情况，与我们之前的测试场景有所不同请注意。合约地址出现的顺序与代码顺序一致。
 
-![MoreContractScriptDeploy.png](https://img.wang.232232.xyz/img/2022/07/21/MoreContractScriptDeploy23da0bb826de77e7.png)
+![MoreContractScriptDeploy.png](https://img.gopic.xyz/MoreContractScriptDeploy.png)
 
 从上至下，依次为`NumberStorage`、`NumberStorageUp`、`ProxyEasy`合约。
 

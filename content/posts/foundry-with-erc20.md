@@ -73,7 +73,7 @@ foundryup
 forge -h
 ```
 
-![forgehelp](https://img.wang.232232.xyz/img/2022/07/15/forgehelp.png)
+![forgehelp](https://acjgpfqbqr.cloudimg.io/_s3_/forgehelp.png)
 
 如果想了解更多关于安装的信息，可以自行阅读官方给出的[文档](https://book.getfoundry.sh/getting-started/installation)
 
@@ -210,11 +210,11 @@ contract SDUFECoin is ERC20, Ownable {
 
 第22-34行规定了最为重要的铸造函数，该函数接受一个变量`recipient`即代币接受者，同时通过`payable`关键词也可接受转入的ETH。如果想获得更多关于`public`和`payable`的信息可以参考这篇[中文教程](https://github.com/AmazingAng/WTFSolidity/tree/main/03_Function#solidity%E6%9E%81%E7%AE%80%E5%85%A5%E9%97%A83-%E5%87%BD%E6%95%B0%E7%B1%BB%E5%9E%8B)。总体而言，该函数可以接受一个规定的变量`recipient`和一个隐含的变量，即转入的ETH数量(通过`msg.value`获得数值)。如果你想更加直观的理解该函数所接受的两个参数，可以前往[这里](https://ropsten.etherscan.io/address/0x6f719490dec688b8c7c394f5259ae5aa788c3a5d#writeContract)查看，或参见下图:
 
-![ethscan.png](https://img.wang.232232.xyz/img/2022/07/16/ethscan.png)
+![ethscan.png](https://acjgpfqbqr.cloudimg.io/_s3_/ethscan.png)
 
 对于铸造函数内的逻辑较为简单，只需要注意`revert`用于报错。而`_mint`函数和`totalSupply`变量实际来自`solmate`，读者可自行查询函数定义。总而言之，`_mint`函数是核心方法，`totalSupply`变量存储有当前的代币总发行量。该变量也可以直接在[etherscan](https://ropsten.etherscan.io/address/0x6f719490dec688b8c7c394f5259ae5aa788c3a5d#readContract)中查阅，或参见下图:
 
-![totalSupplyScan.png](https://img.wang.232232.xyz/img/2022/07/16/totalSupplyScan.png)
+![totalSupplyScan.png](https://acjgpfqbqr.cloudimg.io/_s3_/totalSupplyScan.png)
 
 该函数的在第一个if判断中实现了规避交换价格低于最低价格的交易；第二个if实现了判断当前总发行量是否超标的逻辑。
 
@@ -394,7 +394,7 @@ forge test
 
 如果一切顺利，读者将会看到类似下图的输出:
 
-![erc20TestOutput.png](https://img.wang.232232.xyz/img/2022/07/16/erc20TestOutput.png)
+![erc20TestOutput.png](https://acjgpfqbqr.cloudimg.io/_s3_/erc20TestOutput.png)
 
 此图证明所有的测试都已经通过，我们接下来可以进行一系列其他操作。
 
@@ -407,7 +407,7 @@ forge test --gas-report
 
 读者可获得类似下图的输出:
 
-![erc20gasReport.png](https://img.wang.232232.xyz/img/2022/07/16/erc20gasReport.png)
+![erc20gasReport.png](https://acjgpfqbqr.cloudimg.io/_s3_/erc20gasReport.png)
 
 在此处，gas费的单位应该是`gwei`，其值相当于`0.000000001Ether`
 
@@ -459,7 +459,7 @@ contract TokenScript is Script {
 
 在终端运行`anvil`命令，你将看到如下输出:
 
-![anvailOutput](https://img.wang.232232.xyz/img/2022/07/17/anvailOutputc024161a0b159123.png)
+![anvailOutput](https://acjgpfqbqr.cloudimg.io/_s3_/anvailOutput.png)
 
 **注意该终端窗口不可关闭。**
 
@@ -482,11 +482,11 @@ forge script script/token.s.sol:TokenScript --fork-url http://localhost:8545  --
 ```
 
 如果正确部署则应得到如下结果:
-![localBlockChainDeploy](https://img.wang.232232.xyz/img/2022/07/17/localBlockChainDeploye4286cb9f805c704.png)
+![localBlockChainDeploy](https://img.gopic.xyz/localBlockChainDeploy.png)
 
 在运行`anvil`的终端窗口内应看到如下输出:
 
-![anvailDeploy158e6bd2d0baccba.png](https://img.wang.232232.xyz/img/2022/07/17/anvailDeployd39edcfee3d516c4.png)
+![anvailDeploy](https://acjgpfqbqr.cloudimg.io/_s3_/anvailDeploy.png)
 
 为方便终端命令编写，使用下述命令将合约地址保存为系统变量:
 ```bash
@@ -495,7 +495,7 @@ export TOKEN_ADDRESS="0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
 
 首先我们查询以下部署的智能合约的各项属性是否正确:
 
-![contructorTest.png](https://img.wang.232232.xyz/img/2022/07/17/contructorTest41da6de23c567c52.png)
+![contructorTest.png](https://img.gopic.xyz/contructorTest.png)
 
 此处使用的命令为`cast call $TOKEN_ADDRESS "name()(string)`类型，`(string)`说明对以太坊测试网络返回的结果应该如何解析成何种数据类型，默认返回16进制数字，在不指定数据类型的情况下，几乎无法阅读。
 
@@ -522,7 +522,7 @@ cast call $TOKEN_ADDRESS "totalSupply()(uint256)"
 ```
 
 完整输出结果截图如下:
-![castSendMintTo](https://img.wang.232232.xyz/img/2022/07/17/castSendMintTo4fd00c9cc7ef40a5.png)
+![castSendMintTo](https://acjgpfqbqr.cloudimg.io/_s3_/castSendMintTo.png)
 
 由于`withdrawPayments`具有较高风险，所以在此处我们也对其进行测试，使用以下命令:
 ```bash
@@ -596,7 +596,7 @@ cast send --private-key $LOCAL_ACCOUNT $TOKEN_ADDRESS "withdrawPayments(address)
 
 最终结果如下图:
 
-![etherscanAPI](https://img.wang.232232.xyz/img/2022/07/17/etherscanAPI2e1f373733e81b35.png)
+![etherscanAPI](https://img.gopic.xyz/etherscanAPI.png)
 
 打开`.env`文件输入以下内容:
 ```
@@ -605,7 +605,7 @@ ETHERSCAN_KEY=你的API密钥
 
 其次，我们需要一个RPC接口与以太坊网络交互。由于我们没有在本地运行完整的以太坊本地节点，所以我们没有办法直接与以太坊网络通信。一种比较简单的与以太坊网络通信的方法就是借助`Relay Network`，或者简单的认为是一个API接口。市面上有非常多的服务商提供此类服务，较为著名的有`infura`和`alchemy`。前者是全球最大的`Relay Network`服务商，也是我所使用的服务商。该服务商提供了每日10万次的免费调用额度，而且仅使用以太坊网络不需要绑定VISA等信用卡。
 
-![infuraPrice.png](https://img.wang.232232.xyz/img/2022/07/17/infuraPrice91fd149912c1379c.png)
+![infuraPrice.png](https://img.gopic.xyz/infuraPrice.png)
 
 获得RPC URL的步骤如下:
 
@@ -619,7 +619,7 @@ ETHERSCAN_KEY=你的API密钥
 
 5. 复制下图红框内的链接
 
-![infuraAPISet](https://img.wang.232232.xyz/img/2022/07/17/infuraAPISetf36450a33c0c10dc.png)
+![infuraAPISet](https://img.gopic.xyz/infuraAPISet.png)
 
 打开`.env`文件，输入以下内容:
 ```
@@ -630,12 +630,12 @@ ROPSTEN_RPC_URL=替换为自己的网址
 
 首先按照下图操作:
 
-![metamaskFirstStep.png](https://img.wang.232232.xyz/img/2022/07/17/metamaskFirstStep4fae46d6481d14bc.png)
+![metamaskFirstStep.png](https://img.gopic.xyz/metamaskFirstStep.png)
 
 
 操作结束后应获得下图结果:
 
-![metamaskStep2.png](https://img.wang.232232.xyz/img/2022/07/17/metamaskStep2b99f205b61f42763.png)
+![metamaskStep2.png](https://img.gopic.xyz/metamaskStep2.png)
 
 点击`导出私钥`的按钮，将显示的私钥复制下来，写入`.env`
 ```

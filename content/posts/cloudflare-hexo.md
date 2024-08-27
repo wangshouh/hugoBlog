@@ -9,7 +9,7 @@ aliases: ["/2022/06/27/cloudflare-hexo/"]
 
 `CloudFlare Pages`是一个免费且使用简单的`CI/CD`工具，可用来编译并部署大部分知名前端框架。如果您查阅`cloudflare Pages`的文档会发现其支持`hexo`框架的编译和发布。但如果您直接进入cloudflare pages dashboard进行设置时，你会发现在`Build settings`中的`Framework preset`并没有给出`hexo`框架的选项，如下图。
 
-![clouflarepagesSetting.png](https://img.wang.232232.xyz/img/2022/06/27/clouflarepagesSetting.png)
+![clouflarepagesSetting.png](https://acjgpfqbqr.cloudimg.io/_s3_/clouflarepagesSetting.png)
 
 本篇博客将使用比较优雅的方法解决此问题。
 
@@ -27,7 +27,7 @@ aliases: ["/2022/06/27/cloudflare-hexo/"]
 
 设置完以上内容后，直接点击`Save and Deploy`即可完成在cloudflare pages上的部署。如果您选择了和我一样使用github仓库，当你每向你选定的分支进行一次推送后，cloudflare pages将自动进行部署，实现优雅的自动化部署，如下图：
 
-![cloudflareshow.png](https://img.wang.232232.xyz/img/2022/06/27/cloudflareshow.png)
+![cloudflareshow.png](https://acjgpfqbqr.cloudimg.io/_s3_/cloudflareshow.png)
 
 ## 环境变量设置
 
