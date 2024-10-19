@@ -725,7 +725,7 @@ function isUsingAsCollateralOrBorrowing(
 
 要想了解此代码，读者应了解`UserConfigurationMap`的基本结构，我们在[深入解析AAVE智能合约:存款]({{<ref "aave-contract-part1#基础数据结构" >}})中进行过讨论，此处我们再次给出相关数据结构，如下图:
 
-![UserConfigurationMap](https://img.gejiba.com/images/44730e1a6fb788ad2d9adf3678e89a39.png)
+![UserConfigurationMap](https://acjgpfqbqr.cloudimg.io/_csdnimg_/49cbebfeffedb13722f3fa5049e7c269.png)
 
 为判断用户是否存在此资产的质押或贷出，我们只需要判断对应两位上的数字是否存在`1`。我们首先使用`self.data >> (reserveIndex << 1)`将待判断位置右移至第 0 位和第 1 位。然后将其与`3`(二进制表示为`11`)进行`&`(`and`)操作，判断结果是否为`0`，如果为`0`则证明该资产被标识为`00`，即该资产既不作为用户的质押资产也不作为用户的贷出资产。
 
