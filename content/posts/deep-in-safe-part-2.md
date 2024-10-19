@@ -517,7 +517,7 @@ contract GnosisSafe is
 cast call 0xd1d1D4e36117aB794ec5d4c78cBD3a8904E691D0 "getStorageAt(uint256,uint256)(bytes)" 0 1 --rpc-url https://rpc.ankr.com/eth
 ```
 我们可以看到返回值如下图:
-![Call getStorageAt](https://img.gejiba.com/images/7db4231e71181fe476356ea3c6d4637e.png)
+![Call getStorageAt](https://acjgpfqbqr.cloudimg.io/_csdnimg_/5a5bfc302d9584e0032cca9ccdbdbe21.png)
 
 接下来，我们介绍函数的具体代码如下:
 ```solidity
