@@ -134,7 +134,7 @@ New-NetNat -Name <NATOutsideName> -InternalIPInterfaceAddressPrefix <NAT subnet 
 
 完整命令执行图如下：
 
-![NAT](https://img.gejiba.com/images/b8eacd07c5d6df8ecfcea5b0bf42b7a8.png)
+![NAT](https://acjgpfqbqr.cloudimg.io/_csdnimg_/3744684756d7dd0845197947b611ac28.png)
 
 ### 测试
 
