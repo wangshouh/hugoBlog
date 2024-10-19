@@ -22,13 +22,13 @@ tags: [tld]
 
 这是一个在当前中文互联网域名注册中少有提到的域名注册商。该域名注册商支持支付宝。但笔者没有进行付款，暂不清楚对支付宝的支持情况。
 
-![Porkbun Zhifubao](https://img.gejiba.com/images/4bbb45df6892c1ee169fe52bdf501daf.png)
+![Porkbun Zhifubao](https://acjgpfqbqr.cloudimg.io/_csdnimg_/8d489a696abb240da67f060f0d90f282.png)
 
 就笔者目前的观察来看，该域名注册商的`.stream`和`.cyou`域名续费较为便宜。当然，该域名注册商注册费用也比较低，详细情况可参考[此表](https://tld-list.com/registrars/porkbun/tlds?cr=1)。
 
 点击`Apply Coupon`后输入`AWESOMENESS`可减免 1 美元。下图展示了 2 年的`.stream`的价格:
 
-![Porkbun Price](https://img.gejiba.com/images/d630cd1cf4b732a9c394c26bf25e69d0.png)
+![Porkbun Price](https://acjgpfqbqr.cloudimg.io/_csdnimg_/7ddae5bca88a13dad9b3f473c1b98bee.png)
 
 如果你希望折腾，你可以考虑在此网站注册域名，然后转入`Cloudflare`等域名注册商以追求续费的低价。
 
@@ -38,7 +38,7 @@ tags: [tld]
 
 下图展示了`Cloudlfare`中最便宜的域名，这些域名的价格均为 3.16 美元：
 
-![Cloudflare cheapest](https://img.gejiba.com/images/f35e8ae1028f714fdd609053d9d32f31.png)
+![Cloudflare cheapest](https://acjgpfqbqr.cloudimg.io/_csdnimg_/4f2611257c07db5b797bb8ee7d53cde9.png)
 
 > 还有`.date`的价格也为 3.16 美元，上图中未显示
 
@@ -62,7 +62,7 @@ tags: [tld]
 
 我们可以通过选择`All endings` 并选择以`Price`进行排序获得所有域名的列表，如下：
 
-![Google Domain](https://img.gejiba.com/images/1446ac1d5ecd2ca7c66b333a568f1a85.png)
+![Google Domain](https://acjgpfqbqr.cloudimg.io/_csdnimg_/6e51ad2aa62b05f7153d2c0c891b93c2.png)
 
 一篇更加详细的介绍文章可以参考[Google Domains切换土耳其区，.com, .net 域名仅33元/年](https://51.ruyo.net/17838.html)博客。
 
