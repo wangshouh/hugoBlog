@@ -12,7 +12,7 @@ math: true
 
 `devp2p`各协议栈之间的关系可以参考下图:
 
-![DevP2P stack](https://img.gejiba.com/images/3e5fc2a35dc6d8d523de04a9500a8df5.png)
+![DevP2P stack](https://img.gopic.xyz/devp2pStack.png)
 
 其中，`Node Discovery Protocol v5`运行在`UDP`上，其余均运行在`TCP`协议上。
 
@@ -112,7 +112,7 @@ math: true
 
 在了解`HKDF`前，我们首先需要知道`HMAC`的运作原理，如下图:
 
-![HMAC](https://img.gejiba.com/images/f985b7b869e9affca43d6beff3384f62.png)
+![HMAC](https://img.gopic.xyz/hkdf.png)
 
 我们在此处不详细介绍具体流程。读者若感兴趣，建议阅读[《图解密码技术》 第三版](https://book.douban.com/subject/26822106/)的 194 页部分，非常详细介绍了相关的计算流程。上图即来自此书。
 
@@ -195,7 +195,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 
 首先我们需要获得公钥，通过[此网站](https://toolkit.abdk.consulting/ethereum#key-to-address)，我们可以获得压缩公钥为`ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd3138`，未压缩公钥为`ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd31387574077f301b421bc84df7266c44e9e6d569fc56be00812904767bf5ccd1fc7f`
 
-![Private Key to Pk](https://img.gejiba.com/images/aaebfbb9529604cc284cbb59d4de09dd.png)
+![Private Key to Public Key](https://acjgpfqbqr.cloudimg.io/_csdnimg_/170859fcca998da5267bd129269696f3.png)
 
 > 在此处，我们删去`0x03`和`0x04`是因为此两者仅作为标识符，无实际意义。
 
@@ -220,7 +220,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 ```
 使用私钥对上述结果进行签名，获得签名结果`0x7098ad865b00a582051940cb9cf36836572411a47278783077011599ed5cd16b76f2635f4e234738f30813a89eb9137e3e3df5266e3a1f11df72ecf1145ccb9c27`。
 
-![Recover signature](https://img.gejiba.com/images/283dd0a1d459d4961fd30fd9486608ce.png)
+![Recover signature](https://acjgpfqbqr.cloudimg.io/_csdnimg_/0c536a650a355f4e49e19cfadcdd9096.png)
 
 > 上图显示了自签名中恢复公钥
 
@@ -244,11 +244,11 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 f884b8407098ad865b00a582051940cb9cf36836572411a47278783077011599ed5cd16b76f2635f4e234738f30813a89eb9137e3e3df5266e3a1f11df72ecf1145ccb9c01826964827634826970847f00000189736563703235366b31a103ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd31388375647082765f
 ```
 
-![RLP Decode](https://img.gejiba.com/images/81d0f1533dfc995889d445855f6718d5.png)
+![RLP Decode](https://acjgpfqbqr.cloudimg.io/_csdnimg_/ceb24ad4b9ee06b72375f9c8092c76a8.png)
 
 完成上述任务后，我们需要对最终结果进行`base64`编码，注意此处使用了特殊的`URL and Filename safe`[映射表](https://www.rfc-editor.org/rfc/rfc4648#section-5)，与一般的`base64`编码不同。如在`Python`中，普通的的`base64`使用`base64.b64encode`，而`URL and Filename safe`使用了`base64.urlsafe_b64encode`。
 
-!["URL and Filename safe" Base 64 Alphabet](https://img.gejiba.com/images/360d28bb34f03901b181d5f4ec6caf27.png)
+!["URL and Filename safe" Base 64 Alphabet](https://acjgpfqbqr.cloudimg.io/_csdnimg_/90ba43a950f38713615856d600c8071a.png)
 
 使用以下`Python`代码即可实现编码:
 ```python
@@ -392,7 +392,7 @@ struct {
 ```
 我们使用DNS返回的TXT值中的`sig`和其他参数的哈希值进行公钥恢复操作，如果发现恢复出的公钥与`enrtree`中规定的不同，我们则认为此DNS不可信。
 
-![enrtree Verify](https://img.gejiba.com/images/33fb05b4545b09a4c1afd64bd86c5d6d.png)
+![enrtree Verify](https://acjgpfqbqr.cloudimg.io/_csdnimg_/fafa4878ab6980f28c57f26f4da0ac84.png)
 
 > 关于公钥恢复的详细介绍可以参考我写的[基于链下链上双视角深入解析以太坊签名与验证]({{<ref "ecsda-sign-chain#%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D" >}})
 
@@ -574,7 +574,7 @@ authdata      = src-id
 authdata-size = 32
 ```
 包的结构图如下:
-![Message Packet](https://img.gejiba.com/images/7da3a738b8c7477983fff4f30064e447.png)
+![Message Packet](https://acjgpfqbqr.cloudimg.io/_csdnimg_/5e4b827476b90286cdd391b70df87210.png)
 
 在此处，我们给出一个`message data`为随机数据的包的代码:
 ```go
@@ -614,7 +614,7 @@ id-nonce      = uint128   -- random bytes
 enr-seq       = uint64    -- ENR sequence number of the requesting node
 ```
 结构图如下:
-![WHOAREYOU Packet](https://img.gejiba.com/images/42092b26c0d31e57709fcac578a3f8ac.png)
+![WHOAREYOU Packet](https://acjgpfqbqr.cloudimg.io/_csdnimg_/79019de67921345e7b6164a50b1991c8.png)
 
 值得注意的是，我们`WHOAREYOU`包的`nonce`与引起握手的数据包的`nonce`是一致的，不可改变的。在下文握手阶段，我们会使用这一知识点。
 
@@ -661,7 +661,7 @@ eph-key-size  = uint8     -- value: 33 for ID scheme "v4"
 
 此处的所有参数的含义及其获得，我们会在下一节进行详细介绍。此处给出其结构图如下:
 
-![Handshake Packet layout](https://img.gejiba.com/images/a65e9ef57db536b080c6d977984a2ddc.png)
+![Handshake Packet layout](https://acjgpfqbqr.cloudimg.io/_csdnimg_/79d39784f3eaac5421910f4159673c3a.png)
 
 代码如下:
 ```go
