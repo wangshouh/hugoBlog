@@ -45,4 +45,4 @@ ERROR ReferenceError: /opt/buildhome/repo/node_modules/hexo-theme-keep/layout/pa
 
 最终结果如图:
 
-![Cloudflare Env](https://img.gejiba.com/images/b4d57882ecdaf309f843912aa9d864bf.png)
+![Cloudflare Env](https://acjgpfqbqr.cloudimg.io/_csdnimg_/bd2a6e597e46d685f1c03bd561a56de1.png)
