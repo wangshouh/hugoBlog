@@ -138,7 +138,7 @@ function transferFrom(
 
 在NFT数据存储中，我们可以看到`solmate`等常规实现都使用了`mapping(uint256 => address) internal _ownerOf`将单个`tokenId`与持有者对应。但`ERC721A`是对批量铸造进行特殊优化的，开发者认为在批量铸造过程中，用户持有的NFT的`tokenId`往往是连续的，如下图:
 
-![ERC721A TokenId](https://img.gejiba.com/images/0fef83638b0ce7f4838d4a02283c82d8.png)
+![ERC721A TokenId](https://acjgpfqbqr.cloudimg.io/_csdnimg_/83f9076a550ec91aba78e6e918a06b48.png)
 
 ### 基本数据结构
 
