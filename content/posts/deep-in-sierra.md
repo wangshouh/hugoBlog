@@ -8,7 +8,7 @@ tags: [cairo,sierra,starknet]
 
 总所周知，在 StarkNet Cairo 中，合约需要经过以下步骤进行编译和部署:
 
-![Cairo Complie](https://img.gejiba.com/images/f1424e7997da290ddced38e7f9eb9595.png)
+![Cairo Complie](https://acjgpfqbqr.cloudimg.io/_img1_/f1424e7997da290ddced38e7f9eb9595.png)
 
 在此流程中，我们发现合约首先被编译为 Sierra 这一中间表示层。Sierra 的全称为 `Safe Intermediate Representation` ，直译为安全中间表示层。在本文中，我们将探讨 Sierra 为什么具有 “安全” 和 “中间表示” 两个特性。
 
@@ -20,7 +20,7 @@ tags: [cairo,sierra,starknet]
 
 > 在以太坊中，这种交易会直接触发 `reverted` ，但节点依旧会将错误交易进行区块打包并正常拿到 gas 费用。
 
-![Cairo 0 transaction flow](https://img.gejiba.com/images/ee80a60ba7176d2c4fd3c7f815a44510.png)
+![Cairo 0 transaction flow](https://acjgpfqbqr.cloudimg.io/_img1_/ee80a60ba7176d2c4fd3c7f815a44510.png)
 
 显然，在 StarkNet 中，基于无验证生成无 gas 收入的原则，一旦遇到错误交易，节点无法获得交易费用，这部分交易费用会直接退还给用户。这会导致严重的 DDoS 问题，由于发送错误交易不存在成本，这意味着部分用户可以向排序器高频发送错误交易，这会严重影响排序器的正常运行。
 
@@ -418,7 +418,7 @@ enum_match<core::panics::PanicResult::<(core::integer::u8,)>>([4]) { fallthrough
 
 此处使用 `enum_match` 进行了 `core::panics::PanicResult::<(core::integer::u8,)>>` 结果的模式匹配，当 `[4]` 不包含错误时，代码继续按顺序向下运行，同时将结果写入 `[8]` 位置，此处涉及到上文提及的 `Linear Type System` ，即单个变量只能使用一次；但如果 `[4]` 包含错误，则跳转至 `12` 行继续运行，同时将 `[4]` 存储到 `[9]` 中。
 
-![Sierra FallThrough](https://img.gejiba.com/images/15380586f8b98b031491f777715be7b6.png)
+![Sierra FallThrough](https://acjgpfqbqr.cloudimg.io/_img1_/15380586f8b98b031491f777715be7b6.png)
 
 我们可以看到第 12 行代码处存在 `branch_align` 用于标识跳转终点。
 

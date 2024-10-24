@@ -888,7 +888,7 @@ function transferOwnership(address _newOwner) external;
 cast sig "transferOwnership(address)"
 ```
 输出结果为`0xf2fde38b`，这正是我们需要的。考虑到常用的函数是有限的，有以太坊开发者组建了一个可以根据函数选择器逆向选择器字符串的[网站](https://sig.eth.samczsun.com/)，我们可以在这个网站测试函数选择器输出是否正确:
-![ethSigDb](https://img.gejiba.com/images/0491352301162d59c6f2908b4b6bd5e9.png)
+![ethSigDb](https://acjgpfqbqr.cloudimg.io/_img1_/0491352301162d59c6f2908b4b6bd5e9.png)
 显然，上述查询结果证明我们是正确的。当然，此功能也被集成到了`cast`命令中，读者可以运行以下命令:
 ```bash
 cast 4byte 0xf2fde38b

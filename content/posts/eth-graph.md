@@ -430,7 +430,7 @@ interactiveAddress                         | count(interactiveAddress)
 
 下图展示了两者搜索的基本过程:
 
-![DFS and BFS](https://img.gejiba.com/images/e7e06e0b76600656bdfcc06f1bc7a0e3.png)
+![DFS and BFS](https://acjgpfqbqr.cloudimg.io/_img1_/e7e06e0b76600656bdfcc06f1bc7a0e3.png)
 
 在正式进行搜索前，我们需要获得 Binance 的存款地址。为方便后文讨论，我们仅假设用户只使用 [Binance 14](https://etherscan.io/address/28c6c06298d514db089934071355e5743bf21d60) 进行存款操作。
 
@@ -798,7 +798,7 @@ tagAddress + (allAddress - tagAddress)
 
 也可以使用下图总结:
 
-![Graph Centeral](https://img.gejiba.com/images/6512ee20a9442ea48df83ee5ac9c9824.png)
+![Graph Centeral](https://acjgpfqbqr.cloudimg.io/_img1_/6512ee20a9442ea48df83ee5ac9c9824.png)
 
 > 这些内容均来自 《数据分析之图算法：基于Spark和Neo4j》 第五章，详细内容请阅读此书
 

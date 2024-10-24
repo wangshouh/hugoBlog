@@ -46,7 +46,7 @@ https://github.com/ensdomains/ens-contracts/blob/dev/contracts/resolvers/Resolve
 
 有了上述知识，我们就可以研究 ENS 域名解析的具体流程，流程如下:
 
-![ENS flow](https://img.gejiba.com/images/cee6e6dfe232afa72530a556491c8745.png)
+![ENS flow](https://acjgpfqbqr.cloudimg.io/_img1_/cee6e6dfe232afa72530a556491c8745.png)
 
 当用户需要查询域名的某个域名对应的解析内容时，首先需要调用 `Registry` 的 `resolver` 函数获得域名对应的解析器，该函数代码如下:
 
@@ -86,7 +86,7 @@ function resolver(
 
     而计算 `vitalik.wallet.eth` 的流程可以使用下图表示:
 
-    ![vitalik namehash](https://img.gejiba.com/images/8cb836b40d279cb82a82f5ad406ab080.png)
+    ![vitalik namehash](https://acjgpfqbqr.cloudimg.io/_img1_/8cb836b40d279cb82a82f5ad406ab080.png)
 
     上述流程图中的 `||` 表示拼接，在 `solidity` 中，我们一般使用 `abi.encodePacked` 实现。一般来说，我们称最外层的 `vitalik` 为 `label hash`，即 `setSubnodeOwner` 中的 `label` 参数。
 
@@ -181,7 +181,7 @@ ENS 的注册是由 `.eth Registrar` 合约完成的，该合约具有 `Registry
 
 我们可以使用以下图片表示两者的关系:
 
-![ENS registrar](https://img.gejiba.com/images/6cd8992a1a19c09f9f2f963e33f6ab4a.jpg)
+![ENS registrar](https://acjgpfqbqr.cloudimg.io/_img1_/6cd8992a1a19c09f9f2f963e33f6ab4a.jpg)
 
 该图展示了 `.eth Registrar` 和 `Registry` 之间的关系。我们可以发现当前的 `.eth Registrar` 和 `Registry` 其实关系不大。对于一般用户而言，NFT 的所有者和 `Registry` 中记录的域名的所有者基本都是一个人，但两者实际上是可以分离的，出现域名的实际控制人和 ENS NFT 的所有者不是同一个的情况，而且此处读者也可以发现 ENS NFT 只会对形如 `name.eth` 的用户，而 `name.eth` 的子域，如 `sub1.name.eth` 则不持有 ENS NFT。我们会在后文讨论该问题的解决方案，即 `ENS Name Wrapper`
 
@@ -320,7 +320,7 @@ cast sig-event "ControllerRemoved(address)"
 
 为了解决这些问题，ENS 引入了 ENS Name Wrapper，该系统如下图所示:
 
-![ENS Name Wrapper](https://img.gejiba.com/images/93cd0014f42c2761af3bf82dc2788f21.jpg)
+![ENS Name Wrapper](https://acjgpfqbqr.cloudimg.io/_img1_/93cd0014f42c2761af3bf82dc2788f21.jpg)
 
 我们可以看到包装一个域名需要将域名在 `Registry` 中的控制人设置为 ENS Name Wrapper 合约。在这种设置下，用户不能直接与 `Registry` 交互而只能通过 ENS Name Wrapper 合约，这也保证了用户在 ENS Name Wrapper 合约中设置的权限是有效且不会被绕过的。在下文中，我们简称 `ENS Name Wrapper` 为 `ENW` 以方便叙述。
 

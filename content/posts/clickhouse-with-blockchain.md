@@ -18,7 +18,7 @@ tags: [Data,Clickhouse]
 
 注意，`Clickhouse` 对服务器似乎有着严格的性能要求，但由于本文分析的样本仅为 100 个区块，笔者使用 3 核心 3.5 GB 内存的服务器已经可以完成本博客中的任务。VPS负载如下：
 
-![VPS Load](https://img.gejiba.com/images/0a3349d10e72b77bf04dbbc61fa0d8a5.png)
+![VPS Load](https://acjgpfqbqr.cloudimg.io/_img1_/0a3349d10e72b77bf04dbbc61fa0d8a5.png)
 
 当然，读者也可以考虑使用个人计算机完成此博客中的内容。如果涉及以太坊全区块链数据分析，建议使用高规格服务器，毕竟以太坊全节点数据集近 650GB。
 
@@ -28,7 +28,7 @@ tags: [Data,Clickhouse]
 
 如果你是一个时间价值比较高的工程师，且不想折腾`clickhouse`的安装，你可以选择 [Clickhouse Cloud](https://clickhouse.com/cloud)，似乎有一个月的试用期，价格数据如下：
 
-![Clickhouse Cloud](https://img.gejiba.com/images/bddd57d076b5f2665aa019902b15e530.png)
+![Clickhouse Cloud](https://acjgpfqbqr.cloudimg.io/_img1_/bddd57d076b5f2665aa019902b15e530.png)
 
 如果你选择此方案，就无需阅读本节。
 
@@ -97,7 +97,7 @@ sudo clickhouse server --config-file /etc/clickhouse-server/config.xml
 
 最后，请放行相关端口，此过程需要配置系统防火墙，读者请根据自身系统来进行配置。读者可尝试开启 `http://服务器IP:配置端口/play` 查看是否可以配置正确，若配置正确且放行端口正确，会出现如下显示:
 
-![Clickhouse play](https://img.gejiba.com/images/06656248e4d8c9cb1c46054fd0f0bfa6.png)
+![Clickhouse play](https://acjgpfqbqr.cloudimg.io/_img1_/06656248e4d8c9cb1c46054fd0f0bfa6.png)
 
 ### 客户端
 
@@ -125,7 +125,7 @@ sudo clickhouse server --config-file /etc/clickhouse-server/config.xml
 
 我们需要观察数据的具体结构，读者可在任一浏览器内打开`https://eth-uswest.0xfast.com/stream/free?range=latest`链接，返回值如下:
 
-![0xfast json](https://img.gejiba.com/images/1364f86d9cd75ada0a6b9858f67d9fff.png)
+![0xfast json](https://acjgpfqbqr.cloudimg.io/_img1_/1364f86d9cd75ada0a6b9858f67d9fff.png)
 
 我们会经常查阅此`json`数据以确定数据导入的格式等。
 
@@ -155,7 +155,7 @@ SELECT * FROM jsonTemp jt  LIMIT 5;
 ```
 获得的结果如下图:
 
-![JsonTemp Limit](https://img.gejiba.com/images/6bd5965caf494240d5d97eee4f6f9205.png)
+![JsonTemp Limit](https://acjgpfqbqr.cloudimg.io/_img1_/6bd5965caf494240d5d97eee4f6f9205.png)
 
 我们发现每一个区块的数据变成了数据库中的一行，这对于我们后期处理是极为重要的。
 
@@ -202,7 +202,7 @@ FROM jsonTemp jt LIMIT 5;
 
 我们可以使用`Nested`指示提取列表内的数据，对于很多使用`Juila`等编程语言进行数据分析的程序员可能对其很熟悉。返回值如下:
 
-![Nested](https://img.gejiba.com/images/f1d2eac4005140f4e9bc8ba6a907d96c.png)
+![Nested](https://acjgpfqbqr.cloudimg.io/_img1_/f1d2eac4005140f4e9bc8ba6a907d96c.png)
 
 返回值为多层列表嵌套，如下:
 ```
@@ -346,7 +346,7 @@ FROM jsonTemp jt;
 
 结果如下:
 
-![Insert Clickhouse](https://img.gejiba.com/images/02da01387c3e8a1c3a6868700bb7d2de.png)
+![Insert Clickhouse](https://acjgpfqbqr.cloudimg.io/_img1_/02da01387c3e8a1c3a6868700bb7d2de.png)
 
 我们写入了 15774 行数据，但数据库仅占用了 1014 KB ，可见数据引擎对数据压缩的影响。
 
@@ -401,7 +401,7 @@ GROUP BY txblockNumber;
 
 输出结果为:
 
-![Clickhouse Bar](https://img.gejiba.com/images/6ba19311b6f8a62cba2ad4f7f495ceb3.png)
+![Clickhouse Bar](https://acjgpfqbqr.cloudimg.io/_img1_/6ba19311b6f8a62cba2ad4f7f495ceb3.png)
 
 其中的`bar`用于绘制用于绘制柱状图，其参数格式为`bar(x, min, max, width)`，此处我们省略了`width`参数。此处我们也使用了``reinterpretAsUInt128(reverse(unhex(`gasUsed`)))``来转化 16 进制格式的 `gasUsed`，使用`UInt128`是为了防止数据溢出。
 

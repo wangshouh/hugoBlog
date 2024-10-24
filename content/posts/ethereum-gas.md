@@ -21,19 +21,19 @@ aliases: ["/2022/08/24/ethereum-gas"]
 
 前者是以太坊转账或者合约操作的基准价值。你可以在[此网站](https://www.evm.codes/)查询到每一个操作码的最小GAS消费。如下图:
 
-![OpCode GAS](https://img.gejiba.com/images/93707598f42c435125c76e597f71b8e9.png)
+![OpCode GAS](https://acjgpfqbqr.cloudimg.io/_img1_/93707598f42c435125c76e597f71b8e9.png)
 
 理论上，我们可以通过合约字节码判断出合约操作所需要的`gas`值。当然，如果读者使用了`Foundry`作为智能合约开发工具链，可以在合约代码根目录运行`forge test --gas-report`获得`gas`报告，如下图:
 
-![Foundry Gas Report](https://img.gejiba.com/images/085268c1a57225df3cbee23429cff5ac.png)
+![Foundry Gas Report](https://acjgpfqbqr.cloudimg.io/_img1_/085268c1a57225df3cbee23429cff5ac.png)
 
 上述表格也显示了合约部署消耗的`gas`值。当然，以太坊中也有一种不需要与智能合约交互的但非常重要的操作就是ETH转账，此操作被规定为`21,000`。可以参考[此交易](https://etherscan.io/tx/0xa0d39dbf2d4eff585699bbdf837ed6e0f58158cd2f7bdf4bdc3a94c43d9af5a5)，如下图:
 
-![Transfer Gas](https://img.gejiba.com/images/1c369378906b4e986f439f7b626ee2b1.png)
+![Transfer Gas](https://acjgpfqbqr.cloudimg.io/_img1_/1c369378906b4e986f439f7b626ee2b1.png)
 
 如果你自定义交易的`gas`最大限额，但设置的数量小于合约操作所需要的`gas`，就会出现错误。比如[这个交易](https://etherscan.io/tx/0x3bc2af543fb45cddd2fc5efda785ab79b5246c7bed353fe57f7668a45a1ee432)，如下图:
 
-![Gas Small Fail](https://img.gejiba.com/images/c60b75cf90f4a062cb65bab13ab111e2.png)
+![Gas Small Fail](https://acjgpfqbqr.cloudimg.io/_img1_/c60b75cf90f4a062cb65bab13ab111e2.png)
 
 上图由红框框出的部分就是此交易的`gas`限制和`gas`实际用量。此操作实际的`gas`用量为`160,596`，此处的最大限额小于合约操作的用量，所以出现了错误。正常的合约操作可以参考[此交易](https://etherscan.io/tx/0x1acbc0f87338a39972964aee1c487ed7b2047a3ebb71d549e618687087091b2b)。当然此交易虽然失败了，但仍打包到区块内并收取交易手续费并奖励矿工。因为矿工在接受交易时并不清楚交易的`gas`用量，矿工会运行交易直至`gas`耗尽，此部分需要补偿矿工。
 
@@ -52,7 +52,7 @@ aliases: ["/2022/08/24/ethereum-gas"]
 
 为了方便读者学习，此处我们使用[以太坊官方文档](https://ethereum.github.io/execution-apis/api-documentation/)提供的线上测试功能。读者可以通过以下方法打开测试功能:
 
-![Test Console](https://img.gejiba.com/images/7c5f169a91a6e6f6292382d3901df6ef.png)
+![Test Console](https://acjgpfqbqr.cloudimg.io/_img1_/7c5f169a91a6e6f6292382d3901df6ef.png)
 
 首先，我们尝试获取转账交易的Gas消耗，在上图给出的测试栏的的左侧输入以下内容:
 ```json
@@ -107,7 +107,7 @@ aliases: ["/2022/08/24/ethereum-gas"]
 
 `input`可以在[此网站](https://abi.hashex.org/)获得。获得`deposit()`函数调用Calldata的形式如下图:
 
-![deposit CallData](https://img.gejiba.com/images/e63757e270f78ea02c0221a08fad722c.png)
+![deposit CallData](https://acjgpfqbqr.cloudimg.io/_img1_/e63757e270f78ea02c0221a08fad722c.png)
 
 > 由于此处`deposit()`没有参数，所以我们没有在此处使用`Add argument`增加参数。
 
@@ -149,7 +149,7 @@ cast estimate 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \
 
 在此处，我们给出一个交易的[实例](https://etherscan.io/tx/0xe433968b74209376c301904cd4c3bdb80afd11f59aa3322db548ae50374656c6):
 
-![Tx Example](https://img.gejiba.com/images/d8efb34de3b43f5d6fabf22190108b78.png)
+![Tx Example](https://acjgpfqbqr.cloudimg.io/_img1_/d8efb34de3b43f5d6fabf22190108b78.png)
 
 我们主要考察`Gas Price`这一栏。内部由以下构成:
 
@@ -261,7 +261,7 @@ max(1, parentBaseFee * gasUsedDelta / parentGasTarget / baseFeeChangeDenominator
 
 接下来我们使用[Etherscan Blocks](https://etherscan.io/blocks)提供的真实数据进行计算。
 
-![Base Fee Calc](https://img.gejiba.com/images/1c74f515d06a6248dba96dddab985691.png)
+![Base Fee Calc](https://acjgpfqbqr.cloudimg.io/_img1_/1c74f515d06a6248dba96dddab985691.png)
 
 我们计算`15406316`区块的`BaseFee`，我们需要参照该区块的上一区块`15406315`的参数进行计算，我们可以看到上一区块的`gasUsedDelta/parentGasTarget`为`+ 11%`，计算得到此时`15406316`的`BaseFee`的值应为`6.38 Gwei * 0.11 / 8`，计算得到`0.885225 gwei`，即`15406316`的`baseFee`应为`6.38 * 0.11 / 8 + 6.38`，计算得到结果为`6.467725`，与`etherscan`给出的相同。
 
@@ -287,13 +287,13 @@ max(1, parentBaseFee * gasUsedDelta / parentGasTarget / baseFeeChangeDenominator
 
 `BaseFee`的动态调整可以很好平衡以太坊网络流量，一旦单一区块的交易Gas到达1.5千万，那么根据上述机制，下一区块就会提高`BaseFee`以增加用户的交易手续费，抑制用户交易。反之，当交易需求不足时，以太坊网络则会降低交易手续费以提高用户的交易欲望。
 
-![BaseFee List](https://img.gejiba.com/images/da4f6d11775e878a9b248cb083a4852d.png)
+![BaseFee List](https://acjgpfqbqr.cloudimg.io/_img1_/da4f6d11775e878a9b248cb083a4852d.png)
 
 在上图中，我们可以明显考到这一趋势。在`15406535`区块出现了交易Gas为`0`的情况，导致`BaseFee`下降，在下一区块`15406536`则出现了大量交易。
 
 我使用了部分区块的数据绘制了以下图像:
 
-![Gas Block Size](https://img.gejiba.com/images/4bcdd78419d10d5ee9644f20e6aa204c.png)
+![Gas Block Size](https://acjgpfqbqr.cloudimg.io/_img1_/4bcdd78419d10d5ee9644f20e6aa204c.png)
 
 在此图像中，条形图展示了区块的大小，而折线图展示了`Base Fee`的变化，我们可以很明显的看出`Base Fee`对区块大小的调整作用。
 
@@ -301,7 +301,7 @@ max(1, parentBaseFee * gasUsedDelta / parentGasTarget / baseFeeChangeDenominator
 
 根据`EIP1559`规定，`baseFee`不归属于矿工而会被直接燃烧。这种燃烧行为有效避免ETH通货膨胀。通过[Etherscan EIP1559 Dashboard](https://bi.etherscan.io/public/dashboards/ORfoxXZXVdCGQ4ShYL2Ndk7ji6n0hLy9RwSrvt4w)可以获得对应的数据，如下图:
 
-![Gas Burn Chart](https://img.gejiba.com/images/9d921b07c858f62e3b34dcc9d642f6e4.png)
+![Gas Burn Chart](https://acjgpfqbqr.cloudimg.io/_img1_/9d921b07c858f62e3b34dcc9d642f6e4.png)
 
 在作者写作此文的过程中，ETHW项目作为以太坊合并后的POS分支废除了EIP1559，很明显，EIP1559没有将所以的手续费分配给矿工的行为不被部分以太坊矿工认可。
 
@@ -316,17 +316,17 @@ max(1, parentBaseFee * gasUsedDelta / parentGasTarget / baseFeeChangeDenominator
 
 我们在此处以[BlockNative](https://www.blocknative.com/gas-estimator)提供的数据为例，如下图:
 
-![BlockNative Gas](https://img.gejiba.com/images/4918fcc21584a8c41381008e5d62e1d5.png)
+![BlockNative Gas](https://acjgpfqbqr.cloudimg.io/_img1_/4918fcc21584a8c41381008e5d62e1d5.png)
 
 BlockNative显示了在当前区块确认交易所需要的`Priority Fee`和`Max Fee`以及当前区块的`Base Fee`。关于`Max Fee`的设置，我们会在下文进行介绍。
 
 此处我们以`MetaMask`为例(版本为`10.18.3`)，给出`EIP1559`的设置方法。在进行转账或其他操作时，我们可以点击`编辑`，如下图:
 
-![MetaMask Edit Gas](https://img.gejiba.com/images/3fb286a48816867f1c197a17e833988a.png)
+![MetaMask Edit Gas](https://acjgpfqbqr.cloudimg.io/_img1_/3fb286a48816867f1c197a17e833988a.png)
 
 在弹出页面内选择`高级选项`，我们就可以手动调整各个参数，如下图:
 
-![MetaMask Advance](https://img.gejiba.com/images/208e9f86a2c2ff2c4a71faf234b05133.png)
+![MetaMask Advance](https://acjgpfqbqr.cloudimg.io/_img1_/208e9f86a2c2ff2c4a71faf234b05133.png)
 
 由于此处为转账操作，所以`燃料限制`，即`Gas Limit`为`21000`。其他数值我们可以自行调整。一般来说，`MetaMask`填入的默认数值是可以直接使用的，但当遇到铸造NFT等场景时，我们可以手动调高`Max Priority Fee`以提高铸造成功率。
 

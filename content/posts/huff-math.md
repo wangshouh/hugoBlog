@@ -31,7 +31,7 @@ math: true
 
 对于 EVM 整体架构，我们可以通过下图表示:
 
-![EVM architecture](https://img.gejiba.com/images/f73d395abc15937cf578e211776a1d03.png)
+![EVM architecture](https://acjgpfqbqr.cloudimg.io/_img1_/f73d395abc15937cf578e211776a1d03.png)
 
 我们可以看到可变的数据只有:
 
@@ -47,7 +47,7 @@ math: true
 
 一笔交易触发的 EVM 运行流程如下:
 
-![EVM Run](https://img.gejiba.com/images/52ee37da7ae51ba6b12ff2c1e5252864.png)
+![EVM Run](https://acjgpfqbqr.cloudimg.io/_img1_/52ee37da7ae51ba6b12ff2c1e5252864.png)
 
 下图展示了 `stack` 栈的作用:
 
@@ -59,7 +59,7 @@ math: true
 
 下图展示了 `memory` 内存的基础情况:
 
-![EVM Memory](https://img.gejiba.com/images/7d1f256b96772176981b6f8b7214c175.png)
+![EVM Memory](https://acjgpfqbqr.cloudimg.io/_img1_/7d1f256b96772176981b6f8b7214c175.png)
 
 内存是一个可寻址的线性空间，一般情况下，我们使用 `MSTORE` 操作码向地址内写入数据，使用 `MLOAD` 操作码读取数据，值得注意的是，这两个操作码仅支持 256 bit 数据的整体写入和读取。上图展示了一种较常见的情况，即将栈内的结果写入内存中。
 
@@ -67,7 +67,7 @@ math: true
 
 下图展示了 `storage` 存储的一般情况:
 
-![Contract Storgae](https://img.gejiba.com/images/650f95a37c87adb77e1b03d482000ba8.png)
+![Contract Storgae](https://acjgpfqbqr.cloudimg.io/_img1_/650f95a37c87adb77e1b03d482000ba8.png)
 
 在 EVM 内，存储是一个 KV 数据库(或理解为词典数据类型)，每个数据由 256 bit 长度的键与 256 bit 长度的值构成。一般使用 `SSTORE` 进行存储，使用 `SLOAD` 进行读取。值得注意的是，操作存储是一项开销极大的操作。
 
@@ -77,7 +77,7 @@ math: true
 
 更多参考资料可以使用 EVM tag 在我的 [阅读数据库](https://airtable.com/shrg0jA0QIK5rQ4Oz/tblg1E6WHAkaOfRrp) 里搜索，也欢迎大家订阅 [我的频道](https://blog.wssh.trade/posts/channel-recommend/) 以获取最新的资料。
 
-![EVM Read](https://img.gejiba.com/images/d052cd9454b569a708b3d1a4cf8d275b.png)
+![EVM Read](https://acjgpfqbqr.cloudimg.io/_img1_/d052cd9454b569a708b3d1a4cf8d275b.png)
 
 ## 环境配置
 
@@ -318,7 +318,7 @@ interface HuffMath {
 
 > 有读者可能读不懂上述表述，读者可参考 [此处](https://www.evm.codes/playground?fork=merge&unit=Wei&codeType=Mnemonic&code='wFirstv%20nohjump%2C%20secondvz0%20gesh0_0~2y4_k5_k7_2~9%20y11bDEST~12qINVALIDk13'~gsehzqPUSH1%20ybI%20%20kw%2F%2F%20v%20example%20doesq%5Cnk%20~ht%20g%20wOffbqJUMP_z1%01_bghkqvwyz~_) ，这是一个最简单的 `jumpi` 示例，但也展示了 `jumpi` 背后的工作原理，请读者选择 `Step into` 步进执行，并随时观察 `Stack` 栈结构
 > 
->  ![EVM Codes JUMPI](https://img.gejiba.com/images/aba9c1005a9c96ebf34fd8f949470ac9.png)
+>  ![EVM Codes JUMPI](https://acjgpfqbqr.cloudimg.io/_img1_/aba9c1005a9c96ebf34fd8f949470ac9.png)
 
 最后，整体代码如下:
 
@@ -489,16 +489,16 @@ forge test --debug "test_normalMulti()"
 
 我们可以观察到以下界面:
 
-![Debug Start](https://img.gejiba.com/images/3b0e14081332d143ac83e4126c47fdd9.png)
+![Debug Start](https://acjgpfqbqr.cloudimg.io/_img1_/3b0e14081332d143ac83e4126c47fdd9.png)
 
 按下 `C` 键跳转到下个 `call` 请求，我们就进入了 `HuffMath.huff` 合约，如下:
 
-![Into HuffMath](https://img.gejiba.com/images/87687b84155d1941acc2a505e3141fee.png)
+![Into HuffMath](https://acjgpfqbqr.cloudimg.io/_img1_/87687b84155d1941acc2a505e3141fee.png)
 
 
 点击 `s` 键，我们就可以进入 `SAFE_MULTI` 函数体，在最上框内我们可以看到与 huff 合约对应的操作码，如下图:
 
-![SAFE_MULTI func](https://img.gejiba.com/images/fb7c14adcd5a53d5368cadeab7487025.png)
+![SAFE_MULTI func](https://acjgpfqbqr.cloudimg.io/_img1_/fb7c14adcd5a53d5368cadeab7487025.png)
 
 接下来，我们就可以根据 `Stack` 栏中的内容和 `Memory` 中的内容判断合约运行是否正常，在此处，我们也给出一些操作键:
 
@@ -624,7 +624,7 @@ int nlz(unsigned x) {
 
 在此处，我们在 C 语言版本中都使用了满足条件运行的逻辑，如满足 `x >> 128) == 0` 则运行 `n = n + 128; x = x << 128;` ，而在 huff 中，我们需要将其改写为当满足 `x >> 128) != 0` 条件时，我们跳过 `n = n + 128; x = x << 128;` 的运行。
 
-![Jumpi example](https://img.gejiba.com/images/c4327c419f56baa5dc1344e78bc5b0d2.png)
+![Jumpi example](https://acjgpfqbqr.cloudimg.io/_img1_/c4327c419f56baa5dc1344e78bc5b0d2.png)
 
 这就是为什么我们将跳转目的地 `not_zero_128` 放在了 `0x80 shl` 等代码的后面。
 

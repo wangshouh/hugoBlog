@@ -16,7 +16,7 @@ math: true
 
 `AAVE`的总体架构如下:
 
-![AAVE Frame](https://img.gejiba.com/images/fea838adc878cd119c68d4030311dfa6.png)
+![AAVE Frame](https://acjgpfqbqr.cloudimg.io/_img1_/fea838adc878cd119c68d4030311dfa6.png)
 
 > 本文使用存款描述用户向流动性池内注入资产的行为，或称`supply`或`deposit`，当然在 V3 版本中，`deposit`已被遗弃。当然，有很多人认为此名词应翻译为**质押**，由于作者的写作习惯，后文统称为**存款**
 
@@ -108,7 +108,7 @@ $${ScB}\_t(x) = {ScB}\_{t-1}(x) - \frac{m}{{LI}\_t}$$
 
 在此处，我们在上一篇文章内进行存款交易的[EthTx 地址](https://ethtx.info/goerli/0xf7bc3325b84af8b169167e9c26ab262ddfa34a15c2155f524a155c8ec3dffacc/)。如下图:
 
-![Supplt Eth Tx](https://img.gejiba.com/images/62feca221a43aede018acde6ae38217b.png)
+![Supplt Eth Tx](https://acjgpfqbqr.cloudimg.io/_img1_/62feca221a43aede018acde6ae38217b.png)
 
 非常明显，在存款交易时，我们使用了`supply`函数，并将`USDC`存入获得`aEthUSDC`。
 
@@ -269,7 +269,7 @@ struct UserConfigurationMap {
 
 具体来看，其结构如下图:
 
-![UserConfig](https://img.gejiba.com/images/44730e1a6fb788ad2d9adf3678e89a39.png)
+![UserConfig](https://acjgpfqbqr.cloudimg.io/_img1_/44730e1a6fb788ad2d9adf3678e89a39.png)
 
 此数据结构定义了用户所存入及贷出的资产。此 256 bit 数据可用于表示 128 种不同资产的存款和贷款情况，其中低位代表是否存在贷款，而高位代表是否存在抵押物。上图展示了用户持有`Asset 0`和`Asset 2`的抵押物并贷出了`Asset 2`资产。
 
@@ -305,7 +305,7 @@ struct UserConfigurationMap {
 
 此表格内的部分变量的作用留空是因为我们已经在[上一篇文章]({{<ref "aave-interactive" >}})内对这些变量的使用进行了讨论。也可以使用下图更加清晰的展示`ReserveConfigurationMap`的基础数据结构:
 
-![ReserveConfigurationMap](https://img.gejiba.com/images/ab995b3accb9ee51453885c9c210e83a.png)
+![ReserveConfigurationMap](https://acjgpfqbqr.cloudimg.io/_img1_/ab995b3accb9ee51453885c9c210e83a.png)
 
 此处以`Liquidation threshold`为大家介绍如何进行数据写入和读取:
 
@@ -436,7 +436,7 @@ struct ReserveCache {
 
 此数据结构与 `ReserveData` 中的部分数据有直接对应关系，总结如下:
 
-![Cache with ReserveData](https://img.gejiba.com/images/8ec11d055d00539559508dfa0d24d8a9.png)
+![Cache with ReserveData](https://acjgpfqbqr.cloudimg.io/_img1_/8ec11d055d00539559508dfa0d24d8a9.png)
 
 在后文介绍具体代码时，我们会跳过直接相等的这九种数据字段，接下来我们逐一分析每个字段的来源。以下代码都来自于 `cache` 函数，其文件地址为 `src/protocol/libraries/logic/ReserveLogic.sol`。
 
@@ -1009,7 +1009,7 @@ function validateUseAsCollateral(
 
 出现上述情况之一，用户的存款会自动启用质押选项。下图展示了在无DAI存款情况下，进行存款自动启用质押选项的AAVE对话框:
 
-![auto AAVE](https://img.gejiba.com/images/79bd0aad69d00e2d621e2e2f4aada1b8.png)
+![auto AAVE](https://acjgpfqbqr.cloudimg.io/_img1_/79bd0aad69d00e2d621e2e2f4aada1b8.png)
 
 > 显然这也是为了增加用户体验增加代码复杂度的又一案例
 

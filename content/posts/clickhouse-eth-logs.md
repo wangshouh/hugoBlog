@@ -20,7 +20,7 @@ event Transfer(address indexed _from, address indexed _to, uint256 _value)
 
 上述定义来自 [ERC-20](https://eips.ethereum.org/EIPS/eip-20) 的 EIP 文档。在智能合约中，我们可以通过 `emit Transfer(...)` 来将 `event` 释放到区块空间中，这使我们可以从外部读取智能合约运行的结果。我们可以将此释放行为认为是日志记录，在 `etherscan` 中，该部分记录在 `Logs` 中，如下图:
 
-![ERC20 Event](https://img.gejiba.com/images/c277aede62a106b8f7071f0b4207d18a.png)
+![ERC20 Event](https://acjgpfqbqr.cloudimg.io/_img1_/c277aede62a106b8f7071f0b4207d18a.png)
 
 我们需要关注 `Topics` 栏中的内容，该部分内容与上述定义是对应的:
 
@@ -31,7 +31,7 @@ event Transfer(address indexed _from, address indexed _to, uint256 _value)
 
 总结来说，`Topics 0` 是对事件整体名称的 `Keccak-256` 哈希结果，通过此 `Topics` ，我们可以获得区分不同的事件。读者可以通过 [Signature Database](https://openchain.xyz/signatures) 反查具体的事件名称，如下图:
 
-![Event Sigs Db](https://img.gejiba.com/images/63b85801b53a976212c074175c7ec519.png)
+![Event Sigs Db](https://acjgpfqbqr.cloudimg.io/_img1_/63b85801b53a976212c074175c7ec519.png)
 
 标有 `indexed` 的变量为根据顺序逐一显示在 `Topics` 中，通过这些 `Topics` 我们可以获得合约运行过程中的大量信息。事实上，这也是获得链上智能合约运行信息最常见和最有效的方法，包括钱包在内的大量区块链基础设施都依赖于`Event` 释放获得的日志信息。由于 `Event` 如此重要，所以常见的 `Event` 基本都是由 EIP 规定，以实现兼容性。
 
@@ -115,11 +115,11 @@ LIMIT 5
 
 结果如下:
 
-![Exact Result](https://img.gejiba.com/images/f65e0300ef96bcf3e1d0ad8a15f89f53.png)
+![Exact Result](https://acjgpfqbqr.cloudimg.io/_img1_/f65e0300ef96bcf3e1d0ad8a15f89f53.png)
 
 其中 `tx.4` 由于其为 `Nested` 导致较难理解，此处我们特别分析，如下:
 
-![nested logs](https://img.gejiba.com/images/0b67adf3b6ed40b588648efdb860c1d2.png)
+![nested logs](https://acjgpfqbqr.cloudimg.io/_img1_/0b67adf3b6ed40b588648efdb860c1d2.png)
 
 通过上图，我们知道 `tx.4`(即 `logs`) 的具体构成。显然，我们需要将此部分进行重构。我们的目标是将 `logs` 的每一项拆分出来将其作为单独的一列存在。通过这种方式，我们既保留了 `topics` 的完整性，也将 `logs` 由过去的 3 层嵌套转变为 2 层嵌套。前者是几乎无法检索的而后者具有良好的可检索性。
 
@@ -170,7 +170,7 @@ LEFT ARRAY JOIN `tx.4`;
 
 结果为:
 
-![LEFT JOIN Result](https://img.gejiba.com/images/2acdb7852d888495daf4f4509f0f8fae.png)
+![LEFT JOIN Result](https://acjgpfqbqr.cloudimg.io/_img1_/2acdb7852d888495daf4f4509f0f8fae.png)
 
 此数据已经可以进行导入步骤。
 
@@ -246,22 +246,22 @@ LIMIT 10
 
 这意味着我们需要构造一个代币名称与合约地址的映射关系，使用关系型数据库很容易做到这一点。但数据来源可能对很大读者来说是一个问题，但很幸运，我找到了 [Token Lists](https://tokenlists.org/) 网站。该网站以 `JSON` 的形式给出了一系列代币数据源。此处我们选择的是 `1inch` 提供的包含 987 种代币的数据源，版本为 `145.0.0`，读者可以点击 [此链接](https://tokenlists.org/token-list?url=tokens.1inch.eth) 查看数据。
 
-![1inch Token List](https://img.gejiba.com/images/491b8efb63163a19f0b8cfd5027ba3fc.png)
+![1inch Token List](https://acjgpfqbqr.cloudimg.io/_img1_/491b8efb63163a19f0b8cfd5027ba3fc.png)
 
 我们可以看到 JSON 文件地址为以 `ens` 地址，使用 `eth.limo` 网关(即访问 `https://tokens.1inch.eth.limo/` )就可以获得其中的数据。
 
-![Token List Json](https://img.gejiba.com/images/29c1d29de9673fe1d9175b3179de5184.png)
+![Token List Json](https://acjgpfqbqr.cloudimg.io/_img1_/29c1d29de9673fe1d9175b3179de5184.png)
 
 相信读者已经不想使用复杂的 `Tuple` 提取数据，所以此处我们直接使用 `Clickhouse` 的实验性数据结构 `JSON` 来提取数据。
 
 在进行具体操作前，我们需要修正 `Clickhouse` 客户端:
 
 1. 右键数据库点击 `编辑 连接` 如下图:
-	![Step 1](https://img.gejiba.com/images/beaa2cc02e30dcb3bb426d61760bca75.png)
+	![Step 1](https://acjgpfqbqr.cloudimg.io/_img1_/beaa2cc02e30dcb3bb426d61760bca75.png)
 1. 点击 `驱动属性` ，如下图:
-	![Step 2](https://img.gejiba.com/images/12928d446548e87720cfb2162060820a.png)
+	![Step 2](https://acjgpfqbqr.cloudimg.io/_img1_/12928d446548e87720cfb2162060820a.png)
 1. 找到 `session_id` 属性，点击修改值，填入一个 `UUID`
-	![Step 3](https://img.gejiba.com/images/12928d446548e87720cfb2162060820a.png)
+	![Step 3](https://acjgpfqbqr.cloudimg.io/_img1_/12928d446548e87720cfb2162060820a.png)
 
 > UUID 可以使用命令行工具 `uuidgen` 或者 [Online UUID Generator](https://www.uuidgenerator.net/) 网站生成
 
@@ -280,7 +280,7 @@ ENGINE = Memory
 
 在 `DBeaver` 中，`;` 隔断的 SQL 语句会根据光标位置运行，如下图:
 
-![DBeaver special](https://img.gejiba.com/images/38f0d9ecb3bcd6e8e6aefa3b3178b422.png)
+![DBeaver special](https://acjgpfqbqr.cloudimg.io/_img1_/38f0d9ecb3bcd6e8e6aefa3b3178b422.png)
 
 由于光标位置位于第一个分号前，所以运行时只会运行 `SET  allow_experimental_object_type = 1;`语句，如果需要运行 `CREATE table` 语句，则需要调整光标位置到第二行或之后的行。
 
@@ -358,7 +358,7 @@ WHERE symbol == 'USDC'
 
 搜索 `e#Transfer`(`e#` 表述搜索 `event`)，得到如下结果:
 
-![Etherface Text](https://img.gejiba.com/images/c73477506785d6f455d27a3cbfcddc06.png)
+![Etherface Text](https://acjgpfqbqr.cloudimg.io/_img1_/c73477506785d6f455d27a3cbfcddc06.png)
 
 建立以下 SQL 检索:
 

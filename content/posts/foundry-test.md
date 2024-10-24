@@ -731,7 +731,7 @@ function sendFallback(uint256 amount) public addActor(amount) {
 
 为了模拟真实世界中的交易，我们使用 `bound` 将存款输入进行了限制，此处使用了上文定义的 `MAX_TRANSFER` 常量。该常量是我对以太坊整体交易数据集检索后的结果，使用了 `Dune` 作为数据源:
 
-![Dune Max](https://img.gejiba.com/images/6f5187dc1154794511d41366c0b54be4.png)
+![Dune Max](https://acjgpfqbqr.cloudimg.io/_img1_/6f5187dc1154794511d41366c0b54be4.png)
 
 > 读者可以使用 [此链接](https://dune.com/queries/2186276) 访问搜索结果和代码
 
@@ -976,7 +976,7 @@ mv libz3.so.4 libz3.so.4.8
 
 更加详细的说，`solidity` 语言的编译器除了支持将 `solidity` 编译为 EVM 字节码，也支持将 `solidity` 编译成 SMT 表达式，以下给出了一个例子:
 
-![Solidity SMT](https://img.gejiba.com/images/876fb2f900ac79ab81ee2c58ca2ed13e.png)
+![Solidity SMT](https://acjgpfqbqr.cloudimg.io/_img1_/876fb2f900ac79ab81ee2c58ca2ed13e.png)
 
 关于其具体的编译逻辑，我们不再进行详细讨论。如果读者对这一部分感兴趣，可以参考 [SMT-based Verification of Solidity Smart Contracts](https://github.com/chriseth/solidity_isola/blob/master/main.pdf) 论文。
 
