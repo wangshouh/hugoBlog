@@ -141,7 +141,7 @@ contract PackingGood {
 
 使用 `forge test --gas-report` 对函数调用的 gas 消耗进行统计，结果如下:
 
-![storage Packing Gas Diff](https://blogimage.4everland.store/storagePackingGasDiff.png)
+![storage Packing Gas Diff](https://img.gopic.xyz/storagePackingGasDiff.png)
 
 合约调用的 gas 消耗从未优化的 65538 降低至 22290。如此大幅度的优化只是因为我们调整了变量的声明顺序，其实优化的背后是 solidity 编译器的功劳。当 solidity 编译器遇到连续的多个占据位数较少的变量声明时，solidity 编译器会选择打包这些变量。
 
@@ -192,7 +192,7 @@ contract ConstantWithImmutableGood {
 
 上述合约的测试结果如下:
 
-![Constant With Immutable Gas](https://blogimage.4everland.store/ConstantWithImmutableNew.png)
+![Constant With Immutable Gas](https://img.gopic.xyz/ConstantWithImmutableNew.png)
 
 我们可以看到虽然 `ConstantWithImmutableGood` 使用常量后其 `Deployment Size` 有部分上升，这会一定程度上增加部署时的 gas 消耗。但此处读者看到了一种相反的情况，即 `ConstantWithImmutableBad` 合约没有使用常量，但在部署时仍消耗了大量 gas，这是因为 `ConstantWithImmutableBad` 需要在部署阶段将 `neverChange` 初始化至存储槽内，存储槽写入的 gas 是巨大的。
 
@@ -244,7 +244,7 @@ contract CachingGood {
 
 我们可以看到 `uint256 aCached = a;` 实现了存储到内存的缓存。上述合约的调用成本如下:
 
-![Storage Cache Gas](https://blogimage.4everland.store/StorageCache.png)
+![Storage Cache Gas](https://img.gopic.xyz/StorageCache.png)
 
 我们可以观察到将存储变量缓存到内存后，在循环调用过程中节省了大量 gas。
 
@@ -333,7 +333,7 @@ contract CalldataGood {
 
 上述代码中 `CalldataBad` 使用 `string memory input` 作为参数的类型标注，使用此类型标注后就意味着 `input` 会被从 `calldata` 内被复制到内存中，而 `CalldataGood` 使用了 `string calldata input` 作为类型标注，使用此类型标注不会进行 `calldata` 的复制转移。
 
-![Calldata With Memory Gas](https://blogimage.4everland.store/calldataWithMemory.png)
+![Calldata With Memory Gas](https://img.gopic.xyz/calldataWithMemory.png)
 
 我们可以看到 `CalldataGood` 相比于 `CalldataBad` 节省了 155 gas
 

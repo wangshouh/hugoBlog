@@ -14,7 +14,7 @@ tags: [ethereum]
 
 [Reth Snapshots](https://snapshots.merkle.io/) 作为执行层节点的快照，其解压缩后占据了 2.4TB 存储，Lighthouse 建议用户使用了 4 核心 32 GB 内存，所以笔者使用了 4 核心 32 GB 内存与 4 TB 硬盘配置的 AWS 服务器作为节点的部署硬件。
 
-![AWS Ethereum Storage](https://blogimage.4everland.store/ethereumNodeStorage.png)
+![AWS Ethereum Storage](https://img.gopic.xyz/ethereumNodeStorage.png)
 
 ## 快照下载
 
@@ -48,7 +48,7 @@ wget -O - https://downloads.merkle.io/reth-2024-02-15.tar.lz4 | tar -I lz4 -xvf 
 
 >  上述命令需要 `lz4` 解压缩工具，如果您当前系统内不能存在此工具，可以使用 `apt-get install lz4` 命令安装。
 
-![AWS Download Snap](https://blogimage.4everland.store/AWSDowloadSnap.png)
+![AWS Download Snap](https://img.gopic.xyz/AWSDowloadSnap.png)
 
 按下 `Ctrl+b d` 退出当前终端。
 
@@ -137,7 +137,7 @@ services:
 
 我们可以使用 `sudo docker logs ubuntu-reth-1 -n 20` 来确定 Reth 节点的运行情况，一般会打印以下日志:
 
-![Reth logs](https://blogimage.4everland.store/RETHLogs.png)
+![Reth logs](https://img.gopic.xyz/RETHLogs.png)
 
 在使用快照的情况下，您可能在日志内看到以下报错，请尝试将 `/mainnet_data/db` 内我们下载的快照版本 `mdbx.dat` 重命名为 `mdbx.dat1`。等待 Reth 重启后生成一个新的 `mdbx.dat`，然后删除 Reth 生成的 `mdbx.dat` 将我们前文重命名的 `mdbx.dat1` 改回 `mdbx.dat` 名称。我们就可以发现 Reth 可以正常启动。
 
@@ -160,7 +160,7 @@ note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose bac
 
 当然，我们也可以使用 `sudo docker logs ubuntu-lighthouse-1 -n 20` 来查看 `lighthouse` 的日志。我们可以看到由于 Reth 还没有同步完成，所以此处会显示 `WARN Head is optimistic`。含义为 lighthouse 乐观的接受区块头。
 
-![Lighthouse logs](https://blogimage.4everland.store/lighthouseLogs.png)
+![Lighthouse logs](https://img.gopic.xyz/lighthouseLogs.png)
 
 ## 总结
 

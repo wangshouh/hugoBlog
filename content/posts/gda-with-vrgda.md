@@ -40,7 +40,7 @@ $$
 
 下图展示了 n = 1, 2, 3 的不同 NFT 在同一时间的价格，我们可以看到引入比例因子 $\alpha^{n}$ 后，同一时间内，不同的 NFT 的价格表现不同，且 tokenId 越大则价格越高，充分为用户提供了价格的多样性。
 
-![DiscreteGDA](https://blogimage.4everland.store/DiscreteGDA.png)
+![DiscreteGDA](https://img.gopic.xyz/DiscreteGDA.png)
 
 > 本图像也提供 [交互版本](https://www.desmos.com/calculator/acn7q7amrm)
 
@@ -63,7 +63,7 @@ $$
 
 下图展示了用户一次性购买不同数量的 NFT 所支付的总金额:
 
-![GDA discrete cumulative purchase price](https://blogimage.4everland.store/gda_discrete.jpg)
+![GDA discrete cumulative purchase price](https://img.gopic.xyz/gda_discrete.jpg)
 
 上述算法在 solidity 中的实现如下:
 

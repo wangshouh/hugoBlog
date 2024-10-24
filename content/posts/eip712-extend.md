@@ -17,7 +17,7 @@ aliases: ["/2022/08/11/eip712-extend"]
 
 流程图如下:
 
-![Meta transactions flow](https://blogimage.4everland.store/metadata-tx.svg)
+![Meta transactions flow](https://img.gopic.xyz/metadata-tx.svg)
 
 此流程已被`EIP2771`标准化。
 
@@ -73,7 +73,7 @@ rlp(
 ### 基本流程
 
 从上文中，我们已经知道了合约调用基本流程。我们需要在用户与合约正常的交互中插入运营商的合约，具体步骤可参考下图:
-![EIP2771](https://blogimage.4everland.store/eip2771-flow.svg)
+![EIP2771](https://img.gopic.xyz/eip2771-flow.svg)
 
 第一步，交易用户需要签名以下数据(由`EIP2770`规定):
 ```solidity

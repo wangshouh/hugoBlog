@@ -173,7 +173,7 @@ df.plot(kind='scatter', x='x', y='y')
 
 获得的图像如下:
 
-![MCG Random Scatter](https://blogimage.4everland.store/mcgRandomScatter.png)
+![MCG Random Scatter](https://img.gopic.xyz/mcgRandomScatter.png)
 
 在本节的最后，我们讨论如何获得指定数据的模 $m$ 原根的 $a$。根据《计算机程序设计艺术 卷2：半数值算法》给出的算法，我们可以使用以下方法计算:
 

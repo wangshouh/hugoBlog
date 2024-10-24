@@ -140,7 +140,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 
 作为一个全新的节点，加入以太坊网络最重要的一步就是尽可能与其他节点建立链接，完善自己的节点列表。下图表示了发现以太坊网络节点的流程:
 
-![Peer Discovery](https://blogimage.4everland.store/PeerDiscovery.svg)
+![Peer Discovery](https://img.gopic.xyz/PeerDiscovery.svg)
 
 我们会逐一解释其中每一个过程使用的具体协议和协议定义。
 
@@ -710,13 +710,13 @@ func (c *Codec) encodeHandshakeHeader(toID enode.ID, addr string, challenge *Who
 
 第一步，节点A发送数据包。
 
-![Step 1](https://blogimage.4everland.store/step1.drawio.svg)
+![Step 1](https://img.gopic.xyz/step1.drawio.svg)
 
 当节点A需要与节点B进行通信时，节点A应当首先查询自己是否具有之前与B通信的会话密钥，如果有密钥则按照密钥对数据包加密。如果没有，则发送一个带有随机内容的[普通数据包](https://github.com/ethereum/devp2p/blob/master/discv5/discv5-wire.md#ordinary-message-packet-flag--0)(`Ordinary Message Packet`)启动握手。
 
 第二步，节点B进行回应。
 
-![Step2](https://blogimage.4everland.store/step2.drawio.svg)
+![Step2](https://img.gopic.xyz/step2.drawio.svg)
 
 当节点B获得发送的数据包后，节点B会在数据包`header`部分中的`authdata`提取出发送方`src-id`字段，并查询自己是否具有此`src-id`的会话密钥。如果有，则使用密钥进行解密。如果解密正确并能验证发送者身份正确，则直接进行响应。
 
@@ -742,7 +742,7 @@ func (t *UDPv5) handleUnknown(p *v5wire.Unknown, fromID enode.ID, fromAddr *net.
 
 第三步，节点A处理`WHOAREYOU`请求
 
-![Step 3](https://blogimage.4everland.store/step3.drawio.svg)
+![Step 3](https://img.gopic.xyz/step3.drawio.svg)
 
 节点A收到节点B发送的`WHOAREYOU`数据包后，节点A首先查询`WHOAREYOU`的`nonce`字段追溯到自己的发起握手的请求包。具体代码如下:
 ```go
@@ -887,7 +887,7 @@ func (c *Codec) decodeHandshake(fromAddr string, head *Header) (n *enode.Node, a
 
 第四步，节点B收到握手后返回信息。
 
-![Step4 Flow](https://blogimage.4everland.store/step4.drawio.svg)
+![Step4 Flow](https://img.gopic.xyz/step4.drawio.svg)
 
 当节点B收到节点A发送的握手包后，首先加载之前存储的`WHOAREYOU`数据包内容，并对握手包的头部进行解密。如果握手包内存在`record`记录，则节点B根据握手包中的`record`字段更新对A节点的记录。对`id-signature`字段进行提取公钥操作，将获得公钥与`ephemeral-pubkey`字段的记录进行比较。
 

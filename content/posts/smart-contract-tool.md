@@ -18,7 +18,7 @@ aliases: ["/2022/11/12/smart-contract-tool/"]
 
 目前，已经有人对以太坊常用工具进行了汇总，读者可以参考 [Swiss Knife](https://swiss-knife.xyz/) 网站，如下:
 
-![Swiss Knife](https://blogimage.4everland.store/SwissKnife.png)
+![Swiss Knife](https://img.gopic.xyz/SwissKnife.png)
 
 ## 编辑器配置
 
@@ -93,17 +93,17 @@ cat test.evm | evmdis > test.output
 ```
 此命令会将反汇编结果输送到`test.output`中，如果您的系统内安装了`VSCode`可以使用`code test.output`在`vscode`内打开此文件，最终输出如下:
 
-![EthDis Output](https://blogimage.4everland.store/ethdisOutput.png)
+![EthDis Output](https://img.gopic.xyz/ethdisOutput.png)
 
 读者可以通过分析合约最开始的跳转表配合`cast 4byte`命令获得合约包含的函数，比如使用`cast 4byte 0x18160DDD`可以分析获得此合约包含`totalSupply()`函数。
 
 对于部分未开源合约，我们可能需要阅读其字节码版本或者字节码的反汇编版本。对于字节码的阅读，我推荐使用 [bytegraph](https://bytegraph.xyz/) 工具，该工具会展示字节码之间的调用关系，更加方便读者阅读字节码。
 
-![ByteGraph](https://blogimage.4everland.store/bytegraph.png)
+![ByteGraph](https://img.gopic.xyz/bytegraph.png)
 
 对于反汇编字节码，我个人比较推荐 [dedaub](https://app.dedaub.com) 的反汇编工具，该工具是我目前使用过的最好的反汇编工具。但是需要注意，目前使用此服务需要进行登录。
 
-![Dedaub Decompiled](https://blogimage.4everland.store/DedaubDecompiled.png)
+![Dedaub Decompiled](https://img.gopic.xyz/DedaubDecompiled.png)
 
 ## 链上合约调用分析
 

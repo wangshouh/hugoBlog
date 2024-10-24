@@ -22,7 +22,7 @@ aliases: ["/2022/02/14/home_network/"]
 
 ## 网络接线情况
 
-![Wiring Diagrams](https://blogimage.4everland.store/network.svg)
+![Wiring Diagrams](https://img.gopic.xyz/network.svg)
 
 联通光猫与接入光纤直接相连，光猫已设置为桥接模式并不进行拨号，功能仅为转换光电信号。
 

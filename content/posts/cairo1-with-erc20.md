@@ -777,7 +777,7 @@ fn MAX_U256() -> u256 {
 
 合约部署时，我们需要知道合约的 `class hash` ，使用 [公式](https://docs.starknet.io/documentation/architecture_and_concepts/Contracts/contract-address/) 可以计算得到待部署合约地址。获得待部署合约地址后，我们对其进行转账。该笔转账汇入的资产作为合约的部署费用，最后，我们发起 `deploy_account` 交易实现合约部署。总结如下:
 
-![StarkNet Account Deploy](https://blogimage.4everland.store/StarkNetAccountDeploy.svg)
+![StarkNet Account Deploy](https://img.gopic.xyz/StarkNetAccountDeploy.svg)
 
 此流程中，我们没有使用 EOA 账户进行合约部署，此做法需要将 `deploy_syscall` 函数的 `deploy_from_zero` 设置为 `True` 。在此模式下，会使用部署合约地址上的 ETH 支付手续费。我们可以通过计算提前获得此地址，使用跨链桥等工具对其充值 ETH 即可。
 

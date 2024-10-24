@@ -366,7 +366,7 @@ Max Fee = (2 * Base Fee) + Max Priority Fee
 
 我们可以通过下图简单总结本文:
 
-![Gas Picture](https://blogimage.4everland.store/gas.drawio.svg)
+![Gas Picture](https://img.gopic.xyz/gas.drawio.svg)
 
 如果读者可以很好的理解本篇文章，且想进一步了解以太坊交易，可以参考[以太坊机制详解:交易与交易池]({{<ref "ethereum-transcation" >}})
 
