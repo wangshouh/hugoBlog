@@ -603,7 +603,7 @@ export class Point {
 
 接下来，我们增加一个函数用于判断点与点是否相等。基于仿射的转化方案，判断 $(x_1, y_1, z_1)$ 与 $(x_2, y_2, z_2)$ 相等的计算如下:
 $$
-\frac{x_1}{z_1} = \frac{x_2}{z_2} \Rightarrow x_1z_2 = x_2z_1 \\
+\frac{x_1}{z_1} = \frac{x_2}{z_2} \Rightarrow x_1z_2 = x_2z_1 \\\\
 \frac{y_1}{z_1} = \frac{y_2}{z_2} \Rightarrow y_1z_2 = y_2z_1 
 $$
 当同时满足上述两个条件后，我们可以称 $(x_1, y_1)$ 和 $(x_2, y_2)$ 相等。转化为如下代码:
