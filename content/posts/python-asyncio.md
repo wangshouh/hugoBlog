@@ -467,7 +467,7 @@ for i in task:
 在此处，我们可以介绍为什么需要`async/await`关键词？正如上文所言，异步函数事实上就是生成器函数，但在编码过程中，我们可能会编写一些正常的生成器函数，为了辨别生成器函数与异步函数的不同，所以使用`async/await`用来标识异步函数。
 
 > 读者可能发现`loop_event`调度也会影响异步函数运行的速度，在这一方面，有部分开发者开发了一些更加高效的版本，比如[uvloop](https://github.com/MagicStack/uvloop)等。但随着Python版本的提升，调度器的速度也在上升，如果读者追求极致速度，可以考虑提升Python版本。下图展示了`uvloop`的性能对比
-> ![performance.png](https://3o.hk/images/2022/11/30/performance.png)
+> ![performance.png](https://img.gopic.xyz/performance.png)
 
 ## 多线程与异步
 
