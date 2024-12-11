@@ -572,7 +572,7 @@ function _accrueInterest(MarketParams memory marketParams, Id id) internal {
 在 Morpho Bule 内，利息的分配主要使用了 ERC4626 内的 share 逻辑。简单来说，我们可以通过以下公式计算 `share`：
 $$
 \begin{align}
-share &= \frac{deposit}{total\\ asset} \times total\\ share \\
+share &= \frac{deposit}{total\\ asset} \times total\\ share \\\\
 &= \frac{deposit \times total\\ share}{total\\ asset}
 \end{align}
 $$
@@ -1211,5 +1211,5 @@ $$
 
 本文没有介绍 Morpho Bule 所使用的其他组件库，读者可以自行阅读。相比于其他借贷协议，Morpho Bule 的核心代码简单造成的后果是担保品并不能获得利息，且不允许多个担保品同时抵押借贷同一个资产。这实际上相当弱化了其借贷属性，笔者认为 Morpho Bule 实际上是一个依附于利率衍生品的特化借贷协议。
 
-在目前来看，Morpho Bule 内部大型的借贷金库都选择使用自带利率的资产，如 wstETH 作为担保品，而另一侧借出资产往往是稳定币等。对于一般的借贷业务，即担保品没有原生利率的资产，则不适合发行在 Morpho Bule 内部。
+在目前来看，Morpho Bule 内部大型的借贷金库都选择使用自带利率的资产，如 wstETH 作为担保品，而另一侧借出资产往往是稳定币等。对于一般的借贷业务，即担保品没有原生利率的资产，则不适合发行在 Morpho Bule。
 
