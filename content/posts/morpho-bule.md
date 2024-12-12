@@ -1159,17 +1159,23 @@ function _newRateAtTarget(int256 startRateAtTarget, int256 linearAdaptation) pri
 ```
 
 该函数实际上完成了 $R_{i-1}{\text{speed}(u)}$ 的最终计算。在上文内，我们曾提及在真实情况下，我们应该使用以下代码进行利率计算:
+
 $$
 r_i = \text{curve}(e(u)) * R_{i - 1} * \frac{\int^{\Delta_t}_0\text{speed}(u)}{\Delta_t}
 $$
+
 所以此处需要计算 $r_{i-1} * \int^{\Delta_t}_0\text{speed}(u)$ 的结果。此处 Morpho Bule 团队使用了  [Trapezoidal rule](https://en.wikipedia.org/wiki/Trapezoidal_rule) 来计算。该方法是用来近似求解积分结果的，如下:
+
 $$
 \displaystyle \int _{a}^{b}f(x)\,dx\approx \sum _{k=1}^{N}{\frac {f(x_{k-1})+f(x_{k})}{2}}\Delta x_{k}
 $$
-设此处的 $N = 2$，那么结果为:
+
+设此处的 N = 2，那么结果为:
+
 $$
 \displaystyle \int _{a}^{b}f(x)\,dx\approx \frac{\Delta_t}{2}(x_{start} + 2 \times x_{mid} + x_{end})
 $$
+
 此处的 $\Delta_t = t / 2$，所以上述公式可以进一步推导为 $\frac{t}{4}(x_{start} + 2 \times x_{mid} + x_{end})$。注意，我们希望计算最终的平均值，所以此处还需要将 $t$ 时间除掉，所以最终结果为 $(x_{start} + 2 \times x_{mid} + x_{end}) / 4$。这就是 `avgRateAtTarget = (startRateAtTarget + endRateAtTarget + 2 * midRateAtTarget) / 4;` 的由来。
 
 在完成上述最终计算后，`endRateAtTarget` 可以将其写入存储以便于下次计算。所以在上文内我们描述的利率模型是存在一定问题的，$r_{i - 1}$ 实际上并不是最终完全利用公式计算出的结果。
