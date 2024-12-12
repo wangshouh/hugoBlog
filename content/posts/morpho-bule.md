@@ -1167,13 +1167,13 @@ $$
 所以此处需要计算 $r_{i-1} * \int^{\Delta_t}_0\text{speed}(u)$ 的结果。此处 Morpho Bule 团队使用了  [Trapezoidal rule](https://en.wikipedia.org/wiki/Trapezoidal_rule) 来计算。该方法是用来近似求解积分结果的，如下:
 
 $$
-\displaystyle \int _{a}^{b}f(x)\,dx\approx \sum _{k=1}^{N}{\frac {f(x_{k-1})+f(x_{k})}{2}}\Delta x_{k}
+\displaystyle \int \_{a}^{b}f(x)\,dx\approx \sum \_{k=1}^{N}{\frac {f(x_{k-1})+f(x_{k})}{2}}\Delta x\_{k}
 $$
 
-设此处的 N = 2，那么结果为:
+设此处的 $N = 2$，那么结果为:
 
 $$
-\displaystyle \int _{a}^{b}f(x)\,dx\approx \frac{\Delta_t}{2}(x_{start} + 2 \times x_{mid} + x_{end})
+\displaystyle \int \_{a}^{b}f(x)\,dx\approx \frac{\Delta\_t}{2}(x\_{start} + 2 \times x\_{mid} + x\_{end})
 $$
 
 此处的 $\Delta_t = t / 2$，所以上述公式可以进一步推导为 $\frac{t}{4}(x_{start} + 2 \times x_{mid} + x_{end})$。注意，我们希望计算最终的平均值，所以此处还需要将 $t$ 时间除掉，所以最终结果为 $(x_{start} + 2 \times x_{mid} + x_{end}) / 4$。这就是 `avgRateAtTarget = (startRateAtTarget + endRateAtTarget + 2 * midRateAtTarget) / 4;` 的由来。
