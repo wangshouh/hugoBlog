@@ -9,7 +9,7 @@ math: true
 
 椭圆曲线密码学是现代区块链的核心之一，Ethereum 和 Bitcoin 等都依赖于椭圆曲线密码学(Elliptic-curve Cryptography，简称为 ECC)。在本文中，我们将介绍 Ethereum 使用的椭圆曲线算法 `secp256k1` 并尝试从零开始实现它。
 
-本文不仅仅会实现一个基础版本的 secp256k1 并且会进行一系列的优化，使其最终生产可用。事实上，读者可以视本文为 [noble-secp256k1](https://github.com/paulmillr/noble-secp256k1) 的源代码分析文章。本文的主要内容也参考了 [noble-secp256k1](https://github.com/paulmillr/noble-secp256k1) 作者 paulmillr 编写的 [Learning fast elliptic-curve cryptography](https://paulmillr.com/posts/noble-secp256k1-fast-ecc/) 博客。本文另有部分内容参考了 *Guide to Elliptic Curve Cryptography* ，读者可以相当容易的在网上找到此处的电子版。
+本文不仅仅会实现一个基础版本的 secp256k1 并且会进行一系列的优化，使其最终生产可用。事实上，读者可以视本文为 [noble-secp256k1](https://github.com/paulmillr/noble-secp256k1) 的源代码分析文章。本文的主要内容也参考了 [noble-secp256k1](https://github.com/paulmillr/noble-secp256k1) 作者 paulmillr 编写的 [Learning fast elliptic-curve cryptography](https://paulmillr.com/posts/noble-secp256k1-fast-ecc/) 博客。本文另有部分内容参考了 *Guide to Elliptic Curve Cryptography* ，读者可以相当容易的在网上找到此处的电子版。本文还有部分内容选自 *Pairings for beginners*。
 
 在阅读本文之前，建议读者阅读 [基于链下链上双视角深入解析以太坊签名与验证](https://blog.wssh.trade/posts/ecsda-sign-chain/)。本文所有的代码可以从 [zero-secp256k1](https://github.com/wangshouh/zero-secp256k1) 仓库内获得。
 
@@ -41,7 +41,9 @@ $$
 
 ![secp256k1 GroupLaw](https://img.gopic.xyz/Secp256k1GroupLaw.png)
 
- 此处需要注意一点，上述所有的计算都需要在有限域 $\mathbb F_P$内的完成，或者更加简单的来说，所有计算的结果都需要模除 $G$。我们举出几个简单的例子，假设如下算法都发生在 $\mathbb F_{29}$ 内：
+> 可能部分读者可以在密码学文献内看到 *short Weierstrass equation* 名词，该名词实际就指 $y^2=x^3+a*x+b$ 形式的椭圆曲线函数
+
+此处需要注意一点，上述所有的计算都需要在有限域 $\mathbb F_P$内的完成，或者更加简单的来说，所有计算的结果都需要模除 $G$。我们举出几个简单的例子，假设如下算法都发生在 $\mathbb F_{29}$ 内：
 
 - 加法：$17+20 = 8$ 因为 $37 \mod 29 = 8$
 - 减法：$17−20 = 26$  因为 $−3 \mod 29 = 26$
@@ -581,7 +583,13 @@ big                          918.45 µs/iter 970.63 µs   █▆   ▂
 
 > If inversion in *K* is significantly more expensive than multiplication, then it may be advantageous to represent points using projective coordinates.
 
-在此处，我们选择了将目前的 $(x, y)$ 仿射到 *Jacobian coordinates* 内部，仿射后的结果为 $(x / z, y / z, z)$。在实际的转化中，我们在进行仿射时往往选择将 $z = 1$，那么 $(x, y)$ 的仿射结果为 $(x, y, 1)$。需要注意在 *Jacobian coordinates* 内，零点被定义为 $(0, 1, 0)$。
+在此处，我们选择了将目前的 $(x, y)$ 仿射到 *Jacobian coordinates* 内部。所谓仿射(*affine*) 其实就是将二维 $(x, y)$ 内的点转化为三维空间 $(\lambda x, \lambda y, \lambda)$ 内，其中 $\lambda$ 为一个变量。从可视化理解，其实就是将二维平面内的点转化为三维空间内的线:
+
+![Projective Visual](https://img.gopic.xyz/RrojectveVisual.png)
+
+我们在进行仿射时往往选择将 $\lambda = 1$，那么 $(x, y)$ 的仿射结果为 $(x, y, 1)$。需要注意在 *Jacobian coordinates* 内，零点被定义为 $(0, 1, 0)$。
+
+> 本文为了简化，没有介绍零点的具体来源。实际上如何定义椭圆曲线上的零点也并不是一个简单的问题
 
 我们希望所有的计算都在 *Jacobian coordinates* 内进行，所以我们需要修改 `Point` 类型，为其增加 `z` 属性并增加仿射转化接口。我们首先处理从 $(x, y)$ 进行仿射到 *Jacobian coordinates* 的转化:
 
