@@ -2,9 +2,6 @@
 title: "现代 DeFi: Uniswap V3"
 date: 2024-12-12T00:47:30Z
 tags: [defi]
-cover: {
-    image: "https://img.gopic.xyz/UniswapV3Cover.webp"
-}
 math: true
 ---
 
