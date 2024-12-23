@@ -116,7 +116,7 @@ Type: int24
 
 > 在 `TickMath.sol` 的 `getSqrtRatioAtTick` 函数内，如果读者使用较新版本的 solidity 编译器，那么读者需要将 `require(absTick <= uint256(MAX_TICK), 'T');` 修改为 `require(absTick <= uint256(int256(MAX_TICK)), 'T');`。
 
-接下来，我们介绍 `initialize` 函数，`initialize` 函数用于初始化 `Slot0` 状态变量。众所周知，在 Solidity 内部，一个结构体内部所有元素如果长度累加到一起小于 256 bit ，那么会阿静该结构体内的元素打包放在同一个存储槽内部。如果读者对存储部分不是特别熟悉，可以阅读 [Solidity Gas 优化清单及其原理：存储、内存与操作符](https://blog.wssh.trade/posts/gas-optimize-part1/#%E5%AD%98%E5%82%A8%E4%BC%98%E5%8C%96)。而 `Slot0` 就是一个这样的结构体。该结构体占据了第一个存储槽。本文目前使用了一个 `Slot0` 的简化版本:
+接下来，我们介绍 `initialize` 函数，`initialize` 函数用于初始化 `Slot0` 状态变量。众所周知，在 Solidity 内部，一个结构体内部所有元素如果长度累加到一起小于 256 bit ，那么将该结构体内的元素打包放在同一个存储槽内部。如果读者对存储部分不是特别熟悉，可以阅读 [Solidity Gas 优化清单及其原理：存储、内存与操作符](https://blog.wssh.trade/posts/gas-optimize-part1/#%E5%AD%98%E5%82%A8%E4%BC%98%E5%8C%96)。而 `Slot0` 就是一个这样的结构体。该结构体占据了第一个存储槽。本文目前使用了一个 `Slot0` 的简化版本:
 
 ```solidity
 Slot0 public slot0;
