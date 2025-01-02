@@ -1032,7 +1032,7 @@ if (zeroForOne) {
 
 1. `exactIn = true && zeroForOne = true`   此时 `amount 0 = amountSpecified - amountSpecifiedRemaining`。原因在于当指定 `token 0` 数量时，可能即使兑换到用户指定的极限目标价格(`sqrtPriceLimitX96`) 仍无法完成全部兑换。而 `amount 1 = amountCalculated`
 2. `exactIn = true && zeroForOne = false` 此时等同于 `exactIn = true && zeroForOne = true` 的反向操作，所以 ``amount 0 = amountCalculated` 且 `amount 0 = amountSpecified - amountSpecifiedRemaining`
-3.  `exactIn = false && zeroForOne = true`  等同于 `exactIn = true && zeroForOne = false`，所以 ``amount 0 = amountCalculated` 且 `amount 0 = amountSpecified - amountSpecifiedRemaining`
+3.  `exactIn = false && zeroForOne = true`  等同于 `exactIn = true && zeroForOne = false`，所以 `amount 0 = amountCalculated` 且 `amount 0 = amountSpecified - amountSpecifiedRemaining`
 4. `exactIn = false && zeroForOne = false` 实际上等同于 `exactIn = true && zeroForOne = true` 的情况，因为此时也是使用 token 0 兑换 token 1 的场景
 
 我们也可以使用以下表格归纳:
