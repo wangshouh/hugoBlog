@@ -46,7 +46,7 @@ $$
 
 ![LIF LLTV](https://img.gopic.xyz/lif-lltv.png)
 
-LIF 因子决定了清算结束后，用户剩余抵押品的数量。上述都是比较抽象的介绍，让我们直接看一个来自 [morpho 文档](https://docs.morpho.org/morpho/concepts/liquidation/#example) 的示例。假设用户 A 在 LLTV = 80% 的市场内提供了 \$100 的保证金 A。使用上述 LIF 公式计算可得，该市场的 LIF = 1.0638。当用户的借出资产价值大于 \$80 时，用户处于清算状态。此时清算者帮助用户偿还借出资产，可以获得如下数量的保证金:
+LIF 因子决定了清算结束后，用户剩余抵押品的数量。上述都是比较抽象的介绍，让我们直接看一个来自 [morpho 文档](https://docs.morpho.org/morpho/concepts/liquidation/#example) 的示例。假设用户 A 在 LLTV = 80% 的市场内提供了价值 100 美元的保证金 A。使用上述 LIF 公式计算可得，该市场的 LIF = 1.0638。当用户的借出资产价值大于 80 美元时，用户处于清算状态。此时清算者帮助用户偿还借出资产，可以获得如下数量的保证金:
 $$
 SeizableAssets = debtAmount∗LIF = 80 * 1.0638 = 85.104
 $$
