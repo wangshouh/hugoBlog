@@ -120,7 +120,7 @@ $$
 $$
 \text{curve}(u) =\begin{cases}
 (k_d - 1) * e(u) + 1 &\text{if } u(t) > u_{target} \\\\
-(1 - k_d) * e(u) + 1 &\text{if } u(t) \le u_{target}
+(1 - \frac{1}{k_d}) * e(u) + 1 &\text{if } u(t) \le u_{target}
 \end{cases}
 $$
 
@@ -1200,7 +1200,7 @@ function _curve(int256 _rateAtTarget, int256 err) private pure returns (int256) 
 $$
 \text{curve}(u) =\begin{cases}
 (k_d - 1) * e(u) + 1 &\text{if } u(t) > u_{target} \\\\
-(1 - k_d) * e(u) + 1 &\text{if } u(t) \le u_{target}
+(1 - \frac{1}{k_d}) * e(u) + 1 &\text{if } u(t) \le u_{target}
 \end{cases}
 $$
 并最终使用上述计算获得的 $\text{curve}(u)$ 对 `avgRateAtTarget` 进行调整。
