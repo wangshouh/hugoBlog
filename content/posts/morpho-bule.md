@@ -1092,7 +1092,7 @@ int256 errNormFactor = utilization > ConstantsLib.TARGET_UTILIZATION
 int256 err = (utilization - ConstantsLib.TARGET_UTILIZATION).wDivToZero(errNormFactor);
 ```
 
-我们首先计算利用率 `utilization`。然后更具公式计算 $e(u)$。此处的 `TARGET_UTILIZATION` 就是 $e(u)$ 计算公式内的 $u_{target}$。此处先计算了 `errNormFactor` ，即分母部分，然后计算了 `err`。
+我们首先计算利用率 `utilization`。然后根据公式计算 $e(u)$。此处的 `TARGET_UTILIZATION` 就是 $e(u)$ 计算公式内的 $u_{target}$。此处先计算了 `errNormFactor` ，即分母部分，然后计算了 `err`。
 
 在 `_borrowRate` 函数的第二部分，我们将真正进入利率计算。我们根据情况初始化利率:
 
