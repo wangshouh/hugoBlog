@@ -972,13 +972,13 @@ require(slot0Start.unlocked, "LOK");
 ```solidity
 require(
     zeroForOne 
-        ? sqrtPriceLimitX96 < slot0Start.sqrtPriceX96 && sqrtPriceLimitX96 > TickMath.MAX_SQRT_RATIO
-        : sqrtPriceLimitX96 > slot0Start.sqrtPriceX96 && sqrtPriceLimitX96 < TickMath.MIN_SQRT_RATIO,
+        ? sqrtPriceLimitX96 < slot0Start.sqrtPriceX96 && sqrtPriceLimitX96 > TickMath.MIN_SQRT_RATIO
+        : sqrtPriceLimitX96 > slot0Start.sqrtPriceX96 && sqrtPriceLimitX96 < TickMath.MAX_SQRT_RATIO,
     'SPL'
 );
 ```
 
-即当 `zeroForOne = true` 时，`sqrtPriceLimitX96` 应该小于当前的价格 `slot0Start.sqrtPriceX9`，但是需要大于最小价格；当 `zeroForOne = false` 时，`sqrtPriceLimitX96` 应该大于当前价格 `slot0Start.sqrtPriceX9`，但应当小于最大价格。
+即当 `zeroForOne = true` 时，`sqrtPriceLimitX96` 应该小于当前的价格 `slot0Start.sqrtPriceX96`，但是需要大于最小价格；当 `zeroForOne = false` 时，`sqrtPriceLimitX96` 应该大于当前价格 `slot0Start.sqrtPriceX96`，但应当小于最大价格。
 
 完成上述校验后，我们最后将重入锁重新锁定:
 
