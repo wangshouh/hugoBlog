@@ -1398,7 +1398,7 @@ if (liquidityDelta != 0) {
 
 此处使用的 `flipTick` 相比于 Uniswap v3 而言，已经变成了完全使用内联汇编构建的，但是该部分内联汇编较为简单，读者可以自行阅读。还有一个特殊部分在于 Uniswap v3 在初始化过程中就计算了 `maxLiquidityPerTick` 变量，在 Uniswap v4 中，我们改成了每次添加流动性时再计算。这可能是因为 Uniswap 开发团队评估了读取 `maxLiquidityPerTick` 存储槽的成本和每次添加流动性时计算 `maxLiquidityPerTick` 的成本，发现每次计算可能会更加便宜就选择了每次添加流动性时进行计算。
 
-此处为了避免 solidity 编译器给出堆栈过深的警告。这是因为比如 `uint128 maxLiquidityPerTick` 这种变量都存储在栈内部，而 EVM 最多只允许 `SWAP16` 操作码，所以当在单一作用域时给出声明太多变量就会出现堆栈过深的警告。 `Uniswap v4 使用了两种方案，第一种就是常规的规划作用域，当 solidity 离开作用域时，作用域内的所有变量都是丢弃。第二种方案就是声明 `ModifyLiquidityState memory state;` 变量，利用结构体内部的变量位于内存中的特性避免过多的临时变量占用栈。
+此处为了避免 solidity 编译器给出堆栈过深的警告。这是因为比如 `uint128 maxLiquidityPerTick` 这种变量都存储在栈内部，而 EVM 最多只允许 `SWAP16` 操作码，所以当在单一作用域时给出声明太多变量就会出现堆栈过深的警告。 Uniswap v4 使用了两种方案，第一种就是常规的规划作用域，当 solidity 离开作用域时，作用域内的所有变量都是丢弃。第二种方案就是声明 `ModifyLiquidityState memory state;` 变量，利用结构体内部的变量位于内存中的特性避免过多的临时变量占用栈。
 
 在 `modifyLiquidity` 函数的第二部分，我们需要进行手续费计算，这部分代码基本完全使用了 Uniswap v3 中的代码:
 
