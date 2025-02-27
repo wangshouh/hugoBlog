@@ -22,7 +22,7 @@ aliases: ["/2022/08/27/deep-in-safe-part-1"]
 
 1. 更加灵活的访问管理。用户可以在钱包内加入具有特定功能的模块，比如限制单一用户每日最大可批准金额。这对于DAO是十分有用的。此部分由`Safe Modules` 提供。
 
-上述仅仅是对`Safe`优势的简单介绍。如果读者想了解更多关于此方面的介绍，请参考[Gnosis Safe 官网](https://docs.gnosis-safe.io/)
+上述仅仅是对`Safe`优势的简单介绍。如果读者想了解更多关于此方面的介绍，请参考[Gnosis Safe 官网](https://docs.safe.global)
 
 ### 以太坊账户
 
@@ -621,7 +621,7 @@ Gas Fee = (gasUsed + baseGas) * gasPrice
 
 > 此处的常数为`65`的原因是在最小签名(即仅包含`v`、`r`、`s`)的长度为`65 bytes`。具体可以参考[此文章]({{<ref "ecsda-sign-chain#%E4%BB%A5%E5%A4%AA%E5%9D%8A%E4%BA%A4%E6%98%93%E7%AD%BE%E5%90%8D" >}})。
 
-值得注意的是，`GnosisSafe`为了满足多种签名方式并存的情况，修改了部分签名的定义。读者可以阅读相关[文档](https://docs.gnosis-safe.io/contracts/signatures)进行学习。当然，我们也会在后文尽可能解释`Gnosis`的签名格式。
+值得注意的是，`GnosisSafe`为了满足多种签名方式并存的情况，修改了部分签名的定义。读者可以阅读相关[文档](https://docs.safe.global/advanced/smart-account-signatures)进行学习。当然，我们也会在后文尽可能解释`Gnosis`的签名格式。
 
 我们使用`for`循环和`signatureSplit`函数进行签名分割。`signatureSplit`被定义在`src/common/SignatureDecoder.sol`合约中，我们会在后文进行分析。
 
@@ -647,7 +647,7 @@ Gas Fee = (gasUsed + baseGas) * gasPrice
 
 在这里比较神奇的一点是由于签名有`65 bytes`的长度限制，我们在此处无法完整将完整合约签名的编码，所以在此处我们设置了`签名数据位置`参数，即合约签名数据在组合后的多签名中的位置。
 
-> 注意合约签名数据的位置必须位于常规签名(即包含`v r s`字段的签名)的后面，否则会影响函数读取签名。上述表达都较为抽象，我们十分建议读者阅读文档中的[示例](https://docs.gnosis-safe.io/contracts/signatures#examples)以更好地理解上述表述。
+> 注意合约签名数据的位置必须位于常规签名(即包含`v r s`字段的签名)的后面，否则会影响函数读取签名。上述表达都较为抽象，我们十分建议读者阅读文档中的[示例](https://docs.safe.global/advanced/smart-account-signatures#examples)以更好地理解上述表述。
 
 合约签名的动态部分，即签名数据部分格式如下:
 ```
