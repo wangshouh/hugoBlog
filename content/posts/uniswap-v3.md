@@ -551,7 +551,7 @@ $$
 \Delta_y = L \sqrt{P_B} - L\sqrt{P_A} \\\\
 L = \frac{\Delta_y}{\sqrt{P_B} - \sqrt{P_A}}
 $$
-最后，我们计算 $P_B < P < P_A$ 的情况，此时我们将该区间分割为 $(P_B, P)$ 和 $(P, P_A)$ 的情况。对于 $(P_B, P)$ 情况内，我们可以视为 $P > P_B$ 的情况，只不过此处的 $P_B = P$ 。对于 $(P, P_A)$ 的情况，我们可以视为 $P < P_A$ 的情况，但是此处的 $P_B = P$。故而可以直接套用上述公式:
+最后，我们计算 $P_A < P < P_B$ 的情况，此时我们将该区间分割为 $(P_B, P)$ 和 $(P, P_A)$ 的情况。对于 $(P_B, P)$ 情况内，我们可以视为 $P > P_B$ 的情况，只不过此处的 $P_B = P$ 。对于 $(P, P_A)$ 的情况，我们可以视为 $P < P_A$ 的情况，但是此处的 $P_B = P$。故而可以直接套用上述公式:
 $$
 L = \frac{\Delta_x}{\frac{1}{\sqrt{P}} - \frac{1}{\sqrt{P_B}}} = \frac{\Delta_y}{\sqrt{P} - \sqrt{P_A}}
 $$
@@ -572,7 +572,7 @@ L_0 = \frac{y}{\sqrt{P_B} - \sqrt{P_A}} \\\\
 L_1 = \frac{y + \Delta_y}{\sqrt{P_B} - \sqrt{P_A}} \\\\
 \Delta_y = L_1 - L_0 = \frac{\Delta_y}{\sqrt{P_B} - \sqrt{P_A}}
 $$
-当 $P_B < P <P_A$ 时，我们依旧是将原区间划分为两个区间来计算 $\Delta_x$ 和 $\Delta_y$，如下:
+当 $P_A < P <P_B$ 时，我们依旧是将原区间划分为两个区间来计算 $\Delta_x$ 和 $\Delta_y$，如下:
 
 ![Complex Delta L](https://img.gopic.xyz/UniswapV3ComplexDeltaL.png)
 
