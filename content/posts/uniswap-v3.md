@@ -802,7 +802,7 @@ L = \frac{\Delta_y}{\sqrt{P_B} - \sqrt{P_A}}
 $$
 使用上述公式可以求解出:
 $$
-\sqrt{P_A} = \sqrt{P} - \frac{\Delta_y}{L} \\\\
+\frac{1}{\sqrt{P_A}} = \frac{1}{\sqrt{P}} + \frac{\Delta_x}{L} \\\\
 \sqrt{P_B} = \sqrt{P} + \frac{\Delta_y}{L}
 $$
 也可以求解获得:
