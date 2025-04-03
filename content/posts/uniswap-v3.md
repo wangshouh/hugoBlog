@@ -808,8 +808,15 @@ $$
 也可以求解获得:
 $$
 \sqrt{P_A} = \frac{L\sqrt{P_B}}{L + x\sqrt{P_B}} \\\\
-\sqrt{P_B} = \frac{L\sqrt{P_A}}{L - y\sqrt{P_A}}
+\sqrt{P_B} = \frac{L\sqrt{P_A}}{L - x\sqrt{P_A}}
 $$
+以及:
+$$
+\sqrt{P_A} = \sqrt{P_B} - \frac{y}{L} \\\\
+\sqrt{P_B} = \sqrt{P_A} + \frac{y}{L}
+$$
+
+
 所以，我们可以在已知 `liquidity` /  `sqrtRatioCurrentX96` 和 `amountRemainingLessFee` 的情况下计算出价格。
 
 接下来，我们处理另一种情况，即 `amountRemaining` 数值代表代币输出数量的情况。
