@@ -10,7 +10,7 @@ buildDrafts: false
 buildFuture: false
 buildExpired: false
 hasCJKLanguage: true
-paginate: 5
+pagerSize: 5
 
 enableInlineShortcodes: true
 
