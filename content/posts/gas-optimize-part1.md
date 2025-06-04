@@ -454,7 +454,7 @@ contract PlusplusTest is Test {
 }
 ```
 
-然后直接在终端内执行 ``forge test --debug test_PlusplusBad` 命令，我们就可以看到上述界面。对于如何具体使用 Foundry 的 Debug 功能，我建议读者自行阅读 [文档](https://book.getfoundry.sh/forge/debugger#navigating) 。建议读者首先按下 `C` 键快速跳转到 `PlusplusBad` 合约内部，然后使用滚轮向下划滚到此处：
+然后直接在终端内执行 `forge test --debug test_PlusplusBad` 命令，我们就可以看到上述界面。对于如何具体使用 Foundry 的 Debug 功能，我建议读者自行阅读 [文档](https://book.getfoundry.sh/forge/debugger#navigating) 。建议读者首先按下 `C` 键快速跳转到 `PlusplusBad` 合约内部，然后使用滚轮向下划滚到此处：
 
 ![PlusPlus Code Highlight](https://img.gopic.xyz/PlusPlusHighlight.png)
 
