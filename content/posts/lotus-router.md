@@ -164,9 +164,9 @@ function findPtr() pure returns (Ptr) {
 }
 ```
 
-我们会直接跳过不需要的 `amount0Delta` 等信息直接进入 `data` 字段，然后继续从 `data` 内读取数据。值得注意的是，此时路由合约的代码执行更加类似递归系统。下图展示进行 `A -> B -> C` 的流程，与我们的预期并不一致，在 Uniswap V3 中，我们协议先进行 `B -> C` 的兑换，然后再进行 `A -> B` 的兑换。注意，Lotus Router 并不会自动帮助用户进行代币转移操作，下图中的由 Lotus Router 发起的 `trasfer A` 和 `transfer B` 都需要调用者自己将其编码到 calldata 内部。
+我们会直接跳过不需要的 `amount0Delta` 等信息直接进入 `data` 字段，然后继续从 `data` 内读取数据。值得注意的是，此时路由合约的代码执行更加类似递归系统。下图展示进行 `A -> B -> C` 的流程，与我们的预期并不一致，在 Uniswap V3 中，我们协议先进行 `B -> C` 的兑换，然后再进行 `A -> B` 的兑换。注意，Lotus Router 并不会自动帮助用户进行代币转移操作，下图中的由 Lotus Router 发起的 `trasfer A` 需要调用者自己将其编码到 calldata 内部，而 `transfer B` 可以利用 `A -> B` 兑换时的输出进行，即我们可以直接将获得的 `B` 代币发送给 `MarketBC` 市场。通过这种方法可以减少一次 `transfer` 操作。
 
-![Interactive Recursive](https://img.gopic.xyz/lotusRouterInteractiveRecursive.png)
+![Interactive Recursive](https://img.gopic.xyz/LoutusRouterV3Flow.png)
 
 > 非常幸运的是，Uniswap V4 引入了 Flash Account 系统，我们可以以任意顺序进行兑换只需要在最后补齐代币即可
 
