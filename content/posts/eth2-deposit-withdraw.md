@@ -13,7 +13,7 @@ math: true
 2. ETH2 验证者生命流程中的存款和退出环节
 3. Kiln 服务商的工作原理
 
-需要注意的，本文不会着重介绍以太坊 PoS 算法的基本原理，本文不会设计 LMD Ghost 和 Casper FFG 算法的介绍，假如读者对 PoS 算法感兴趣，可以阅读 [eth2book](https://eth2book.info/latest/) 一书。本部分所有内容都是按照 Pectra 升级后的标准编写，请读者注意文章所采用的标准。
+需要注意的，本文不会着重介绍以太坊 PoS 算法的基本原理，本文不会涉及 LMD Ghost 和 Casper FFG 算法的介绍，假如读者对 PoS 算法感兴趣，可以阅读 [eth2book](https://eth2book.info/latest/) 一书。本部分所有内容都是按照 Pectra 升级后的标准编写，请读者注意文章所采用的标准。
 
 ## 前置知识
 
