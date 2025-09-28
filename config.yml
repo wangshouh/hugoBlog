@@ -1,4 +1,4 @@
-baseURL: 'https://blog.wssh.trade/'
+baseURL: 'https://blog.wssh.dev/'
 languageCode: 'en-us'
 title: "Wong's Blog"
 theme: PaperMod
