@@ -138,7 +138,7 @@ function transferFrom(
 
 在NFT数据存储中，我们可以看到`solmate`等常规实现都使用了`mapping(uint256 => address) internal _ownerOf`将单个`tokenId`与持有者对应。但`ERC721A`是对批量铸造进行特殊优化的，开发者认为在批量铸造过程中，用户持有的NFT的`tokenId`往往是连续的，如下图:
 
-![ERC721A TokenId](https://acjgpfqbqr.cloudimg.io/_csdnimg_/83f9076a550ec91aba78e6e918a06b48.png)
+![ERC721A TokenId](https://img.gopic.xyz/83f9076a550ec91aba78e6e918a06b48.png)
 
 ### 基本数据结构
 
@@ -328,7 +328,7 @@ function _nextInitializedFlag(uint256 quantity) private pure returns (uint256 re
 
 
 > `nextInitialized` 是初始化的标识，如果此标识为 `True` 则说明此 NFT 对应的地址已被初始化。如果此标识为 `False` (正如上文所见，单次铸造多于 1 个 NFT 就会使标识为 `False` )，则意味着这段连续的 NFT 中除第一个外其他 NFT 均为初始化。如下图:
-> ![ERC721A Init](https://files.catbox.moe/20sjdu.svg)
+> ![ERC721A Init](https://img.gopic.xyz/20sjdu.svg)
 
 后者定义如下:
 
@@ -822,7 +822,7 @@ assembly {
     由于转移过程必须进行初始化，所以此处将转移的 NFT 的 `nextInitialized` 设置为 `True`
 1. 考虑下一个 NFT 是否被初始化，
     如转移下图中 `tokenId = 3` 的 NFT:
-    ![NFT List Example](https://files.catbox.moe/20sjdu.svg)
+    ![NFT List Example](https://img.gopic.xyz/20sjdu.svg)
     该 NFT 转移后，由于破坏了拥有者 `0x2` 的连续性，所以我们需要重写 `tokenId = 4` 的对应数据，代码如下:
     
     ```solidity
@@ -950,7 +950,7 @@ _packedAddressData[from] = _packedAddressData[from] + (1 << 128) - 1
 
 最后我们还是讨论 **连续性** 问题，假如当前的代币拥有如下图:
 
-![ERC721A Owner](https://files.catbox.moe/20sjdu.svg)
+![ERC721A Owner](https://img.gopic.xyz/20sjdu.svg)
 
 我们将 `tokenId = 3` 的代币销毁，那么我们需要修正 `tokenId = 4` 的 NFT 以避免 NFT 丢失。这部分代码与 `transferFrom` 是一致的，实现如下:
 

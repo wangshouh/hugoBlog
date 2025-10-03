@@ -29,7 +29,7 @@ aliases: ["/2022/02/14/home_network/"]
 光猫任选一个Lan口，与后端千兆无线路由器的Wan口连接。由于此网线承载这个家庭网络，故应尽可能选择高规格网线，此处我个人选择了六类网线。此处千兆无线路由器主要负责一楼的无线网络。
 
 > 网线规格表
-![Wireless Cable Specification](https://ae01.alicdn.com/kf/H9fc2a5ff43a4420fb4535275cc0ec828e.png)
+![Wireless Cable Specification](https://img.gopic.xyz/H9fc2a5ff43a4420fb4535275cc0ec828e.png)
 > 该表来源于[Wikipedia](https://zh.wikipedia.org/wiki/%E5%8F%8C%E7%BB%9E%E7%BA%BF)
 
 千兆路由器任选Lan口与斐讯N1软路由连接，再选一个Lan口与二楼的百兆路由器的Lan口使用五类网线相连接。该百兆路由器使用2.4GHz频段，负责二楼与三楼的无线网络。
@@ -53,7 +53,7 @@ DHCP服务器开启，地址池设置为开始地址为 `192.168.1.100`，结束
 
 打开软路由器的设置界面，点击“网络”，点击“接口”，修改“br-lan”，各项设置如下图：
 
-![Setting](https://ae01.alicdn.com/kf/H743cc3f6c5ff434280b20d5630250861P.png)
+![Setting](https://img.gopic.xyz/H743cc3f6c5ff434280b20d5630250861P.png)
 
 > 注意此处DHCP服务器选择`忽略此接口`
 

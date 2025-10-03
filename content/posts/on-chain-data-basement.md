@@ -14,7 +14,7 @@ aliases: ["/2022/12/04/on-chain-data-basement/"]
 
 在阅读本文前，读者最好安装一个支持`GraphQL`请求方法的API调试工具，在此处，我个人使用的是[Postman](https://www.postman.com/)软件，但读者选择其他软件亦可。本文使用了新兴 Web3 链上数据API提供商[basement](https://basement.dev/)，此处我们使用的是免费版，无需 API Key 等配置，具体限制参考下图:
 
-![Basement Price](https://acjgpfqbqr.cloudimg.io/_img1_/509e0ded2829287c1754f84fb83bb787.png)
+![Basement Price](https://img.gopic.xyz/509e0ded2829287c1754f84fb83bb787.png)
 
 关于`Basement`的优势可参考[Mirror 文章](https://mirror.xyz/0x25B2B8458BAB283d465996df38305333C75982B6/uYsldHeef7FxVcBI233QSYzje4ejiQu0SMVdY74vf1s)。
 
@@ -75,7 +75,7 @@ aliases: ["/2022/12/04/on-chain-data-basement/"]
 }
 ```
 关于如何获得这些信息，一个方法是查询文档，本次实战使用的`Basement`在[它的文档](https://docs.basement.dev/schema/objects)中给出了这些信息，如下图:
-![Basement Object Doc](https://acjgpfqbqr.cloudimg.io/_img1_/28efc32c6927da42a6bfd9758a033d15.png)
+![Basement Object Doc](https://img.gopic.xyz/28efc32c6927da42a6bfd9758a033d15.png)
 
 我们可以通过点击其中的蓝色链接确定每个`Object`中的属性是否嵌套了另一个`Object`。
 
@@ -107,7 +107,7 @@ query Test {
 
 请求的API的URL为`https://beta.basement.dev/v2/graphql`，读者使用了`Postman`进行请求的截图如下:
 
-![Graphql Postman](https://acjgpfqbqr.cloudimg.io/_img1_/9a41b288866997fed1a04afc5e2364c3.png)
+![Graphql Postman](https://img.gopic.xyz/9a41b288866997fed1a04afc5e2364c3.png)
 
 返回的结果如下:
 ```json
@@ -172,14 +172,14 @@ result = client.execute(query)
 ```
 注意我们改变了`tokens`的`limit`参数，因为此参数默认为 50，但V神的NFT远远大于此值，所以我们通过设置调高此参数。
 
-![Vitalik NFT data](https://acjgpfqbqr.cloudimg.io/_img1_/61bb99873822519b487d19521e458046.png)
+![Vitalik NFT data](https://img.gopic.xyz/61bb99873822519b487d19521e458046.png)
 
 使用以下代码可以获得排序后前十个结果，即V神持有量最大的 10 种NFT:
 ```python
 vitalik_nft.groupby("contract").count().tokenId.sort_values(ascending=False)[:10]
 ```
 结果如下:
-![Vitalik NFT](https://acjgpfqbqr.cloudimg.io/_img1_/a0213d40d5622e30663f9c0477511317.png)
+![Vitalik NFT](https://img.gopic.xyz/a0213d40d5622e30663f9c0477511317.png)
 
 ## ERC721数据获取
 
@@ -204,7 +204,7 @@ NFT 元数据是 NFT 最重要的属性之一，使用`basement`的API，我们�
 
 使用 Opensea 网站的搜索功能，搜索`Bored Ape`，我们获得[此网页](https://opensea.io/collection/boredapeyachtclub)，如下:
 
-![Ape Opensea](https://acjgpfqbqr.cloudimg.io/_img1_/d4d0ce782127d84b8f71054da13df43a.png)
+![Ape Opensea](https://img.gopic.xyz/d4d0ce782127d84b8f71054da13df43a.png)
 
 通过点击`etherscan`标识按钮，我们可以获得此NFT的合约地址，即`0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d`
 
@@ -266,7 +266,7 @@ query NFTFirst {
 
 对于部分用户而言，您请求的NFT数据可能并不存在于`basement`数据库，如在编写此文时，无聊猿 #1 仍不存在，如下图:
 
-![APE#1 Not Exist](https://acjgpfqbqr.cloudimg.io/_img1_/371194690ebde64fcd3e9b448254b9e8.png)
+![APE#1 Not Exist](https://img.gopic.xyz/371194690ebde64fcd3e9b448254b9e8.png)
 
 此时我们可以通过一个特殊请求要求`basement`获取相关数据，请求如下:
 ```graphql
@@ -289,7 +289,7 @@ mutation {
 ```
 再次进行请求，就可以获得NFT的相关数据，如下图:
 
-![Add APE#1](https://acjgpfqbqr.cloudimg.io/_img1_/6cd7bd262eaa5ff9476c313558c444a5.png)
+![Add APE#1](https://img.gopic.xyz/6cd7bd262eaa5ff9476c313558c444a5.png)
 
 最后，有部分读者可以有对一系列地址所拥有的NFT进行统一检索的需要，此时我们可以使用`tokens`索引方法，此方法需要以下参数:
 
@@ -322,7 +322,7 @@ mutation {
 
 通过 [Opensea 分析](https://opensea.io/collection/boredapeyachtclub/analytics)网页，我们可以发现`bayc.benddao.eth`是最大的BAYC持有人。
 
-![BAYC Owner Rank](https://acjgpfqbqr.cloudimg.io/_img1_/a30b5924f8679a45369b98e83236f30d.png)
+![BAYC Owner Rank](https://img.gopic.xyz/a30b5924f8679a45369b98e83236f30d.png)
 
 我们希望获得此人所有`BAYC`的来源，我们可以通过`erc721Transfers`进行检索，此检索需要以下参数:
 
@@ -368,7 +368,7 @@ query NFTtransferTest {
 
 > 此处的`benddao`实际上是一个 NFTfi 机构，提供质押蓝筹 NFT 进行贷款的服务，所以此地址会持有大量NFT
 
-![NFT transfer Graphql](https://acjgpfqbqr.cloudimg.io/_img1_/08675d5ad503dbb0efa7f58755f180b9.png)
+![NFT transfer Graphql](https://img.gopic.xyz/08675d5ad503dbb0efa7f58755f180b9.png)
 
 ### NFT 交易
 
@@ -411,11 +411,11 @@ fragment simpleAddress on Address{
 
 此处我们通过一个实战案例为大家介绍如何进行一次交易数据检索。此实战案例是获取[Dori Samurai](https://opensea.io/collection/dori-samurai)NFT项目的所有铸造交易。为达成这一目标，我们需要首先获得代表性交易，进入任一NFT详情页，点击`Item Activity`栏目内的`Minted`链接，如下图:
 
-![Opensea Mint](https://acjgpfqbqr.cloudimg.io/_img1_/25ebc73c9546e0fc78c945c7d0c2f5d1.png)
+![Opensea Mint](https://img.gopic.xyz/25ebc73c9546e0fc78c945c7d0c2f5d1.png)
 
 读者进入[Etherscan](https://etherscan.io/tx/0x40c9a4d8f3b4f40e8f9ecf6264b6693eb892f0ce1251f648536d86558589f35b#eventlog)页面，点击`Logs`选项卡，如下图:
 
-![Mint Logs](https://acjgpfqbqr.cloudimg.io/_img1_/6511d8598d37dd73423e22b4f55961ea.png)
+![Mint Logs](https://img.gopic.xyz/6511d8598d37dd73423e22b4f55961ea.png)
 
 我们发现此处抛出的交易事件为`Transfer(address,address,uint256)`，其中第一个参数为转账来源而第二个参数为接受方，最后一个参数为NFT的`tokenId`。对于大部分`event`，我们可以通过`etherscan`给出的参数判断含义，当然，查询对应的EIP也可以获得参数含义。如此处，我们可以查询[EIP721 Specification](https://eips.ethereum.org/EIPS/eip-721#specification)阅读注释，大部分基于EIP的含义均遵循此处给出的注释。
 
@@ -488,7 +488,7 @@ query GetApprovalsForAddress {
 ```
 返回如下:
 
-![Mint Graphql res](https://acjgpfqbqr.cloudimg.io/_img1_/d34613ca63753371728b8ec12955cdc4.png)
+![Mint Graphql res](https://img.gopic.xyz/d34613ca63753371728b8ec12955cdc4.png)
 
 读者可以自行构造一系列的复杂的交易查询以获得一些更加具有研究价值的数据。
 

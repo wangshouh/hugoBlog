@@ -116,7 +116,7 @@ Code runtime: 1.01
 
 在现实的编码实例中，我们可以考虑`asyncio.sleep(1)`为一耗时的系统操作，这一操作不需要`Python`代码运行而仅需要Python等待运行结果返回，比如网络请求。在网络请求过程中，发送数据包和接收数据包都较为快速，对于爬虫而言，大部分时间浪费在等待数据返回的过程中，这一等待过程中Python不需要操作。所以我们可以引入异步机制让Python在此等待时间内进行其他工作。另一个比较常见的案例即读取文件，读取文件的过程并不是Python完成的，Python只是在读取文件时向操作系统发出请求，等待操作系统返回文件内容，这一过程也是浪费的时间，可以通过异步方法使Python进行其他工作。
 
-![IO waitting](https://acjgpfqbqr.cloudimg.io/_img1_/c9d4e2defdce72e4edaaae74b9cf1df2.png)
+![IO waitting](https://img.gopic.xyz/c9d4e2defdce72e4edaaae74b9cf1df2.png)
 
 值得注意的是，Python的原生实现，包括`requests`等网络请求库均没有实现上述异步特性，为实现异步，我们需要引入[概述](#概述)中给出的两个库，其中:
 
@@ -191,11 +191,11 @@ if __name__ == "__main__":
 
 此处我们通过以下案例介绍此模式，访问豆瓣图书[详情页](https://book.douban.com/subject/35196328/)，我们可以看到如下图书推荐部分:
 
-![Douban Book Rec](https://acjgpfqbqr.cloudimg.io/_img1_/e57f5df2199b774f7e80fb5177b73403.png)
+![Douban Book Rec](https://img.gopic.xyz/e57f5df2199b774f7e80fb5177b73403.png)
 
 查询源代码，如下图:
 
-![Douban Book html](https://acjgpfqbqr.cloudimg.io/_img1_/28c5e6da44c9259935d1610c0686f283.png)
+![Douban Book html](https://img.gopic.xyz/28c5e6da44c9259935d1610c0686f283.png)
 
 我们很容易写出抽取相关内容的代码，使用`bs4`库进行抽取，代码如下:
 ```python
@@ -389,11 +389,11 @@ print(my_range.send(4))
 ```
 当我们第一次调用`next(my_range)`时，代码`Debug`如下:
 
-![Yield Init Debug](https://acjgpfqbqr.cloudimg.io/_img1_/395634cff51966b061d4330ed8ddf33a.gif)
+![Yield Init Debug](https://img.gopic.xyz/395634cff51966b061d4330ed8ddf33a.gif)
 
 可见第一次调用`next()`函数时，函数运行到`yield`语句就停止了。这与我们的异步编程中的暂停机制有异曲同工之妙。接下来，我们分析第二个`next`，其`Debug`如下:
 
-![Yield Next Debug](https://acjgpfqbqr.cloudimg.io/_img1_/b80c8e60d95e2f4d92254178d51031cf.gif)
+![Yield Next Debug](https://img.gopic.xyz/b80c8e60d95e2f4d92254178d51031cf.gif)
 
 关注左侧的`VARIABLES`变量展示栏，我们可以看到此处的`Locals`函数本地变量保存了我们上次初始化后的结果，代码运行从`yield`的下一行开始运行到函数最后，然后跳转到代码块最开始进行条件判断，然后进入代码块运行到`yield`结束。
 
@@ -407,7 +407,7 @@ print(my_range.send(4))
 
 我们首先解决注入问题，此处使用了不常见的关键词`send`，其运行逻辑如下:
 
-![Yield Send Debug](https://acjgpfqbqr.cloudimg.io/_img1_/52049ca715acf56ff1e9803cc4cd67a5.gif)
+![Yield Send Debug](https://img.gopic.xyz/52049ca715acf56ff1e9803cc4cd67a5.gif)
 
 观察`VARIABLES`展示栏，我们发现此次将`send`中的数值`4`直接赋值给了`t`，然后继续运行相关代码，进行条件判断，运行至`yield`输出`i`结束。可见`send`可以实现简单的变量注入。
 
@@ -439,7 +439,7 @@ Hello World Hello
 
 该函数的`Debug`运行如下:
 
-![yieldFrom](https://acjgpfqbqr.cloudimg.io/_img1_/328241e02ee8cb94708aea9580d9885b.gif)
+![yieldFrom](https://img.gopic.xyz/328241e02ee8cb94708aea9580d9885b.gif)
 
 `yield from`关键词真正实现实现了`await`的功能。事实上，在早期的Python版本中，就是使用的`yield from`作为`await`使用。接下来，我们给出我们所介绍的第一个异步编程的`yield`版本，如下:
 ```python

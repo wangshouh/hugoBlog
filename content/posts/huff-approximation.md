@@ -237,7 +237,7 @@ r = baryrat.brasil(f, interval=(-0.5 * gmpy2.log(2), 0.5 * gmpy2.log(2)), deg=6)
 
 拟合结果如下图:
 
-![6 deg brasil](https://acjgpfqbqr.cloudimg.io/_img1_/698cc8073e92e24a1e0ee3cb38c577e4.png)
+![6 deg brasil](https://img.gopic.xyz/698cc8073e92e24a1e0ee3cb38c577e4.png)
 
 我们拟合 6 阶有理多项式插值结果在有效区间内达到了 1e-23 的精度，这对于 1e-18 精度的 solidity 定点浮点数计算而言是足够精度的。接下来，我们需要导出参数并编写对应的 huff 代码。我们在此给出 `barycentric rational` 的公式形式：
 
@@ -430,7 +430,7 @@ forge test --debug testSetAndGetValue
 
 进入 debug 页面后，我们需要按下 `C` 键跳转进入 huff 调用环节:
 
-![Huff Exp Debug](https://acjgpfqbqr.cloudimg.io/_img1_/aa950ab5b7f6f017f8d5a9921c61607a.png)
+![Huff Exp Debug](https://img.gopic.xyz/aa950ab5b7f6f017f8d5a9921c61607a.png)
 
 接下来，我们一般需要校验以下几个内容:
 

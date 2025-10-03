@@ -39,13 +39,13 @@ scarb -V
 
 安装完成后，进入插件的设置页面，如下图:
 
-![Cairo1 Setting](https://acjgpfqbqr.cloudimg.io/_img1_/f9e7827a82197e71da78e63f0a865274.png)
+![Cairo1 Setting](https://img.gopic.xyz/f9e7827a82197e71da78e63f0a865274.png)
 
 在插件设置页面内，在 `Language Server Path` 内填入 `cairo-language-server` 二进制文件地址，可以使用 `which cairo-language-server` 命令获得。在 `Scarb Path` 内填入 `scarb` 二进制文件地址，可以使用 `which scarb` 命令获得。完成上述设置后，请重启 VSCode 软件。
 
 一个示例配置如下(请勿直接抄写文件地址):
 
-![Cairo Setting Example](https://acjgpfqbqr.cloudimg.io/_img1_/f0564492611f17938f4170eb697b9823.png)
+![Cairo Setting Example](https://img.gopic.xyz/f0564492611f17938f4170eb697b9823.png)
 
 ## Cairo vs. Solidity
 
@@ -93,7 +93,7 @@ scarb -V
 
 在编译上，Cairo 1 引入了中间编译层，该表示层被称为 `Sierra` ，而最终的编译结果被称为 `casm` ，更多信息可以参考 [Under the hood of Cairo 1.0: Exploring Sierra](https://medium.com/nethermind-eth/under-the-hood-of-cairo-1-0-exploring-sierra-7f32808421f5) 。如下图:
 
-![cairo 1 complie](https://acjgpfqbqr.cloudimg.io/_img1_/f1424e7997da290ddced38e7f9eb9595.png)
+![cairo 1 complie](https://img.gopic.xyz/f1424e7997da290ddced38e7f9eb9595.png)
 
 > solidity 的编译也是用了中间表示层方案，大家熟悉的 yul 即中间表示层
 
@@ -767,7 +767,7 @@ fn MAX_U256() -> u256 {
 
 当读者完成设置密码等步骤后，会获得钱包地址，但此时账户仍处于未部署状态。点击右上角⚙图标，如下图:
 
-![Agent Deploy](https://acjgpfqbqr.cloudimg.io/_img1_/0c7c1bbc8e7f7ab12d8c69c8be19ba50.jpg)
+![Agent Deploy](https://img.gopic.xyz/0c7c1bbc8e7f7ab12d8c69c8be19ba50.jpg)
 
 我们可以看到 `Deploy account` 的选项。此处的部署需要消耗一笔资产，请读者前往 [此处](https://faucet.goerli.starknet.io/) 获取第一笔 ETH 资产。当交易进入 `Pending` 状态后，并可在 agent 钱包中查询到存在 ETH 资产，读者可以点击 `Deploy account` 进行账户合约部署。
 
@@ -976,7 +976,7 @@ Contract deployed:
 
 合约最终部署位置为 `0x05007818fb1d449b205ba6043d3bb3819684a091e841fbd90d36d490f4978ebe`。点击 [此网址](https://testnet.starkscan.co/contract/0x05007818fb1d449b205ba6043d3bb3819684a091e841fbd90d36d490f4978ebe#read-write-contract-sub-read) 可以前往交互，读者可以调用 `mint` 函数进行代币铸造。读者也可以将此代币加入钱包，由于代币符合 SNIP-2 标准，所以钱包可以很好的兼容代币。
 
-![Hello ERC20](https://acjgpfqbqr.cloudimg.io/_img1_/880d7d4e22758bcc9e788c51792b3535.png)
+![Hello ERC20](https://img.gopic.xyz/880d7d4e22758bcc9e788c51792b3535.png)
 
 ## 总结
 

@@ -89,7 +89,7 @@ mstore(add(ptr, 0x28), 0x5af43d82803e903d91602b57fd5bf30000000000000000000000000
 关于此此字节码的作用，我们会在下文进行解释。
 
 上述流程可以用下图进行概括:
-![EIP1167 Memory](https://acjgpfqbqr.cloudimg.io/_csdnimg_/416b4f146809325dbd9f3365e0f9f471.png)
+![EIP1167 Memory](https://img.gopic.xyz/416b4f146809325dbd9f3365e0f9f471.png)
 
 此图展示了上述汇编代码对内存的修改情况。其中最上方的`ptr`、`ptr + 0x14`、`ptr + 0x28`等值表示当前的内存地址，`0x14`等值的单位均为`byte`。
 
@@ -282,7 +282,7 @@ ret, err := evm.interpreter.Run(contract, nil, false)
 
 另一点需要注意的是栈属于后进先出(`LIFO`)的数据类型，所以我们需要先推入`size`参数再推入`offset`最后推入`destOffset`参数。
 
-![Stack Picture](https://acjgpfqbqr.cloudimg.io/_csdnimg_/6003858d65ba02dc25750d489e4c00f6.png)
+![Stack Picture](https://img.gopic.xyz/6003858d65ba02dc25750d489e4c00f6.png)
 
 经过以上流程，我们成功把`calldata`复制到内存中，下一步则需要使用`calldata`进行`delegatecall`
 

@@ -12,7 +12,7 @@ tags: [python,data]
 
 > 此处的国内航班指的是美国国内航班
 
-![dogs](https://acjgpfqbqr.cloudimg.io/_csdnimg_/75a24480210dcc9972d74bfa91d4de50.jpeg)
+![dogs](https://img.gopic.xyz/75a24480210dcc9972d74bfa91d4de50.jpeg)
 
 ## 数据
 
@@ -176,7 +176,7 @@ print(df.groupby('Origin')['delay'].mean().sort_values(ascending=False).head(5))
 
 在此解决方案中，我们将数据分析任务分成了两部分。 第一部分是将数据加载到内存中，第二部分是转换数据以获得我们需要的数据。 值得分析这两个部分运行的所需要的时间，因为获得执行时间后，我们可以更好地优化耗时部分。
 
-![Delay Part](https://acjgpfqbqr.cloudimg.io/_csdnimg_/d5ee4314e6c31be196158f5451534975.png)
+![Delay Part](https://img.gopic.xyz/d5ee4314e6c31be196158f5451534975.png)
 
 我们可以看到超过 80% 时间用于完成数据加载任务，即从 CSV 内导入数据和数据格式转换。我们会在下一节优化这一流程。
 
@@ -368,9 +368,9 @@ print(df['mean'].sort_values(ascending=False).head(5))
 
 最后，我们给出总结图表:
 
-![time](https://acjgpfqbqr.cloudimg.io/_csdnimg_/b5a7397e05a696f6fcb87856c8e1fbad.png)
+![time](https://img.gopic.xyz/b5a7397e05a696f6fcb87856c8e1fbad.png)
 
-![memory](https://acjgpfqbqr.cloudimg.io/_csdnimg_/997c2bc9fe95132c4f8cdca2def54aaf.png)
+![memory](https://img.gopic.xyz/997c2bc9fe95132c4f8cdca2def54aaf.png)
 
 ## 延伸阅读
 

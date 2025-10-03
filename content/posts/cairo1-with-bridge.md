@@ -185,7 +185,7 @@ function consumeMessageFromL2(uint256 fromAddress, uint256[] calldata payload)
 
 一个简单的流程如下:
 
-![StarkNet Message L2 -> L1](https://acjgpfqbqr.cloudimg.io/_img1_/bc2ca14215bb38af77ab219d25835a5d.png)
+![StarkNet Message L2 -> L1](https://img.gopic.xyz/bc2ca14215bb38af77ab219d25835a5d.png)
 
 当然，此流程中没有显示技术细节。一个具有更多技术细节的流程图如下:
 
@@ -246,7 +246,7 @@ fn handle_deposit(from_address: felt252, account: ContractAddress, amount: u256)
 
 下图展示了 [voyager](https://goerli.voyager.online/txns) 区块链浏览器中对 `L1_HANDLER` 这种特殊的 L1 调用交易标识:
 
-![L1 Handler Voyer](https://acjgpfqbqr.cloudimg.io/_img1_/2e20dae76562b3734d3bd43b6bab2cf4.png)
+![L1 Handler Voyer](https://img.gopic.xyz/2e20dae76562b3734d3bd43b6bab2cf4.png)
 
 当节点在 L2 完成合约调用后，L2 节点会对所有 **请求成功** 的交易的参数进行进行序列化(类似 L2 -> L1 参数的序列化，即 `abi.encodePacked`)，并将其作为参数调用核心合约，核心合约会根据参数进行更新，[源代码](https://github.com/starkware-libs/cairo-lang/blob/master/src/starkware/starknet/solidity/Output.sol#L125) 如下:
 
@@ -577,11 +577,11 @@ scarb build
 
 点击 `Message Logs` 选项卡，我们可以看到 `L2 -> L1` 的信息，如下:
 
-![StarkScan L2 -> L1](https://acjgpfqbqr.cloudimg.io/_img1_/1e148001157ceaaaf2cdb2fc37b7c62f.png)
+![StarkScan L2 -> L1](https://img.gopic.xyz/1e148001157ceaaaf2cdb2fc37b7c62f.png)
 
 读者可以点击 `Message Hash` 查看信息传递详情，或者点击 [此链接](https://testnet.starkscan.co/message/0x829b7b9b220945a1e3c40d04eb2b6c38b0ee7ff6f54049bbb4b9ea87d021b21a#overview) 。我们主要关注 `Status` ，该内容说明当前跨链信息是否被 L1 接受。一般来说，L2 -> L1 的跨链信息传递需要 4 个小时。然后，我们的重点在于 `Payload`，如下图:
 
-![StarkNet L2 -> L1 Payload](https://acjgpfqbqr.cloudimg.io/_img1_/0ab82705f2b2901ca1e4263c8a804a34.png)
+![StarkNet L2 -> L1 Payload](https://img.gopic.xyz/0ab82705f2b2901ca1e4263c8a804a34.png)
 
 该 `payload` 与我们的代码是对应的，`Index 0` 为接收方地址，`Index 1` 为转移代币数量 `amount` 的低 128 位，而 `Index 2` 为转移代币数量的高 128 位。
 
@@ -615,13 +615,13 @@ keccak256(abi.encodePacked(fromAddress, toAddress, length, payload))
 
 我们可以看到如下输出:
 
-![Chisel Message Hash](https://acjgpfqbqr.cloudimg.io/_img1_/b6f40e26f2e07c33a05d94589bb98d96.png)
+![Chisel Message Hash](https://img.gopic.xyz/b6f40e26f2e07c33a05d94589bb98d96.png)
 
 此处使用了 `0x00afd48f565e1ac63f3e547227c9ad5243990f3d40` 而不是 `0xafd48f565e1ac63f3e547227c9ad5243990f3d40` 是因为使用后者会报错。
 
 耐心等待 4 小时或 8 小时，我们可以在 [核心合约](https://goerli.etherscan.io/address/0xde29d060D45901Fb19ED6C6e959EB22d8626708e#readProxyContract) 查询到此信息，如下图:
 
-![Message Hash Query](https://acjgpfqbqr.cloudimg.io/_img1_/0bcd2715d226d943e729e5157f377ad1.png)
+![Message Hash Query](https://img.gopic.xyz/0bcd2715d226d943e729e5157f377ad1.png)
 
 #### solidity 合约
 
@@ -882,7 +882,7 @@ forge script script/BridgeERC20.s.sol:BridgeScript --rpc-url $RPC_URL --private-
 
 完成上述部署后，我们可以前往 cairo 合约的区块链浏览器页面，调用 `set_l1_token` 函数，如下图:
 
-![Set L1 Token In starkSacn](https://acjgpfqbqr.cloudimg.io/_img1_/1786cbd8f5833f68bfc39b1ad72cdb42.png)
+![Set L1 Token In starkSacn](https://img.gopic.xyz/1786cbd8f5833f68bfc39b1ad72cdb42.png)
 
 此处使用的区块链浏览器为 [starkscan](https://testnet.starkscan.co) 。
 
@@ -907,11 +907,11 @@ cast send $bridge "transferToL2(uint256,uint256)" $L2ADDRESS 0.5ether --value 0.
 
 读者可以在 etherscan 页面中的合约 `events` 内找到交易的 `msgHash`，如下:
 
-![Etherscan Event MsgHash](https://acjgpfqbqr.cloudimg.io/_img1_/ccd5f038c8e203330e6a1d08d66e4e73.png)
+![Etherscan Event MsgHash](https://img.gopic.xyz/ccd5f038c8e203330e6a1d08d66e4e73.png)
 
 稍等 1-2 分钟，前往 starknet 区块链浏览器直接搜索 `msgHash` ，可以前往此页面:
 
-![StarkScan MessageHash](https://acjgpfqbqr.cloudimg.io/_img1_/b27e03069330ca54f63716feb8611a66.png)
+![StarkScan MessageHash](https://img.gopic.xyz/b27e03069330ca54f63716feb8611a66.png)
 
 一般来说，如果读者的 L2 代码没有问题，稍等 2 分钟就会变为 `Consumed On L2` 状态，如果 5 分钟内都没有状态变更，可能说明读者的 L2 代码存在问题。但是跨链调用不会给出报错信息，这会使 debug 异常复杂。
 

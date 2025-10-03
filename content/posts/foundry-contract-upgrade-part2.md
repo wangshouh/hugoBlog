@@ -32,7 +32,7 @@ forge install Openzeppelin/openzeppelin-contracts
 
 本合约是上篇介绍的`EIP-1822 UUPS`的进一步标准化版本，读者可以在这里找到[ERC文档](https://eips.ethereum.org/EIPS/eip-1967)。该标准被`etherscan`等区块链浏览器支持，可以提供完整的代理合约展示和交互功能。你可以前往[USDC合约](https://etherscan.io/address/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48)查看情况。如下图:
 
-![etherscanproxy.png](https://pic.rmb.bdstatic.com/bjh/e84cde8fe8d8d14dd1ea65a540cb07d7.png)
+![etherscanproxy.png](https://img.gopic.xyz/e84cde8fe8d8d14dd1ea65a540cb07d7.png)
 
 ### 基本标准
 
@@ -414,7 +414,7 @@ function testMultiProxy() public {
 
 此模型与我们之前介绍的`EIP-1967`等传统代理模型不同，此模型没有采用无序存储合约地址的方法，而是在通过映射约定不同的函数和对应的合约地址，此方法属于有序存储。有序存储的特点使代理合约可以实现一个合约对应多个逻辑合约。当然，此模型也是使用`delegatecall`完成函数调用，合约数据仅保存在代理合约内。
 
-![facetFunction.jpeg](https://pic.rmb.bdstatic.com/bjh/dd906c6d1bc27c12ade78ce05e6fefaa.jpeg)
+![facetFunction.jpeg](https://img.gopic.xyz/dd906c6d1bc27c12ade78ce05e6fefaa.jpeg)
 
 上图中给出了一个示意图，其中的切面(`Facet`)实际就是代理合约所调用的逻辑合约，此图中展示了三个逻辑合约。
 
@@ -500,7 +500,7 @@ forge debug --debug src/EIP-2535/storageLibraryTest.sol:TestStruct --sig "myFunc
 ```
 该命令会打开`debug`窗口，如下所示:
 
-![debugInit.png](https://pic.rmb.bdstatic.com/bjh/c69d14f6ae70eae09824980b17c7bfdd.png)
+![debugInit.png](https://img.gopic.xyz/c69d14f6ae70eae09824980b17c7bfdd.png)
 
 自上而下依次为合约EVM操作码、EVM堆栈情况、EVM内存和合约源代码。我建议您读者进入此页面后单击`m`和`t`键会显示更多信息。使用鼠标滚动即可逐步运行EVM操作码，当然也可以`k`或`j`键。跟多关于键位操作可以参考[Foundry 官方文档](https://book.getfoundry.sh/forge/debugger#navigating)。如果你想查询所有的操作码含义可以参考[此网站](https://www.evm.codes/)。
 
@@ -510,19 +510,19 @@ forge debug --debug src/EIP-2535/storageLibraryTest.sol:TestStruct --sig "myFunc
 
 在`039`位置时的输出如下:
 
-![039debug](https://pic.rmb.bdstatic.com/bjh/603d990a2b9b894a74b86643006504d4.png)
+![039debug](https://img.gopic.xyz/603d990a2b9b894a74b86643006504d4.png)
 
 `039`位置的操作码将结构体存储的位置`75fd42e3768eaf1c351f0f1eee6ed52a2603059b48bfb1eee0baed20051c00ef`，即`keccak256("com.mycompany.projectx.mystruct")` 推入栈。
 
 在`05a`位置时的输出如下:
 
-![05adebug](https://pic.rmb.bdstatic.com/bjh/09a2c78d192e4f4bd6b9e86da7ce2349.png)
+![05adebug](https://img.gopic.xyz/09a2c78d192e4f4bd6b9e86da7ce2349.png)
 
 我们可以在栈中看到上一步压入的`75fd42e3768eaf1c351f0f1eee6ed52a2603059b48bfb1eee0baed20051c00ef`和`10`。后者就是我们指定的`inputUint`，我们在`debug`命令中将其设置为`16`(其16进制即为`10`)，可见我们的此处进行的数据存储是成功的。
 
 上述给出的方法就是被称为`Diamond Storage`的存储方案，在下面常见的介绍钻石模型的图中，就使用了此方案。
 
-![DiamondDiagram.png](https://pic.rmb.bdstatic.com/bjh/ec61bc64efc8d5b24ce86f3fbc459bfd.png)
+![DiamondDiagram.png](https://img.gopic.xyz/ec61bc64efc8d5b24ce86f3fbc459bfd.png)
 
 该方案也是使用最广泛的方案。我们在后文进行代码实现时会采取这种存储方案。如果读者没有特殊需求，可以选择此方案。值得注意的是，选择此方案增加状态变量只能增加到结构体的最后，否则会因为数据排序错位而导致数据冲突。
 
@@ -888,7 +888,7 @@ function transferOwnership(address _newOwner) external;
 cast sig "transferOwnership(address)"
 ```
 输出结果为`0xf2fde38b`，这正是我们需要的。考虑到常用的函数是有限的，有以太坊开发者组建了一个可以根据函数选择器逆向选择器字符串的[网站](https://sig.eth.samczsun.com/)，我们可以在这个网站测试函数选择器输出是否正确:
-![ethSigDb](https://acjgpfqbqr.cloudimg.io/_img1_/0491352301162d59c6f2908b4b6bd5e9.png)
+![ethSigDb](https://img.gopic.xyz/0491352301162d59c6f2908b4b6bd5e9.png)
 显然，上述查询结果证明我们是正确的。当然，此功能也被集成到了`cast`命令中，读者可以运行以下命令:
 ```bash
 cast 4byte 0xf2fde38b

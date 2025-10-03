@@ -27,7 +27,7 @@ aliases: ["/2022/07/14/foundry-with-erc20"]
 
 首先，Foundry使用Rust编写，其编译Solidity智能合约的速度更快，同时如果您使用Linux系统，foundry的安装也会非常简单。
 
-![性能对比](https://raw.githubusercontent.com/foundry-rs/foundry/master/.github/compilation-benchmark.png)
+![性能对比](https://img.gopic.xyz/compilation-benchmark.png)
 
 其次，在开发流程中，Foundry仅使用`solidity`一种编程语言，智能合约工程师可以仅使用`solidity`完成智能合约编写、测试和部署。而且，Foundry提供了一套完整的开发工具箱，主要包括以下三部分:
 
@@ -73,7 +73,7 @@ foundryup
 forge -h
 ```
 
-![forgehelp](https://acjgpfqbqr.cloudimg.io/_s3_/forgehelp.png)
+![forgehelp](https://img.gopic.xyz/forgehelp.png)
 
 如果想了解更多关于安装的信息，可以自行阅读官方给出的[文档](https://book.getfoundry.sh/getting-started/installation)
 
@@ -113,7 +113,7 @@ forge install Rari-Capital/solmate Openzeppelin/openzeppelin-contracts
 
 安装完成后的目录如下:
 
-![InstallTree](https://book.getfoundry.sh/images/nft-tutorial/nft-tutorial-project-structure.png)
+![InstallTree](https://img.gopic.xyz/nft-tutorial-project-structure.png)
 
 我个人推荐使用VSCode作为Solidity的编辑器，一般来说，只需要进行下述两步操作:
 
@@ -210,11 +210,11 @@ contract SDUFECoin is ERC20, Ownable {
 
 第22-34行规定了最为重要的铸造函数，该函数接受一个变量`recipient`即代币接受者，同时通过`payable`关键词也可接受转入的ETH。如果想获得更多关于`public`和`payable`的信息可以参考这篇[中文教程](https://github.com/AmazingAng/WTFSolidity/tree/main/03_Function#solidity%E6%9E%81%E7%AE%80%E5%85%A5%E9%97%A83-%E5%87%BD%E6%95%B0%E7%B1%BB%E5%9E%8B)。总体而言，该函数可以接受一个规定的变量`recipient`和一个隐含的变量，即转入的ETH数量(通过`msg.value`获得数值)。如果你想更加直观的理解该函数所接受的两个参数，可以前往[这里](https://ropsten.etherscan.io/address/0x6f719490dec688b8c7c394f5259ae5aa788c3a5d#writeContract)查看，或参见下图:
 
-![ethscan.png](https://acjgpfqbqr.cloudimg.io/_s3_/ethscan.png)
+![ethscan.png](https://img.gopic.xyz/ethscan.png)
 
 对于铸造函数内的逻辑较为简单，只需要注意`revert`用于报错。而`_mint`函数和`totalSupply`变量实际来自`solmate`，读者可自行查询函数定义。总而言之，`_mint`函数是核心方法，`totalSupply`变量存储有当前的代币总发行量。该变量也可以直接在[etherscan](https://ropsten.etherscan.io/address/0x6f719490dec688b8c7c394f5259ae5aa788c3a5d#readContract)中查阅，或参见下图:
 
-![totalSupplyScan.png](https://acjgpfqbqr.cloudimg.io/_s3_/totalSupplyScan.png)
+![totalSupplyScan.png](https://img.gopic.xyz/totalSupplyScan.png)
 
 该函数的在第一个if判断中实现了规避交换价格低于最低价格的交易；第二个if实现了判断当前总发行量是否超标的逻辑。
 
@@ -394,7 +394,7 @@ forge test
 
 如果一切顺利，读者将会看到类似下图的输出:
 
-![erc20TestOutput.png](https://acjgpfqbqr.cloudimg.io/_s3_/erc20TestOutput.png)
+![erc20TestOutput.png](https://img.gopic.xyz/erc20TestOutput.png)
 
 此图证明所有的测试都已经通过，我们接下来可以进行一系列其他操作。
 
@@ -407,7 +407,7 @@ forge test --gas-report
 
 读者可获得类似下图的输出:
 
-![erc20gasReport.png](https://acjgpfqbqr.cloudimg.io/_s3_/erc20gasReport.png)
+![erc20gasReport.png](https://img.gopic.xyz/erc20gasReport.png)
 
 在此处，gas费的单位应该是`gwei`，其值相当于`0.000000001Ether`
 
@@ -459,7 +459,7 @@ contract TokenScript is Script {
 
 在终端运行`anvil`命令，你将看到如下输出:
 
-![anvailOutput](https://acjgpfqbqr.cloudimg.io/_s3_/anvailOutput.png)
+![anvailOutput](https://img.gopic.xyz/anvailOutput.png)
 
 **注意该终端窗口不可关闭。**
 
@@ -486,7 +486,7 @@ forge script script/token.s.sol:TokenScript --fork-url http://localhost:8545  --
 
 在运行`anvil`的终端窗口内应看到如下输出:
 
-![anvailDeploy](https://acjgpfqbqr.cloudimg.io/_s3_/anvailDeploy.png)
+![anvailDeploy](https://img.gopic.xyz/anvailDeploy.png)
 
 为方便终端命令编写，使用下述命令将合约地址保存为系统变量:
 ```bash
@@ -522,7 +522,7 @@ cast call $TOKEN_ADDRESS "totalSupply()(uint256)"
 ```
 
 完整输出结果截图如下:
-![castSendMintTo](https://acjgpfqbqr.cloudimg.io/_s3_/castSendMintTo.png)
+![castSendMintTo](https://img.gopic.xyz/castSendMintTo.png)
 
 由于`withdrawPayments`具有较高风险，所以在此处我们也对其进行测试，使用以下命令:
 ```bash
@@ -656,7 +656,7 @@ forge script script/token.s.sol:TokenScript --rpc-url $ROPSTEN_RPC_URL  --privat
 
 等待以太坊网络确认并认证，最终输出如下图:
 
-![TestOutput](https://book.getfoundry.sh/images/solidity-scripting/contract-verified.png)
+![TestOutput](https://img.gopic.xyz/contract-verified.png)
 
 > 此图仅为示例，具体内容由于合约地址会出现不同
 

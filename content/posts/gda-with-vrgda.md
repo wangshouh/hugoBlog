@@ -116,7 +116,7 @@ $$
 
 此处的 $r$ 为代币释放率。下图展示了 $P(q)$ 的图像:
 
-![Continuous GDA](https://img.wssh.trade/ContinuousGDA.png)
+![Continuous GDA](https://img.gopic.xyz/ContinuousGDA.png)
 
 > 本图像也提供 [交互版本](https://www.desmos.com/calculator/ip5ykc72vl)
 
@@ -124,13 +124,13 @@ $$
 
 以下图像展示了用户在某一个时点购买多个代币所支付的总价格:
 
-![GDA Continuous cumulative purchase price](https://img.wssh.trade/gda_continuous.jpg)
+![GDA Continuous cumulative purchase price](https://img.gopic.xyz/gda_continuous.jpg)
 
 ## 可变利率 GDA
 
 上文介绍的离散 GDA 对于 NFT 释放没有调节作用。假设我们预期 NFT 每天售出 10 个，当前为拍卖第 5 天，此时预期售出 50 个 NFT，但我们发现市场上已售出了 70 个 NFT。此时，我们可以选择提高 NFT 价格至原价格的 $2^{\frac{70 - 50}{10}}$ 倍。
 
-![vrgda intuition](https://img.wssh.trade/vrgda_intuition.png)
+![vrgda intuition](https://img.gopic.xyz/vrgda_intuition.png)
 
 简单来说，我们通过对 GDA 的价格进行一次调整来实现调控 NFT 发行的目标。我们称这种调整后的 GDA 为 VRGDA。
 
@@ -212,7 +212,7 @@ function getVRGDAPrice(int256 timeSinceStart, uint256 sold) public view virtual 
 
 线性 VRGDA 适用于计划每日固定释放代币的场景，其目标发行计划函数为 $f(t) = rt$ ，简单计算就可以获得 $s_n = \frac{n}{r}$ 的结论。
 
-![vrgda linear issuance schedule](https://img.wssh.trade/vrgda_linear_issuance_schedule.png)
+![vrgda linear issuance schedule](https://img.gopic.xyz/vrgda_linear_issuance_schedule.png)
 
 第 n 个 NFT 的 VRGDA 的价格计算公式:
 
@@ -222,7 +222,7 @@ $$
 
 下图展示了当 $n = 2$ 和 $n = 3$ 时的线性 VRGDA 的价格情况:
 
-![Linear VRGDA.png](https://img.wssh.trade/LinearVRGDA.png)
+![Linear VRGDA.png](https://img.gopic.xyz/LinearVRGDA.png)
 
 > 此图也可以通过 [此链接](https://www.desmos.com/calculator/prizm1nfqi) 查看
 
@@ -230,7 +230,7 @@ $$
 
 适用于开始以较高速率发行 NFT，然后随着时间的推移更慢地发行 NFT，但永远不会停止的 NFT 计划排放场景，如下图:
 
-![vrgda sqrt issuance schedule](https://img.wssh.trade/vrgda_sqrt_issuance_schedule.png)
+![vrgda sqrt issuance schedule](https://img.gopic.xyz/vrgda_sqrt_issuance_schedule.png)
 
 此时，计划发行函数为 $f(t) = \sqrt{t}$ ，此时 $s_n = n^2$ ，那么 VRGDA 的价格计算公式如下:
 
@@ -240,7 +240,7 @@ $$
 
 其价格图像如下，绿线的参数为 $n = 1$ 而黑线参数为 $n = 2$:
 
-![SquareRoot VRGDA.png](https://img.wssh.trade/SquareRootVRGDA.png)
+![SquareRoot VRGDA.png](https://img.gopic.xyz/SquareRootVRGDA.png)
 
 > 此图也可以通过 [此链接](https://www.desmos.com/calculator/wqbdxm2xpy) 查看
 

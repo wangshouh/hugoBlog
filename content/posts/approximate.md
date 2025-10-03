@@ -17,7 +17,7 @@ $$
 
 上述数学公式对应的图像如下:
 
-![e^{-x^2}](https://acjgpfqbqr.cloudimg.io/_img1_/85ac4d1dac6bc3ac8345bb3930a5b07a.png)
+![e^{-x^2}](https://img.gopic.xyz/85ac4d1dac6bc3ac8345bb3930a5b07a.png)
 
 该函数是 $f(x)={\frac {1}{\sigma {\sqrt {2\pi }}}}e^{-{\frac {1}{2}}\left({\frac {x-\mu }{\sigma }}\right)^{2}}$ 正态分布构成部分。
 
@@ -91,11 +91,11 @@ $$
 
 将展开结果与原函数绘制在同一坐标系内，结果如下:
 
-![Taylor With e^{-x^2}](https://acjgpfqbqr.cloudimg.io/_img1_/3db9be091bed27eeb0b9fd3430152434.png)
+![Taylor With e^{-x^2}](https://img.gopic.xyz/3db9be091bed27eeb0b9fd3430152434.png)
 
 从上图来看，泰勒展开的结果并不是非常的完美，下图给出了 3、5、7 和 9 阶的泰勒展开与原函数(使用虚线表示)的图像:
 
-![3/5/7/9th Taylor](https://acjgpfqbqr.cloudimg.io/_img1_/5bd2224986475fdf2b89ee633b008536.png)
+![3/5/7/9th Taylor](https://img.gopic.xyz/5bd2224986475fdf2b89ee633b008536.png)
 
 显然，泰勒展开不满足我们的需求
 
@@ -117,7 +117,7 @@ $$
 
 为了获得 $f(x) = e^{-x^2}$ 对应的多项式插值结果，我们需要对上式中的未知数进行求解。根据线性方程组的知识，我们知道为了求解上述式子中的未知数，则需要至少 5 个值。在 $[0, 4]$ 区间内，在 $f(x) = e^{-x^2}$ 曲线上均匀抽取 $(x_i, y_i)$ 点，如下:
 
-![function with point](https://acjgpfqbqr.cloudimg.io/_img1_/5f81fb79a760ddb7399a0f96f4e48fc5.png)
+![function with point](https://img.gopic.xyz/5f81fb79a760ddb7399a0f96f4e48fc5.png)
 
 令 $p(x_i) = f(x_i)$ ，即:
 
@@ -158,15 +158,15 @@ $$
 
 将上述图像与原函数绘制在一起如下图:
 
-![Legendre With e^{-x^2}](https://acjgpfqbqr.cloudimg.io/_img1_/cc15f84c4da4be8f4acebc6cf10e28eb.png)
+![Legendre With e^{-x^2}](https://img.gopic.xyz/cc15f84c4da4be8f4acebc6cf10e28eb.png)
 
 而两者的之差如下图所示:
 
-![Legendre err](https://acjgpfqbqr.cloudimg.io/_img1_/a2d48adaf2620e6f448e7e7048857591.png)
+![Legendre err](https://img.gopic.xyz/a2d48adaf2620e6f448e7e7048857591.png)
 
 我们可以看到误差较大，且在我们选择的点处均为 0 ，说明上述方程的求解是正确的。为了提高精度，此处直接提高多项式插值的阶数，我们直接使用 15 阶插值，误差如下图:
 
-![16th Legendre err](https://acjgpfqbqr.cloudimg.io/_img1_/43849b5e85ea36e51ab072a0c5ec4f82.png)
+![16th Legendre err](https://img.gopic.xyz/43849b5e85ea36e51ab072a0c5ec4f82.png)
 
 我们在靠近区间两侧时，多项式的误差极具上升，一度达到相当大的误差，而在区间中部位置，误差则相对稳定。数学家 Carl Runge 在 1901 年时发现了此现象。今天我们将此现象命名为 [Runge's phenomenon](https://en.wikipedia.org/wiki/Runge%27s_phenomenon)，由于此现象的存在，我们不能简单通过提高阶数实现更高的拟合精度。我们会在后文引入新的数学工具解决这一问题。但在解决此问题前，我们给出如何求解任意方程的多项式插值的多项式。
 
@@ -220,11 +220,11 @@ cheb_nodes = (a + b) / 2 + (b - a) / 2 * np.cos(2 * np.arange(1, n + 1)  * np.pi
 
 基于上述 `Chebyshev nodes` 进行多项式插值，获得如下图像:
 
-![Chebyshev nodes Laguerre](https://acjgpfqbqr.cloudimg.io/_img1_/4b37b87972d54301559161cee4ac36e5.png)
+![Chebyshev nodes Laguerre](https://img.gopic.xyz/4b37b87972d54301559161cee4ac36e5.png)
 
 绘制其误差图像如下:
 
-![Chebyshev nodes Diff](https://acjgpfqbqr.cloudimg.io/_img1_/b730ea1f3840c2a444a91edf903f5569.png)
+![Chebyshev nodes Diff](https://img.gopic.xyz/b730ea1f3840c2a444a91edf903f5569.png)
 
 此时，我们可以看到 16 阶插值的误差虽然在右侧仍有增加，但总体误差仍保持在 1e-5 数量级内。在智能合约内实现 16 阶多项式有可能，但是 gas 相对来说较高，且事实上 1e-5 数量级的误差对于常见的 1e-18 精度的代币而言误差仍相对较大。我们需要探索新的方法来简化多项式。
 
@@ -279,7 +279,7 @@ $$
 
 此处也使用了 [dirtyinfnorm](https://www.sollya.org/sollya-8.0/help.php#dirtyinfnorm) 函数，此函数用于判断区间内某个函数的最大值，我们此处使用了 `p-exp(-x^2)` 即误差作为目标函数，在 `[0;4]`区间内求解了误差的最大值，此处显示最大误差为 `0.0015` 。
 
-![Remez Diff](https://acjgpfqbqr.cloudimg.io/_img1_/2b0cee8b97439ec6e9943f581a654eef.png)
+![Remez Diff](https://img.gopic.xyz/2b0cee8b97439ec6e9943f581a654eef.png)
 
 可以明显发现使用 `Remez algorithm` 算法后，误差减小且误差的峰值出现抵消的情况。
 
@@ -351,7 +351,7 @@ np.linalg.solve(args, y)
 
 下图展示了上述有理函数插值结果与原函数的误差:
 
-![Rational Diff](https://acjgpfqbqr.cloudimg.io/_img1_/b23c0299a546d03c393d520b10150efc.png)
+![Rational Diff](https://img.gopic.xyz/b23c0299a546d03c393d520b10150efc.png)
 
 有读者好奇，为什么此处选择 $(3,3)-term$ 多项式而不是其他多项式？事实上，此选择是根据不同参数组合测试出来的。但读者需要注意，应当直接排除在当前区间存在间断点的函数，如 $(4, 2)-term$ ，我们可以绘制 $(4, 2)-term$ 多项式拟合原函数的图像:
 
@@ -367,13 +367,13 @@ $$
 
 我们可以使用上文介绍的方法对上述公式中的 $p_i$ 和 $e$ 进行迭代求解。使用 `Remez algorithm` 优化后结果如下:
 
-![remez rational function diff](https://acjgpfqbqr.cloudimg.io/_img1_/568e97e55180b59960e97dcf595b8745.png)
+![remez rational function diff](https://img.gopic.xyz/568e97e55180b59960e97dcf595b8745.png)
 
 与上文未经 `Remez algorithm` 优化的多项式相比，误差有明显减少。但是，本文不准备给出此方法的实现代码，因为其实现较为复杂，且我们存在一个更加强大的算法计算拟合程度更高的多项式函数。
 
 在此处，我们对上文所有的算法进行一次总结:
 
-![Methods With Diff](https://acjgpfqbqr.cloudimg.io/_img1_/2e3791ea739f31c4b9d49898cbbbb54b.png)
+![Methods With Diff](https://img.gopic.xyz/2e3791ea739f31c4b9d49898cbbbb54b.png)
 
 此处的 `Chebyshev` 代表使用了 `Chebyshev nodes` 的点选取方法，而 `Remez` 则代表使用了 `Remez algorithm` 优化。我们可以看到使用 `Chebyshev nodes` 进行优化的有理多项式函数已经具有较高的精度，而如果进一步使用 `Remze` 算法则可以进一步提高精度，但是提升幅度并不十分明显。
 
@@ -421,7 +421,7 @@ plt.xticks([])
 
 结果如下图:
 
-![Barycentric (3,3)-term](https://acjgpfqbqr.cloudimg.io/_img1_/d40c40d1f326c397fe3a6f8858c74721.png)
+![Barycentric (3,3)-term](https://img.gopic.xyz/d40c40d1f326c397fe3a6f8858c74721.png)
 
 显然比上文的 `Chebyshev-Rational` 算法具有更高的精度。
 
@@ -441,7 +441,7 @@ r = baryrat.brasil(f, interval=(-0.5 * np.log(2), 0.5 * np.log(2)), deg=5)
 
 绘制误差图如下:
 
-![baryrat not gmpy2](https://acjgpfqbqr.cloudimg.io/_img1_/c95832f727dbc85a8086dcd84227ead1.png)
+![baryrat not gmpy2](https://img.gopic.xyz/c95832f727dbc85a8086dcd84227ead1.png)
 
 使用 `gmpy2` 进行重新计算:
 
@@ -458,7 +458,7 @@ r = baryrat.brasil(f, interval=(-0.5 * gmpy2.log(2), 0.5 * gmpy2.log(2)), deg=5)
 
 此时，我们重新绘制误差图像，如下:
 
-![baryrat with GMP](https://acjgpfqbqr.cloudimg.io/_img1_/567df508a15445bb4769b964fba791fb.png)
+![baryrat with GMP](https://img.gopic.xyz/567df508a15445bb4769b964fba791fb.png)
 
 可见精度存在明显的上升，且报错消失。所以，对于生产级应用的插值而言，使用 `gmpy2` 进行高精度计算是可以显著提高计算精度的。
 

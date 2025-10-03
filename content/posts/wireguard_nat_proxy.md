@@ -36,7 +36,7 @@ Address = 10.254.0.1/24
 
 最终效果如下图所示：
 
-![服务端基础配置](https://ae01.alicdn.com/kf/H9901cef7da9a40969c94a254b8f696e0N.png)
+![服务端基础配置](https://img.gopic.xyz/H9901cef7da9a40969c94a254b8f696e0N.png)
 
 ### 生成WireGuard客户端配置文件
 
@@ -51,7 +51,7 @@ Address = 10.254.0.2/32
 
 >注意此处设置IP地址需要与服务器端的IP处于同一网段。
 
-![客户端基础配置](https://ae01.alicdn.com/kf/H52c11e9f3d1f410696126c0c640ef371V.png)
+![客户端基础配置](https://img.gopic.xyz/H52c11e9f3d1f410696126c0c640ef371V.png)
 
 
 ### 完善WireGuard服务端配置文件
@@ -95,7 +95,7 @@ PersistentKeepalive = 25
 
 如下图：
 
-![连接测试](https://ae01.alicdn.com/kf/Hd1f4859a4ebe41b799cf42a44a089ca45.png)
+![连接测试](https://img.gopic.xyz/Hd1f4859a4ebe41b799cf42a44a089ca45.png)
 
 
 ### 设置服务端NAT转发
@@ -109,7 +109,7 @@ PersistentKeepalive = 25
 1. 以 **管理员** 身份打开`PowerShell`
 
 1. 首先找到需要设置NAT转发的网络接口，键入以下命令`Get-NetAdapter`，可以找到所有的网络接口，并记录`wg0`的`ifIndex`。如下图：
-![get-NetAdapter](https://acjgpfqbqr.cloudimg.io/_csdn_/c52a8b220030702a609ec2f8eebfc4f5.png)
+![get-NetAdapter](https://img.gopic.xyz/c52a8b220030702a609ec2f8eebfc4f5.png)
 
 1. 配置NAT网关IP，我们一般使用命令`New-NetIPAddress`,完整命令如下：
 ```PowerShell
@@ -134,7 +134,7 @@ New-NetNat -Name <NATOutsideName> -InternalIPInterfaceAddressPrefix <NAT subnet 
 
 完整命令执行图如下：
 
-![NAT](https://acjgpfqbqr.cloudimg.io/_csdnimg_/3744684756d7dd0845197947b611ac28.png)
+![NAT](https://img.gopic.xyz/3744684756d7dd0845197947b611ac28.png)
 
 ### 测试
 

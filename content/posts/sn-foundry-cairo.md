@@ -1196,7 +1196,7 @@ transaction_hash: 0x3653bfe52098e42163e892389825957672799a1dba2675f0e98f9d82b41c
 
 查询[区块链浏览器](https://goerli.voyager.online/tx/0x3653bfe52098e42163e892389825957672799a1dba2675f0e98f9d82b41c388#internalCalls)，发现此交易完成了部署后立即转账的需求。
 
-![sncast MultiCall](https://img.wssh.trade/sncastMultiCall.png)
+![sncast MultiCall](https://img.gopic.xyz/sncastMultiCall.png)
 
 ## 总结
 

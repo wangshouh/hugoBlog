@@ -21,11 +21,11 @@ TxRouter 是资产多方发送和聚合工具。更加详细的说，该工具�
 
 目前与我们属于同一赛道的是商业化运营的闭源资产多方发送工具 [multisender](https://multisender.app/) 。我将其 `fork` 到本地测试网中进行了转账测试，如下:
 
-![Multisender Gas](https://acjgpfqbqr.cloudimg.io/_img1_/a6b2b2135cc4ef5f61b7b6616fca683d.png)
+![Multisender Gas](https://img.gopic.xyz/a6b2b2135cc4ef5f61b7b6616fca683d.png)
 
 而我们的项目测试如下:
 
-![TxRouter Gas](https://acjgpfqbqr.cloudimg.io/_img1_/c26ed4bdc8e1828eefcbed5c72b72d6e.png)
+![TxRouter Gas](https://img.gopic.xyz/c26ed4bdc8e1828eefcbed5c72b72d6e.png)
 
 与 `multisender` 相比，我们所需要的 gas 更低，且无需转入 ETH 作为手续费。而且，我们也提供了 Multisender 未提供的多对一资产聚合功能。
 
@@ -64,7 +64,7 @@ cast send $FACTORY "clone(address,address)(address)" $OWNER_ADDRESS $TXROUTER --
 
 读者应执行设置 `$PRIVATE_KEY` 环境变量。一笔示例交易可以点此 [查询](https://sepolia.etherscan.io/tx/0xd52dac02d03b986d500003f3c5b6393ba15b61746f70c0817a9c6a41698ffc55)，我们也可以在 `Internal Txs` 中找到部署合约地址:
 
-![Owner Address](https://acjgpfqbqr.cloudimg.io/_img1_/8907c11e0660d82e4a56bca756ade0b6.png)
+![Owner Address](https://img.gopic.xyz/8907c11e0660d82e4a56bca756ade0b6.png)
 
 将此代理合约地址存储至环境变量 `PROXY` 中，如下:
 
@@ -89,7 +89,7 @@ TxRouter 合约具有以下函数及功能:
 
 我们首先介绍最容易使用且 gas 消耗最少的 `multiTransfer` 方法，我们首先需要获得待转移 ERC20 代币地址。我们很容易在 etherscan 等网站中获得代币地址，如此处示例中使用的 USDC 代币，可以在 etherscan 中获得:
 
-![USDC Address Etherscan](https://acjgpfqbqr.cloudimg.io/_img1_/bf97806e0c6ee4f4bac5effcbb5c766b.png)
+![USDC Address Etherscan](https://img.gopic.xyz/bf97806e0c6ee4f4bac5effcbb5c766b.png)
 
 将其地址保存进入环境变量:
 
@@ -101,7 +101,7 @@ export USDC=0x6f14C02Fc1F78322cFd7d707aB90f18baD3B54f5
 
 接下来，我们需要进行代币转移配置 `uint256[]` 的构造，最简单的方法就是手动构造。用户可考虑使用 [简单脚本](https://github.com/wangshouh/TxRouter/blob/master/testDataGenerate/multi_transfer.py) 。如下:
 
-![Multi transfer python](https://acjgpfqbqr.cloudimg.io/_img1_/9fc48731058b7c70de0c7ed61a22eec8.png)
+![Multi transfer python](https://img.gopic.xyz/9fc48731058b7c70de0c7ed61a22eec8.png)
 
 获得 `uint256[]` 后，我们可以进行函数调用:
 
@@ -111,13 +111,13 @@ cast send $PROXY "multiTransfer(address,uint256[])" $USDC "[AFD48f565e1aC63f3e54
 
 结果如下:
 
-![MultiTransfer Result](https://acjgpfqbqr.cloudimg.io/_img1_/61f46f5d082c200cdb3ad5898360d507.png)
+![MultiTransfer Result](https://img.gopic.xyz/61f46f5d082c200cdb3ad5898360d507.png)
 
 用户可以在 [此页面](https://sepolia.etherscan.io/tx/0x630d964234a2c2d936d7f65813dcad21c19b877e85459d8207fea54c2909335b) 找到该笔交易。即使我们仅进行了一对二的转账交易，消耗的 gas 仍比调用两次 `transfer` 更低。值得注意的是，随着资产转移方的数量增加，调用 `multiTransfer` 消耗的 gas 比直接调用 `transfer` 所节省的 gas 将线性增加，最终为用户实现极大的 gas 节省。
 
 查询交易日志，我们发现所有的代币转移事件的 `from` 字段均为我们的代理合约，如下: 
 
-![MultiTransfer](https://acjgpfqbqr.cloudimg.io/_img1_/a23e28a4c3c7eb24bcce8399f56fe69c.png)
+![MultiTransfer](https://img.gopic.xyz/a23e28a4c3c7eb24bcce8399f56fe69c.png)
 
 有读者希望 `from` 为自己的地址而非代理合约地址，要想实现此目的，我们需要使用另一个函数 `multiApproveTransfer` 。值得注意的是，此函数消耗的 gas 较 `multiTransfer` 高，如果没有特殊需求，可以忽略此函数。使用此函数前需要使用自己的地址对代理合约进行授权，命令如下:
 
@@ -136,7 +136,7 @@ cast send $PROXY "multiApproveTransfer(address, address, uint256[])" 0xafd48f565
 
 其中 `0xafd48f565e1ac63f3e547227c9ad5243990f3d40` 需要替换为代币授权者。读者可以点 [此](https://sepolia.etherscan.io/tx/0x0da9a7e49ec4195bb01d4a374827fc2dfd0bd132f449b2932a2d50eea4ae6768) 查看示例交易。很明显，此处代币转移的 `from` 为代笔授权者，如下:
 
-![Approve Multisend](https://acjgpfqbqr.cloudimg.io/_img1_/1b01c3bea527440635d17a755bfd8168.png)
+![Approve Multisend](https://img.gopic.xyz/1b01c3bea527440635d17a755bfd8168.png)
 
 最后，我们讨论最为复杂的多方资产聚合函数 `multiAggregate` ，该函数实现了多对一的资产聚合功能，其基础为 ERC20-Permit 机制，如果用户对此机制并不了解，请自行阅读 [ERC20-Permit](https://blog.wssh.trade/posts/eip712-extend/#erc20-permit) 一文。为尽可能节省 gas ，在设计中，我大量使用了 calldata 压缩技术且 ERC20-Permit 函数本身所需要的参数较多。这导致 `multiAggregate` 的调用是较为复杂的。
 

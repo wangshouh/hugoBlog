@@ -29,22 +29,22 @@ aliases: ["/2022/11/12/smart-contract-tool/"]
 
 前者可以提供一些基础的语言特性高亮和自动补齐功能，而后者专门为智能合约审计人员设计，提供了大量的附加功能，方便开发者理解合约。对于一般开发者而言，基础插件的功能较好理解，此处我们着重介绍`Solidity Visual Developer`，该插件提供了大量的合约可视化能力，如下图所示:
 
-![Solidity Graph](https://acjgpfqbqr.cloudimg.io/_img1_/68867ae24e707c9093bb1c61f0ed92c8.gif)
+![Solidity Graph](https://img.gopic.xyz/68867ae24e707c9093bb1c61f0ed92c8.gif)
 
 除此之外，此插件还提供了以下功能:
 
 一是更加多样化的颜色绚烂、参数显示和函数信息显示，如下图所示:
 
-![highlighting](https://acjgpfqbqr.cloudimg.io/_img1_/69cb00566ab2693a464eb57b6c2a9660.png)
+![highlighting](https://img.gopic.xyz/69cb00566ab2693a464eb57b6c2a9660.png)
 
 二是引入了更加丰富的关键词信息和安全建议展示，如下图：
-![code augmentation](https://acjgpfqbqr.cloudimg.io/_img1_/f6c45fe94cffbf0b72a9a2163d6e32e9.png)
+![code augmentation](https://img.gopic.xyz/f6c45fe94cffbf0b72a9a2163d6e32e9.png)
 
 三是增加了显示所有函数选择器的展示，如下图:
-![Function Signature Hashes](https://acjgpfqbqr.cloudimg.io/_img1_/63512ff0614211e9f82b0726ca77e0e7.png)
+![Function Signature Hashes](https://img.gopic.xyz/63512ff0614211e9f82b0726ca77e0e7.png)
 
 四是增加了合约概览展示，如下图:
-![Outline View](https://acjgpfqbqr.cloudimg.io/_img1_/4c167e4a1c301e620fadc3b514982158.png)
+![Outline View](https://img.gopic.xyz/4c167e4a1c301e620fadc3b514982158.png)
 
 总而言之，`Solidity Visual Developer`提供了大量对于智能合约开发者实用的功能，无论开发者从事合约开发抑或是合约审计，此插件都可以大幅度增加开发体验。
 
@@ -79,7 +79,7 @@ cast etherscan-source -d weth 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 --ether
 
 另一种更加简单的方法是使用`etherscan.deth.net`提供的服务，我们仍以获取`WETH`的合约代码为例，当我们已知其合约地址为`0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`的情况下，我们可以访问`https://etherscan.deth.net/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2`，读者可以看到如下页面:
 
-![Deth](https://acjgpfqbqr.cloudimg.io/_img1_/2be2f013327c4fdec30a5e6abbe7af5c.png)
+![Deth](https://img.gopic.xyz/2be2f013327c4fdec30a5e6abbe7af5c.png)
 
 这样就可以在在线`VSCode`内浏览代码，但不能进行修改等操作。
 
@@ -134,11 +134,11 @@ cat test.evm | evmdis > test.output
 
 总结来说，如果读者查询的是一笔比较简单的交易且不希望通过合约代码深入理解具体调用流程，使用`Samczsun Tx`和`Ethtx Info`是一个不错的选择。如果读者希望获得更加详细的包含合约代码的深度分析，使用`tenderly`是必要的，如下图:
 
-![Tenderly Debug](https://acjgpfqbqr.cloudimg.io/_img1_/380990901719a981372a24ddcc42a050.png)
+![Tenderly Debug](https://img.gopic.xyz/380990901719a981372a24ddcc42a050.png)
 
 如果读者希望模拟一笔交易在任意区块任意位置的运行，请选择`Blocksec Phalcon`，其提供了一个较为好用的交易模拟系统，如下图:
 
-![Tx Simulator](https://acjgpfqbqr.cloudimg.io/_img1_/6265b2cf13885ef52a9d4d230b375519.png)
+![Tx Simulator](https://img.gopic.xyz/6265b2cf13885ef52a9d4d230b375519.png)
 
 如果读者更倾向于使用终端继续相关测试，那么`cast run`命令可以满足大部分读者的需求，在此处给出一个简单示例，在终端内输入以下命令:
 ```bash
@@ -163,7 +163,7 @@ Gas used: 51618
 
 如果读者想深入研究交易流程内发生详细流程，可增加`--debug`开启`debug`模式，使用后会展示如下TUI界面:
 
-![Debug TUI](https://acjgpfqbqr.cloudimg.io/_img1_/bffd1d4e166a08f75c03840a20d9b10d.png)
+![Debug TUI](https://img.gopic.xyz/bffd1d4e166a08f75c03840a20d9b10d.png)
 
 但阅读此界面需要读者拥有相当高的合约编程经验和对EVM的底层了解，在此处我们不再详细介绍。
 

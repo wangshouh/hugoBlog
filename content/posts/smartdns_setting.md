@@ -21,7 +21,7 @@ SmartDNS安装主要参考上述[官网](https://github.com/pymumu/smartdns)，�
 1. 在`过滤器`中输入`smartdns`，点击`查找软件包`
 1. 下载`luci-app-smartdns`,`luci-i18n-smartdns-zh-cn`,`smartdns`三项
 
-![SmartDNS install](https://ae01.alicdn.com/kf/H04ae9198f33a4e1084188571a4e425f8i.png)
+![SmartDNS install](https://img.gopic.xyz/H04ae9198f33a4e1084188571a4e425f8i.png)
 
 > 大部分openwrt编译版本一般都含有此软件包
 
@@ -29,7 +29,7 @@ SmartDNS安装主要参考上述[官网](https://github.com/pymumu/smartdns)，�
 
 见下图：
 
-![Basic SmartDNS Setting](https://ae01.alicdn.com/kf/Hf1a79c65b164415a8ec4defb85f3ff241.png)
+![Basic SmartDNS Setting](https://img.gopic.xyz/Hf1a79c65b164415a8ec4defb85f3ff241.png)
 
 应注意以下选项：
 
@@ -52,7 +52,7 @@ SmartDNS安装主要参考上述[官网](https://github.com/pymumu/smartdns)，�
 
 最终效果如下图：
 
-![SmartDNS DNS Server](https://ae01.alicdn.com/kf/H6e26b18cfcc542db8c3684ba034df4d7t.png)
+![SmartDNS DNS Server](https://img.gopic.xyz/H6e26b18cfcc542db8c3684ba034df4d7t.png)
 
 ## 特殊设置
 
@@ -72,11 +72,11 @@ address /home.lan/192.168.10.50
 
 2. 点击`状态`中的`属性`，如下图：
 
-![Windows DNS Setting](https://ae01.alicdn.com/kf/H56f0a27be9fc4e3695bb8a5ef55975bfE.png)
+![Windows DNS Setting](https://img.gopic.xyz/H56f0a27be9fc4e3695bb8a5ef55975bfE.png)
 
 3. 下滑到`IP设置`，点击`编辑`，如下图：
 
-![IP setting](https://ae01.alicdn.com/kf/H8590293925134362bee4497f53e5037dN.png)
+![IP setting](https://img.gopic.xyz/H8590293925134362bee4497f53e5037dN.png)
 
 4. `IP地址`填入任一未被占用的IP地址，`子网前缀`填入`32`,网关填入`192.168.10.50`，DNS服务器填入`192.168.10.50`，点击`保存`
 
@@ -90,6 +90,6 @@ address /home.lan/192.168.10.50
 
 打开`cmd`，输入`nslookup baidu.com`，如果设置正确则结果如下图：
 
-![Test](https://ae01.alicdn.com/kf/H3e9b0317741d4d85a585e710ac9f4c80V.png)
+![Test](https://img.gopic.xyz/H3e9b0317741d4d85a585e710ac9f4c80V.png)
 
 > 配置正确返回的IP地址仅有一个，若返回多个则配置不正确

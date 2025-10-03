@@ -108,7 +108,7 @@ wrangler init web3login
 
 在完成项目初始化后，您获得的目录结构应该如下图所示：
 
-![项目目录](https://i.imgtg.com/2022/06/08/1i0LX.png)
+![项目目录](https://img.gopic.xyz/1i0LX.png)
 
 以下内容主要关于`kv`的绑定问题，如果您认为我的表述较为奇怪，您可以自行查阅cloudflare的[kv文档](https://developers.cloudflare.com/workers/wrangler/workers-kv)
 
@@ -116,7 +116,7 @@ wrangler init web3login
 ```bash
 wrangler kv:namespace create web3login
 ```
-![kv bind](https://pic.rmb.bdstatic.com/bjh/069ca9e26924a587cfee946079feef3d.png)
+![kv bind](https://img.gopic.xyz/069ca9e26924a587cfee946079feef3d.png)
 
 根据提示，将此代码运行后的结果添加到`wrangler.toml`中，如下：
 ```toml
@@ -133,7 +133,7 @@ kv_namespaces = [{ binding = "web3login", id = "自行替换" }]
 wrangler kv:namespace create web3login --preview
 ```
 
-![kv preview](https://pic.rmb.bdstatic.com/bjh/c78d4982275eb22c416cb93147c9fb5a.png)
+![kv preview](https://img.gopic.xyz/c78d4982275eb22c416cb93147c9fb5a.png)
 
 根据提示，将此代码运行后的结果添加到`wrangler.toml`中，如下：
 ```toml

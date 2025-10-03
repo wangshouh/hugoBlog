@@ -907,7 +907,7 @@ function testInit() public {
 
 在保证合约没有错误后，我们应编写一系列的测试代码，调用函数并检测函数的输出。此过程主要检查逻辑错误，也是错误最易发生的阶段，我建议使用`forge test -vvv`及以上的测试输出。`-vvv`会在测试出现错误后给出测试错误函数的栈调用情况。如果使用`-vvvv`则会展示所有测试函数的栈调用情况，无论对错。我们在下文中展示了在`EIP-1822`中最为复杂的栈调用情况:
 
-![ForgeTest](https://pic.rmb.bdstatic.com/bjh/5d743d3ed6aec9aa7725362088717822.png)
+![ForgeTest](https://img.gopic.xyz/5d743d3ed6aec9aa7725362088717822.png)
 
 该栈调用对应的代码如下:
 ```solidity

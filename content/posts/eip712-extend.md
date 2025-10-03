@@ -29,10 +29,10 @@ aliases: ["/2022/08/11/eip712-extend"]
 
 我们与合约交互需要生成`calldata`数据。此过程是根据我们输入的数据和`abi`进行编码得到的，在`solidity`中，一般使用`abi.encodeWithSignature`得到，我们在[Foundry教程：使用多种方式编写可升级的智能合约(上)]({{<ref "foundry-contract-upgrade-part1" >}})测试中已经多次使用此函数。当然，我们可以使用`Foundry`提供的`cast`完成此步骤，具体可以参考[cast calldata](https://book.getfoundry.sh/reference/cast/cast-calldata)。在下图中，我们给出一个例子。
 
-![castCalldata.png](https://acjgpfqbqr.cloudimg.io/_csdnimg_/f69c8d2ac668f00cc9cecccd4a690bc1.png)
+![castCalldata.png](https://img.gopic.xyz/f69c8d2ac668f00cc9cecccd4a690bc1.png)
 
 除此之外，我们也可以在[网页](https://abi.hashex.org/)中进行操作，示意图如下:
-![calldataweb.png](https://acjgpfqbqr.cloudimg.io/_csdnimg_/2c9f7b89b61ae0febaf5e5fbc6d39967.png)
+![calldataweb.png](https://img.gopic.xyz/2c9f7b89b61ae0febaf5e5fbc6d39967.png)
 
 在`ethers.js`中，此过程在我们进行合约调用时隐形进行。
 
@@ -58,7 +58,7 @@ rlp(
 
 第三步，发送交易至以太坊节点。当交易发送到以太坊节点后，以太坊节点检验交易的有效性。当以太坊节点查询到交易内的`destination`为合约地址后，以太坊节点将`calldata`内的数据发送到`EVM`中。EVM获得`calldata`数据后，会首先提取`calldata`前4 byte(即函数选择器)，并查询本地的函数选择器映射表选择需要运行的堆栈。完整过程见下图:
 
-![EVM Opcodes](https://acjgpfqbqr.cloudimg.io/7795250.fs1.hubspotusercontent-na1.net/hub/7795250/hubfs/Imported_Blog_Media/1*IgrF4NZNL4UNpnTKn33S1A-1.png)
+![EVM Opcodes](https://img.gopic.xyz/1*IgrF4NZNL4UNpnTKn33S1A-1.png)
 
 *上图来自[Deconstructing a Solidity Contract — Part III: The Function Selector](https://blog.openzeppelin.com/deconstructing-a-solidity-contract-part-iii-the-function-selector-6a9b6886ea49/)
 
@@ -218,7 +218,7 @@ function _msgSender() internal view virtual returns (address ret) {
 ```
 
 其中的核心代码为汇编代码部分`ret := shr(96, calldataload(sub(calldatasize(), 20)))`。此代码的作用原理如下图:
-![msgaddress.drawio.png](https://acjgpfqbqr.cloudimg.io/_csdnimg_/8f0897f4e78474157ec9ffc34f4f8a5a.png)
+![msgaddress.drawio.png](https://img.gopic.xyz/8f0897f4e78474157ec9ffc34f4f8a5a.png)
 
 简单来说，可以将`calldata`视为一个长度为`calldatasize()`的列表。我们需要获得此列表中最后`20 byte`的数据，即用户地址。已知`calldataload(i)`会加载`calldata[i, -1]`的数据。我们通过`sub(calldatasize(), 20)`获得了`calldata`中用户地址的起始索引，并进一步使用`calldataload`将其加载到内存中。但在`EVM`中，一个标准不可变变量应占用`32 byte`的完整地址槽，而此处获得用户地址作为`address`类型变量占用的内存长度与规定不符。为了符合变量标准，我们使用`shr`操作码将`20 byte`的用户地址向右移`96 bit`(即 12 byte)实现了用户地址占用`32 byte`的条件，保证了在后期读取用户地址时不会出现错误。
 

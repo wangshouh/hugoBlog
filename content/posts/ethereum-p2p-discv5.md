@@ -195,7 +195,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 
 首先我们需要获得公钥，通过[此网站](https://toolkit.abdk.consulting/ethereum#key-to-address)，我们可以获得压缩公钥为`ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd3138`，未压缩公钥为`ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd31387574077f301b421bc84df7266c44e9e6d569fc56be00812904767bf5ccd1fc7f`
 
-![Private Key to Public Key](https://acjgpfqbqr.cloudimg.io/_csdnimg_/170859fcca998da5267bd129269696f3.png)
+![Private Key to Public Key](https://img.gopic.xyz/170859fcca998da5267bd129269696f3.png)
 
 > 在此处，我们删去`0x03`和`0x04`是因为此两者仅作为标识符，无实际意义。
 
@@ -220,7 +220,7 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 ```
 使用私钥对上述结果进行签名，获得签名结果`0x7098ad865b00a582051940cb9cf36836572411a47278783077011599ed5cd16b76f2635f4e234738f30813a89eb9137e3e3df5266e3a1f11df72ecf1145ccb9c27`。
 
-![Recover signature](https://acjgpfqbqr.cloudimg.io/_csdnimg_/0c536a650a355f4e49e19cfadcdd9096.png)
+![Recover signature](https://img.gopic.xyz/0c536a650a355f4e49e19cfadcdd9096.png)
 
 > 上图显示了自签名中恢复公钥
 
@@ -244,11 +244,11 @@ func New(hash func() hash.Hash, secret, salt, info []byte) io.Reader
 f884b8407098ad865b00a582051940cb9cf36836572411a47278783077011599ed5cd16b76f2635f4e234738f30813a89eb9137e3e3df5266e3a1f11df72ecf1145ccb9c01826964827634826970847f00000189736563703235366b31a103ca634cae0d49acb401d8a4c6b6fe8c55b70d115bf400769cc1400f3258cd31388375647082765f
 ```
 
-![RLP Decode](https://acjgpfqbqr.cloudimg.io/_csdnimg_/ceb24ad4b9ee06b72375f9c8092c76a8.png)
+![RLP Decode](https://img.gopic.xyz/ceb24ad4b9ee06b72375f9c8092c76a8.png)
 
 完成上述任务后，我们需要对最终结果进行`base64`编码，注意此处使用了特殊的`URL and Filename safe`[映射表](https://www.rfc-editor.org/rfc/rfc4648#section-5)，与一般的`base64`编码不同。如在`Python`中，普通的的`base64`使用`base64.b64encode`，而`URL and Filename safe`使用了`base64.urlsafe_b64encode`。
 
-!["URL and Filename safe" Base 64 Alphabet](https://acjgpfqbqr.cloudimg.io/_csdnimg_/90ba43a950f38713615856d600c8071a.png)
+!["URL and Filename safe" Base 64 Alphabet](https://img.gopic.xyz/90ba43a950f38713615856d600c8071a.png)
 
 使用以下`Python`代码即可实现编码:
 ```python
@@ -392,7 +392,7 @@ struct {
 ```
 我们使用DNS返回的TXT值中的`sig`和其他参数的哈希值进行公钥恢复操作，如果发现恢复出的公钥与`enrtree`中规定的不同，我们则认为此DNS不可信。
 
-![enrtree Verify](https://acjgpfqbqr.cloudimg.io/_csdnimg_/fafa4878ab6980f28c57f26f4da0ac84.png)
+![enrtree Verify](https://img.gopic.xyz/fafa4878ab6980f28c57f26f4da0ac84.png)
 
 > 关于公钥恢复的详细介绍可以参考我写的[基于链下链上双视角深入解析以太坊签名与验证]({{<ref "ecsda-sign-chain#%E9%AA%8C%E8%AF%81%E7%AD%BE%E5%90%8D" >}})
 
@@ -574,7 +574,7 @@ authdata      = src-id
 authdata-size = 32
 ```
 包的结构图如下:
-![Message Packet](https://acjgpfqbqr.cloudimg.io/_csdnimg_/5e4b827476b90286cdd391b70df87210.png)
+![Message Packet](https://img.gopic.xyz/5e4b827476b90286cdd391b70df87210.png)
 
 在此处，我们给出一个`message data`为随机数据的包的代码:
 ```go
@@ -614,7 +614,7 @@ id-nonce      = uint128   -- random bytes
 enr-seq       = uint64    -- ENR sequence number of the requesting node
 ```
 结构图如下:
-![WHOAREYOU Packet](https://acjgpfqbqr.cloudimg.io/_csdnimg_/79019de67921345e7b6164a50b1991c8.png)
+![WHOAREYOU Packet](https://img.gopic.xyz/79019de67921345e7b6164a50b1991c8.png)
 
 值得注意的是，我们`WHOAREYOU`包的`nonce`与引起握手的数据包的`nonce`是一致的，不可改变的。在下文握手阶段，我们会使用这一知识点。
 
@@ -661,7 +661,7 @@ eph-key-size  = uint8     -- value: 33 for ID scheme "v4"
 
 此处的所有参数的含义及其获得，我们会在下一节进行详细介绍。此处给出其结构图如下:
 
-![Handshake Packet layout](https://acjgpfqbqr.cloudimg.io/_csdnimg_/79d39784f3eaac5421910f4159673c3a.png)
+![Handshake Packet layout](https://img.gopic.xyz/79d39784f3eaac5421910f4159673c3a.png)
 
 代码如下:
 ```go
