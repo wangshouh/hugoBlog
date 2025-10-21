@@ -142,7 +142,7 @@ contract VoteFirst {
 
 值得注意的是，由于在此合约内使用了`call`函数，导致存储合约接收到的`msg.value`不再是用户的地址而是`VoteFirst`合约的地址，如果希望在`VoteFirst`合约内加入有关用户地址的代码，请在`VoteFirst`内将`msg.value`直接作为参数传递给`VoteFirst`而不是在`EternalStorage`合约内使用`msg.value`属性。下图很好的说明了这一点:
 
-![Call](https://acjgpfqbqr.cloudimg.io/_s3_/CallFix.png)
+![Call](https://img.gopic.xyz/CallFix.png)
 
 此图来自[WTFSolidity 第23讲 delegatecall](https://github.com/AmazingAng/WTFSolidity/tree/main/23_Delegatecall#delegatecall)
 
@@ -477,7 +477,7 @@ cast send --private-key $LOCAL_ACCOUNT $ERR_PROXY "setNumber(uint256)" 100
 >
 > 这一问题其实很好解决，读者可自行查阅`delegatecall`函数的功能。该函数使用的运行环境正是发起`delegatecall`方法的合约。可以参考下图:
 
-![Delegatecall Picture](https://acjgpfqbqr.cloudimg.io/_s3_/delegateCall.png)
+![Delegatecall Picture](https://img.gopic.xyz/delegateCall.png)
 
 *此图来自[Solidity极简入门: 23. Delegatecall](https://github.com/AmazingAng/WTFSolidity/tree/main/23_Delegatecall)
 

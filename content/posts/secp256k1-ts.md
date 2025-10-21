@@ -54,7 +54,7 @@ $$
 
 扩展欧几里得算法的伪代码如下:
 
-![Extend Euclidean Algorithm](https://acjgpfqbqr.cloudimg.io/_img1_/3ff774f8ead53de67ad0874c6a6f926d.png)
+![Extend Euclidean Algorithm](https://img.gopic.xyz/3ff774f8ead53de67ad0874c6a6f926d.png)
 
 综合上述知识，我们已经知道了如何在 $\mathbb F_G$ 有限域内进行加减乘除计算，所谓除法只需要乘以逆元即可。同时，我们也拿到了椭圆曲线上的倍增和加法算法，由此，我们就可以直接实现 $Q = G \cdot p$ 算法，并最终实现私钥推导公钥的算法。
 
