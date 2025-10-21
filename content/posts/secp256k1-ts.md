@@ -947,7 +947,7 @@ export const prepSig = (msg: string, priv: bigint, lowS = true) => {
 
 我们使用 `seed` 存储数据。在 `k2sig` 内部，我们完成了签名的具体逻辑。在此处，我们不再赘述签名的具体流程，在上文内，我们已经给出了相关流程。在此处，我们主要关注一下两个问题:
 
-1. `lowS` 的作用。`lowS` 实际上来源于 bitcoin 交易签名。在有限域内，`mod(s, N)` 与 `mod(-s, N)` 实际上是相同的。这就导致同一个签名同时存在两个有效的 `s`。这造成了所谓的延展性问题，即当节点拿到用户的交易后，节点可以通过修改 `s` 的方式影响交易内容。所以 Bitcoin 网络在 `v0.9.0` 后认为 `lowS` ，即小于 `s < N / 2` 的签名交易才正常。目前，所有交易都采用了 `lowS` 形式。关于 `lowS` 和 `highS` 的占比情况，可以参考 [此网站](https://transactionfee.info/charts/bitcoin-script-ecdsa-s-value/)
+1. `lowS` 的作用。`lowS` 实际上来源于 bitcoin 交易签名。在有限域内，`mod(s, N)` 与 `mod(-s, N)` 实际上是相同的。这就导致同一个签名同时存在两个有效的 `s`。这造成了所谓的延展性问题，即当节点拿到用户的交易后，节点可以通过修改 `s` 的方式影响交易内容。所以 Bitcoin 网络在 `v0.9.0` 后认为 `lowS` ，即小于 `s < N / 2` 的签名交易才正常。目前，所有交易都采用了 `lowS` 形式。关于 `lowS` 和 `highS` 的占比情况，可以参考 [此网站](https://mainnet.observer/charts/bitcoin-script-ecdsa-s-value/)
 2. `rec` 作用。在本节第一部分，我们就讨论了 `r` 参数的作用。该参数的目标是为了实现从签名中只可以恢复出唯一的用于签名的公钥。我们会在后文介绍公钥恢复时再次提及此参数。
 
 接下来，我们完成所有的函数：
