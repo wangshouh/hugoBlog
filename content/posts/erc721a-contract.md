@@ -115,7 +115,7 @@ function transferFrom(
 | 转移的 Base Fee          | 40 gwei      | 40 gwei        |
 | 总花费    | 0.0403 ether | 0.0261 ether   |
 
-> 如果读者对于此处的`gas`计算的细节感兴趣，可以阅读[以太坊机制详解:Gas Price计算](https://hugo.wongssh.cf/posts/ethereum-gas/)。我们在此处不详细讨论计算方式。我们可以注意到铸造阶段的`Base fee`较高，这考虑到了NFT铸造导致的网络拥堵情况。
+> 如果读者对于此处的`gas`计算的细节感兴趣，可以阅读[以太坊机制详解:Gas Price计算](https://blog.wssh.dev/posts/ethereum-gas/)。我们在此处不详细讨论计算方式。我们可以注意到铸造阶段的`Base fee`较高，这考虑到了NFT铸造导致的网络拥堵情况。
 
 显然，惰性初始化机制对于批量铸造阶段的`gas`节省是具有明显优势的，但惰性加载将初始化的成本转移到了转账部分，我们可以看到在转移NFT时的成本有所上升。但需要注意，第一次转账后由于彻底完成了初始化，所有后续转账的成本会降低，如下:
 

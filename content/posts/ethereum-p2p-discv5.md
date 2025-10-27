@@ -1091,6 +1091,6 @@ func (t *UDPv5) collectTableNodes(rip net.IP, distances []uint, limit int) []*en
 1. `Discv5`规定的繁琐的握手流程和加密流程(`ECDH`、`HKDF`)
 1. 基于`Kademlia`节点信息的存储方式和查询方式
 
-由于我本人并不是P2P网络方面的研究人员，而且对于以太坊P2P源代码并未进行深入探索，如果读者发现本文出现的任何问题，可以随时通过[我的博客](https://hugo.wongssh.cf/)中提供的邮件与我联系交流。
+由于我本人并不是P2P网络方面的研究人员，而且对于以太坊P2P源代码并未进行深入探索，如果读者发现本文出现的任何问题，可以随时通过[我的博客](https://blog.wssh.dev/)中提供的邮件与我联系交流。
 
 对于下篇，可能会在不久后推出。

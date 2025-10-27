@@ -664,4 +664,4 @@ forge script script/token.s.sol:TokenScript --rpc-url $ROPSTEN_RPC_URL  --privat
 
 ## 总结
 
-本文完整介绍了智能合约的开发工作流，不同于很多其他语言，智能合约由于其新生性，很多文档并不全面，尤其设`solmate`等库，完全没有文档。这要求读者需要自行阅读合约源码，或者选择`openzeppelin`这种[文档](https://docs.openzeppelin.com/contracts/4.x/)较为完整的库。读者读完此文章后如感觉意犹未尽，可以参考Foundry给出的`NFT tutorial`部署一个NFT智能合约，官网中解释并不十分详细，但也给出了完整的代码与开发流程，可以前往[此网页](https://book.getfoundry.sh/tutorials/solmate-nft)查看。本教程未来一定会更新，你可以订阅本博客的[RSS](https://blog.wongssh.cf/atom.xml)获取最新的文章。
+本文完整介绍了智能合约的开发工作流，不同于很多其他语言，智能合约由于其新生性，很多文档并不全面，尤其设`solmate`等库，完全没有文档。这要求读者需要自行阅读合约源码，或者选择`openzeppelin`这种[文档](https://docs.openzeppelin.com/contracts/4.x/)较为完整的库。读者读完此文章后如感觉意犹未尽，可以参考Foundry给出的`NFT tutorial`部署一个NFT智能合约，官网中解释并不十分详细，但也给出了完整的代码与开发流程，可以前往[此网页](https://book.getfoundry.sh/tutorials/solmate-nft)查看。本教程未来一定会更新，你可以订阅本博客的[RSS](https://blog.wssh.dev/index.xml)获取最新的文章。

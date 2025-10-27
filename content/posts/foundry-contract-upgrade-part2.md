@@ -6,7 +6,7 @@ aliases: ["/2022/07/24/foundry-contract-upgrade-part2"]
 ---
 ## 概述
 
-正如我们在[上篇博客](https://blog.wongssh.cf/2022/07/18/foundry-contract-upgrade-part1/)结尾时所述，本文主要依靠`openzeppelin`库介绍代理合约的编写。
+正如我们在[上篇博客](https://blog.wssh.dev/posts/foundry-contract-upgrade-part1/)结尾时所述，本文主要依靠`openzeppelin`库介绍代理合约的编写。
 
 本文主要介绍的代理类型如下:
 
@@ -998,4 +998,4 @@ forge script script/EIP-2535/Diamond.s.sol:UpdateScript --private-key $LOCAL_ACC
 
 如果读者需要编写合约非常复杂，可以使用`EIP-2535`钻石模型，该模型显然非常适合大规模合约代理，但另一方面其部署难度非常高，代码编写具有一定的复杂性，存储模型不直观，较为考验开发者的开发能力。
 
-本文没有涉及到全部的代理模型，且本文是以以太坊标准为主线展开。读者如果想进一步学习，`openzeppelin blog`中的[Contract Upgrade](https://blog.openzeppelin.com/the-state-of-smart-contract-upgrades/)是一份非常好的材料。本文可能会在后期增加补充文章，可以订阅本博客的[RSS](https://blog.wongssh.cf/atom.xml)。
+本文没有涉及到全部的代理模型，且本文是以以太坊标准为主线展开。读者如果想进一步学习，`openzeppelin blog`中的[Contract Upgrade](https://blog.openzeppelin.com/the-state-of-smart-contract-upgrades/)是一份非常好的材料。本文可能会在后期增加补充文章，可以订阅本博客的[RSS](https://blog.wssh.dev/index.xml)。

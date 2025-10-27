@@ -561,4 +561,4 @@ returndatacopy(0x40, 0, returndatasize())
 
 我们会在下一篇文章内分析`GnosisSafe`合约中的`handler`部分，此部分用于处理`fallback`和`examples`中的`guards`。当然，围绕着`GnosisSafe`还有许多其他的由不同组织开发的模块，我们会选择其中一些酌情进行分析。
 
-相信读者在读完这两篇文章后已经可以在源代码的角度使用或修改`GnosisSafe`合约。如果读者有任何问题，欢迎使用[我的博客](https://hugo.wongssh.cf/)公布的邮箱联系我。
+相信读者在读完这两篇文章后已经可以在源代码的角度使用或修改`GnosisSafe`合约。如果读者有任何问题，欢迎使用[我的博客](https://blog.wssh.dev/)公布的邮箱联系我。

@@ -623,7 +623,7 @@ func (pool *TxPool) requestPromoteExecutables(set *accountSet) chan struct{} {
 ```go
 go pool.scheduleReorgLoop()
 ```
-而在`scheduleReorgLoop`函数内，我们可以看到大量的`channel`的使用。我对于`golang`语言中的`channel`使用并不是非常熟悉。所以在后文内可能出现错误，发现错误的读者可以通过[我的博客](https://hugo.wongssh.cf)中给出的邮箱地址向我反馈。
+而在`scheduleReorgLoop`函数内，我们可以看到大量的`channel`的使用。我对于`golang`语言中的`channel`使用并不是非常熟悉。所以在后文内可能出现错误，发现错误的读者可以通过[我的博客](https://blog.wssh.dev/)中给出的邮箱地址向我反馈。
 
 我们首先给出一系列的`channel`定义:
 ```go
@@ -1053,8 +1053,6 @@ func (w *worker) generateWork(params *generateParams) (*types.Block, error) {
 ![Ethereum Node Chart](https://img.gopic.xyz/83779fa7aa66b0a16853c39d8cf281a6.png)
 
 简单来说，当共识客户端(`Consensus Client`)被选为区块提案者(`proposer`)后，会在执行客户端(`Exection Client`)的交易池内筛选交易，并由执行客户端运行交易。最终，共识客户端将打包后的交易进行广播，由其他节点进行投票，最终确定一个区块。
-
-> 目前对于合并后的基础架构，概览性资料较少，我目前仍在研究相关内容，上述的流程可能有错误。如果您发现错误，请通过[我的博客](https://hugo.wongssh.cf)给出的邮箱与我联系。
 
 在此处，我们基本完成了一笔交易在以太坊执行层内的完整流程，接下来，我们介绍当区块到达交易池后，交易池重构的相关内容。
 

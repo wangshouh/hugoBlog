@@ -27,7 +27,7 @@ aliases: ["/2022/07/18/foundry-contract-upgrade-part1"]
 
 ### 存储智能合约
 
-由于在[上一篇文章](https://blog.wongssh.cf/2022/07/14/foundry-with-erc20/)或者[CSDN](https://blog.csdn.net/WongSSH/article/details/125837346)内，我们已经完整介绍了`foundry`环境的搭建，所以此文中我们将省略一部分对foundry框架的具体解释。
+由于在[上一篇文章](https://blog.wssh.dev/posts/foundry-with-erc20/)或者[CSDN](https://blog.csdn.net/WongSSH/article/details/125837346)内，我们已经完整介绍了`foundry`环境的搭建，所以此文中我们将省略一部分对foundry框架的具体解释。
 
 首先创建一个完整的项目:
 ```bash
@@ -175,7 +175,7 @@ contract ContractTest is Test {
 
 该测试函数较为简单，核心在于使用`address()`函数获得`EternalStorage`合约部署地址，再使用此地址作为构造参数构造`voteFirst`合约。使用`forge test`进行测试。
 
-在此处，我们也将代码部署到`anvil`中进行测试。具体的环境搭建请参考[上一篇教程](https://blog.wongssh.cf/2022/07/14/foundry-with-erc20/)。在此处，我们默认你已经完成了`anvil`的启动，并且设置了`LOCAL_ACCOUNT`系统变量为你的私钥，`LOCAL_RPC_URL`为`anvil`的API地址(默认为`http://127.0.0.1:8545`)。由于此处部署的合约较多，所以我们将使用`forge create`方法，具体可参考[文档](https://book.getfoundry.sh/forge/deploying)
+在此处，我们也将代码部署到`anvil`中进行测试。具体的环境搭建请参考[上一篇教程](https://blog.wssh.dev/posts/foundry-with-erc20/)。在此处，我们默认你已经完成了`anvil`的启动，并且设置了`LOCAL_ACCOUNT`系统变量为你的私钥，`LOCAL_RPC_URL`为`anvil`的API地址(默认为`http://127.0.0.1:8545`)。由于此处部署的合约较多，所以我们将使用`forge create`方法，具体可参考[文档](https://book.getfoundry.sh/forge/deploying)
 
 首先部署`src/EternalStorage/EternalStorage.sol`合约
 ```bash
@@ -665,7 +665,7 @@ contract MyScript is Script {
 }
 ```
 
-该内容基本与测试脚本中的`setUp`一致，对于部署脚本而言，每进行一次`new`操作，则进行一次部署。该脚本的很多内容都已在上文和[上一篇博客](https://blog.wongssh.cf/2022/07/14/foundry-with-erc20/)中进行了详细叙述，在此不再解释具体原理。
+该内容基本与测试脚本中的`setUp`一致，对于部署脚本而言，每进行一次`new`操作，则进行一次部署。该脚本的很多内容都已在上文和[上一篇博客](https://blog.wssh.dev/posts/foundry-with-erc20/)中进行了详细叙述，在此不再解释具体原理。
 
 比较有意思的是，在部署过程中，出现了两个合约同时部署在同一个区块的情况，与我们之前的测试场景有所不同请注意。合约地址出现的顺序与代码顺序一致。
 
@@ -893,13 +893,13 @@ function testInit() public {
 
 测试合约中的`testAddNumber()`较为常规，用来测试`addNumber(uint256))`函数是否正常运行。在使用`call`调用合约时需要将合约所需变量类型填入括号我们已经阐述过多遍。
 
-测试合约中的`testFailOverMax()`用来测试`totalSupply`变量是否发挥作用。函数解析请参见[上一篇博客](https://blog.wongssh.cf/2022/07/14/foundry-with-erc20/)中的“编写测试脚本”一节中的`testFailMaxsupplyUseCheat`函数的解析。
+测试合约中的`testFailOverMax()`用来测试`totalSupply`变量是否发挥作用。函数解析请参见[上一篇博客](https://blog.wssh.dev/posts/foundry-with-erc20/)中的“编写测试脚本”一节中的`testFailMaxsupplyUseCheat`函数的解析。
 
 测试合约中的`testFailDirectCall()`用来逻辑合约部署后是否可以直接调用。
 
 测试合约中的`testContractUpgradeGet()`用来测试升级后的合约中的`supplyAmount`的值是否丢失。
 
-测试合约中的`testFailUpgradeByOwner()`用来测试如果不是合约创建者是否可以升级合约。具体解析请参考[上一篇博客](https://blog.wongssh.cf/2022/07/14/foundry-with-erc20/)中的“编写测试脚本”一节中的`testWithdrawalFailsAsNotOwner()`函数的解析。
+测试合约中的`testFailUpgradeByOwner()`用来测试如果不是合约创建者是否可以升级合约。具体解析请参考[上一篇博客](https://blog.wssh.dev/posts/foundry-with-erc20/)中的“编写测试脚本”一节中的`testWithdrawalFailsAsNotOwner()`函数的解析。
 
 ### Debug
 
