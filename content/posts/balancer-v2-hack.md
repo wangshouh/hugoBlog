@@ -1552,6 +1552,84 @@ for (uint256 i = 0; i < stepBPTLength + 1; i++) {
 
 至此，我们就完成了看上去复杂其实并没有那么复杂的三个步骤。
 
+## Balancer v2 白帽攻击
+
+在 Balancer v2 被黑后几天，Balancer 官方联合 Certora 安全团队从另外几个没有使用 ComposableStablePool 的池子内进行了资金救援。更加直白的说，进行了白帽攻击，这些池子使用了 MetaStablePool 架构。本质上，这种架构与  ComposableStablePool 基本类似，但是这种池子不允许进行 BPT 兑换，但是还是允许用户使用 `onJoinPool` 和 `onExitPool` 进行添加和删除流动性。
+
+我们在此处以 [Balancer v2: B-rETH-STABLE Pool](https://etherscan.io/address/0x1e19cf2d73a72ef1332c882f20534b6519be0276) 的 [攻击交易](https://app.blocksec.com/explorer/tx/eth/0x33d3743adbaf28d897b53a67521ab83172c359b3da6921082d65eea7a6e921de) 为例，该攻击交易涉及 117 笔 Swap，最终实现了盗取池子中大部分资产。这是一个原理上不复杂，但实现起来较为困难的攻击方案。该方案的难点在不使用 BPT 作为桥梁耗尽池子资产的情况下，进行大量定量的 Swap 交易。
+
+```
+Step: 0
+   Scaled Balances:  [ 1482997599016104n, 1378334582400545n ]
+   Invariant:  2861294599184893n
+   Swap Amount Out:  1289182985197611n
+   New Balances:  [ 2500n, 142765702786046360860n ]
+Step: 1
+   Scaled Balances:  [ 2875n, 142765702786046360860n ]
+   Invariant:  2861842082934522n
+   Swap Amount Out:  1144n
+   New Balances:  [ 1356n, 193831853212659231097n ]
+Step: 2
+   Scaled Balances:  [ 1559n, 193831853212659231097n ]
+   Invariant:  2861431487960220n
+   Swap Amount Out:  1130n
+   New Balances:  [ 226n, 474747250554514446753n ]
+Step: 3
+   Scaled Balances:  [ 259n, 474747250554514446753n ]
+   Invariant:  2858209300892050n
+   Swap Amount Out:  192n
+   New Balances:  [ 34n, 1223729936020878827410n ]
+Step: 4
+   Scaled Balances:  [ 39n, 1223729936020878827410n ]
+   Invariant:  2858675909130365n
+   Swap Amount Out:  1082109461775586670626n
+   New Balances:  [ 2534n, 141620474245292156784n ]
+Step: 5
+   Scaled Balances:  [ 2914n, 141620474245292156784n ]
+   Invariant:  2859330229230645n
+   Swap Amount Out:  1144n
+   New Balances:  [ 1390n, 191201154716071485123n ]
+Step: 6
+   Scaled Balances:  [ 1598n, 191201154716071485123n ]
+   Invariant:  2858931742356959n
+   Swap Amount Out:  1130n
+   New Balances:  [ 260n, 442119922429704395362n ]
+Step: 7
+   Scaled Balances:  [ 299n, 442119922429704395362n ]
+   Invariant:  2859364517649267n
+   Swap Amount Out:  239n
+   New Balances:  [ 21n, 1529425080925837401921n ]
+Step: 8
+   Scaled Balances:  [ 24n, 1529425080925837401921n ]
+   Invariant:  2821254639622903n
+   Swap Amount Out:  1390217284700210644922n
+   New Balances:  [ 2521n, 139207796225626756999n ]
+Step: 9
+   Scaled Balances:  [ 2900n, 139207796225626756999n ]
+   Invariant:  2822228217558044n
+   Swap Amount Out:  1144n
+   New Balances:  [ 1377n, 188318112708301746125n ]
+Step: 10
+   Scaled Balances:  [ 1584n, 188318112708301746125n ]
+   Invariant:  2821830808963465n
+   Swap Amount Out:  1144n
+   New Balances:  [ 233n, 457081670643186156527n ]
+Step: 11
+   Scaled Balances:  [ 268n, 457081670643186156527n ]
+   Invariant:  2818771787593077n
+   Swap Amount Out:  232n
+   New Balances:  [ 1n, 5293023708550774566899n ]
+Step: 12
+   Scaled Balances:  [ 1n, 5293023708550774566899n ]
+   Invariant:  2237806378810552n
+   Swap Amount Out:  5194290012539659285624n
+   New Balances:  [ 2501n, 98733696011115281275n ]
+```
+
+这种攻击方法实际上与我们在上文介绍 Balanceer v2 黑客的攻击方法在本质上是完全一致的，都是依靠舍入误差降低不变量的值。但是上述攻击方法的难度在于如何找到合适的交易路径，并且找到一个合适的交易数量使得不变量下降同时交易不会失败。
+
+由于 StableSwap 算法的特殊性，我们很难找到一个解析式可以判定某一个数值是否可以在牛顿迭代法下获得收敛，所以唯一的方法就是暴力搜索获得一个可靠的数值进行交易，根据 [推文](https://x.com/tomer_ganor/status/1988707713434677525) 来看，Certora 工程师也使用了类似暴力搜索的算法寻找路径。上述输出可以使用 [balancer-white.ts](https://github.com/wangshouh/balancer-v2-poc/blob/main/ts-script/balancer-white.ts) 脚本获得，假如读者有兴趣研究可以直接执行该脚本获得数据。
+
 ## 总结
 
-本文首先介绍了 Balancer v2 的基本架构以及 StableSwap 算法，然后分析了 Balancer v2 黑客如何利用舍入误差、Balancer v2 的 BPT 代币构建了漂亮的攻击路径。
+本文首先介绍了 Balancer v2 的基本架构以及 StableSwap 算法，然后分析了 Balancer v2 黑客如何利用舍入误差、Balancer v2 的 BPT 代币构建了漂亮的攻击路径。本文也简单介绍了 Certora 团队的攻击方案，该方案没有利用 BPT 代币，且更加复杂，本文并没有介绍具体的攻击路基的搜索方法，我们可能会在未来的文章内编写一个脚本进行尝试。
