@@ -228,7 +228,7 @@ struct ExitPoolRequest {
 }
 ```
 
-上述函数中的 `joinPool` 用于添加流动性，而 `exitPool` 用于退出流动性。上述函数会直接本质上都会调用到以下函数:
+上述函数中的 `joinPool` 用于添加流动性，而 `exitPool` 用于退出流动性。上述函数会调用到以下函数:
 
 ```solidity
 (amountsInOrOut, dueProtocolFeeAmounts) = kind == PoolBalanceChangeKind.JOIN
@@ -252,7 +252,7 @@ struct ExitPoolRequest {
     );
 ```
 
-简单来说，Vault 会调用 Pool 上的 `onJoinPool` 或者 `onExitPool` 函数来获得用户输入或输出的代币情况以及管理流动性的 `ProtocolFee` 数据。当 Vault 获得 `amountsInOrOut` 数据后，Vault 会进一步调用 `_processJoinPoolTransfers` 或者 `_processExitPoolTransfers` 函数。`_processJoinPoolTransfers` 函数会根据用户配置将资金发送给用户或者单纯划转为用户的 `InternalBalance`。`_processExitPoolTransfers` 会将用户退出 Pool 获得的资产使用 `_sendAsset` 发送给用户。注意，这两个函数都不处理 LP 代币问题，而只处理 Pool 内部的代币。
+简单来说，Vault 会调用 Pool 上的 `onJoinPool` 或者 `onExitPool` 函数来获得用户输入或输出的代币情况以及管理流动性的 `ProtocolFee` 数据。当 Vault 获得 `amountsInOrOut` 数据后，Vault 会进一步调用 `_processJoinPoolTransfers` 或者 `_processExitPoolTransfers` 函数。`_processJoinPoolTransfers` 函数会根据用户配置将资金发送给用户或者单纯划转为用户的 `InternalBalance`。`_processExitPoolTransfers` 会将用户退出 Pool 获得的资产使用 `_sendAsset` 发送给用户。注意，这两个函数都不处理 LP 代币问题，而只处理 Pool 内部的代币。而 LP 代币的铸造和销毁则在 Pool 内部进行。
 
 接下来，我们可以看一下 `ComposableStablePool` 是如何处理这些调用的。在 `BasePool` 内存在如下代码:
 
@@ -603,7 +603,9 @@ function _onRegularSwap(
 }
 ```
 
-在进行 Swap 过程中，我们首先生成一个新的 `balances` 数据，注意，我们剔除了原数据中的 BPT 代币余额，然后获取获取 `currentAmp`。实际上，BPT 代币余额永远不会参与 StableSwap 内部的数学行为。 为了进一步介绍 `AmplificationParameter` 的作用，我们需要给出 Balancer v2 ComposableStablePool 使用的由 Curve 发明的 StableSwap 的 AMM 公式:
+在进行 Swap 过程中，我们首先生成一个新的 `balances` 数据，注意，我们剔除了原数据中的 BPT 代币余额，然后获取获取 `currentAmp`。实际上，BPT 代币余额永远不会参与 StableSwap 内部的数学行为。 BPT 代币只会参与不变量的计算，但不会参与后续介绍的 Swap 计算。
+
+为了进一步介绍 `AmplificationParameter` 的作用，我们需要给出 Balancer v2 ComposableStablePool 使用的由 Curve 发明的 StableSwap 的 AMM 公式:
 $$
 A \cdot n^n \cdot \sum x_i + D = A \cdot D \cdot n^n + \frac{D^{n + 1}}{n^n\cdot \prod x_i}
 $$
@@ -786,7 +788,7 @@ y_{\text{next}} &= \frac{2\frac{D^{n+1}}{n^nP'y}+ ADn^n - An^nS' - D}{\frac{D^{n
 &= \frac{\frac{D^{n+1}}{An^n n^nP'} + y^2}{\frac{D^{n+1}}{n^nP'y}\frac{1}{An^n} + y}\\\\
 \end{align*}
 $$
-我们在分目中代入 $\frac{D^{n+1}}{n^nP'y}$ :
+我们在分母中代入 $\frac{D^{n+1}}{n^nP'y}$ :
 $$
 \begin{align*}
 y_{\text{next}} &= \frac{\frac{D^{n+1}}{An^n n^nP'} + y^2}{\frac{D^{n+1}}{n^nP'y}\frac{1}{An^n} + y}\\\\
@@ -1162,7 +1164,7 @@ tokenOutBalance = tokenOutBalance.decreaseCash(amountOut);
 2. 使用 `17` 作为核心参数不断兑换，利用舍入误差降低 Pool 的 $D$ 值，在 Pool 内 $x_i$ 较小的情况下，舍入误差对 $D$ 的影响会被放大
 3. 将一部分 `WETH` 和 `osETH` 代币换回 `BPT` 代币偿还第一步的欠债
 
-> 但是似乎还存在另一种攻击路径，可以不借助 $D$ 直接利用舍入误差黑掉池子内的资产，Balancer 白帽攻击了自己的池子，该次攻击由 Certora 的工程师发起。在 [此次攻击](https://app.blocksec.com/explorer/tx/eth/0x33d3743adbaf28d897b53a67521ab83172c359b3da6921082d65eea7a6e921de) 内使用了非 BPT 攻击路径，笔者曾做过一个简单的 [背景介绍](https://x.com/wong_ssh/status/1989183134827786557)，在后续文章内，我们可能会分析该交易的攻击方法
+> 但是似乎还存在另一种攻击路径，可以不借助 $D$ 直接利用舍入误差黑掉池子内的资产，Balancer 白帽攻击了自己的池子，该次攻击由 Certora 的工程师发起。在 [此次攻击](https://app.blocksec.com/explorer/tx/eth/0x33d3743adbaf28d897b53a67521ab83172c359b3da6921082d65eea7a6e921de) 内使用了非 BPT 攻击路径，笔者曾做过一个简单的 [背景介绍](https://x.com/wong_ssh/status/1989183134827786557)，在本文的最后一节，我们会分析该攻击的原理，但是并不会给出计算参数的方法，该方法也许会在后续文章内展开介绍
 
 目前，我们面临以下两个问题:
 
@@ -1242,9 +1244,9 @@ function generateStep1Amounts(uint256 balances, uint256 swapFee, uint256 targetR
 
 那么在这一利用 BPT 兑换 osETH 和 WETH 过程中，我们需要消耗多少  BPT 代币？我们此时需要再次引入之前的概念，BPT 代币价格为:
 $$
-\frac{D}{\text{total LP Supply}} = \text{price}_{\text{BPT}}
+\frac{D}{\text{total LP Supply}} = \text{price}\_{\text{BPT}}
 $$
-我们实际上可以调用 `getRate` 方法获得 $\text{price}_{\text{BPT}}$ 数据，此处的 price = 1.027347(已经使用 18 位定点小数表示)，而 $\text{total LP Supply}$ 可以使用 `getActualSupply` 获得。由于我们只为后续操作保留了 87001 wei 的余额，所以上述兑换行为约等于完全抽空了资金池。那么我们的问题转变为将池子内的 osETH 和 WETH 抽空需要多少 BPT 代币?
+我们实际上可以调用 `getRate` 方法获得 $\text{price}\_{\text{BPT}}$ 数据，此处的 price = 1.027347(已经使用 18 位定点小数表示)，而 $\text{total LP Supply}$ 可以使用 `getActualSupply` 获得。由于我们只为后续操作保留了 87001 wei 的余额，所以上述兑换行为约等于完全抽空了资金池。那么我们的问题转变为将池子内的 osETH 和 WETH 抽空需要多少 BPT 代币?
 
 直觉上，我们需要支付 `total LP Supply` 单位 BPT 代币，但实际上我们需要支付 $\text{price}_{\text{BPT}} \times \text{total LP Supply}$ 的代币数量。我这是因为我们需要额外支付 BPT 代币来清空 Pool 内部属于 BPT 累积的收益的部分。
 
@@ -1469,7 +1471,7 @@ swaps[stepETHLength + stepOSETHLength + step2SwapCount * 3 + 1] = IVault.BatchSw
 uint256 newInvariant = bptTotalSupply.add(bptAmountOut).divUp(bptTotalSupply).mulUp(currentInvariant);
 ```
 
-而计算用户所需要支付代币数量时，核心韩式是 `_getTokenBalanceGivenInvariantAndAllOtherBalances` 函数。该函数已经在上文有所介绍，此处我们主要关注 `P_D` 的数值 $Pn^n / D^{n-1}$ ，对应以下代码:
+而计算用户所需要支付代币数量时，核心函数是 `_getTokenBalanceGivenInvariantAndAllOtherBalances` 函数。该函数已经在上文有所介绍，此处我们主要关注 `P_D` 的数值 $Pn^n / D^{n-1}$ ，对应以下代码:
 
 ```solidity
 for (uint256 j = 1; j < balances.length; j++) {
