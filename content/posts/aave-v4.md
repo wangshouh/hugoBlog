@@ -1766,9 +1766,9 @@ LiquidationAmounts memory liquidationAmounts = _calculateLiquidationAmounts(
 - **阈值区域**: 当 HF = `HEALTH_FACTOR_LIQUIDATION_THRESHOLD` 时，清算激励等于 `liquidationBonusFactor × maxLiquidationBonus`，以此确保在该情况下，清算者的激励不为零
 - **线性区域**: 当 HF 介于 `healthFactorForMaxBonus` 和清算阈值之间时，清算激励会从 `liquidationBonusFactor × maxLiquidationBonus` 到 `maxLiquidationBonus` 之间线性增加
 
-我们可以使用如下公式计算出清算者可以获得最大清算奖励:
+我们可以使用如下公式计算出清算者可以获得最小清算奖励:
 $$
-\text{maxLB} = (\text{maxLB} - 100\\%) \times \text{lbFactor} + 100\\%
+\text{minLB} = (\text{maxLB} - 100\\%) \times \text{lbFactor} + 100\\%
 $$
 上述公式内的：
 
