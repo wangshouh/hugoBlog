@@ -1950,7 +1950,7 @@ bool leavesCollateralDust = collateralToLiquidate < params.collateralReserveBala
 最后，我们会对 `debtToLiquidate` 进行调整。此处的调整会发生在以下两种情况下:
 
 1. `collateralToLiquidate > params.collateralReserveBalance` 需要清算的担保品数量大于用户的担保品余额
-2. 在 `leavesCollateralDust` 情况下，我们需要清算用户的全部债务头寸，但是假如 `debtToLiquidate >= params.debtReserveBalance`，那么我们就需要进行调整，所以此处调整的发生条件是 `leavesCollateralDust && debtToLiquidate < params.debtReserveBalance`
+2. 在 `leavesCollateralDust` 情况下，我们需要清算用户的全部债务头寸，但是假如 `debtToLiquidate >= params.debtReserveBalance`，那么我们就不需要进行调整，因为此时清算者清算了所有的债务，我们无法要求清算者清算更多担保品避免粉尘，所以此处调整的发生条件是 `leavesCollateralDust && debtToLiquidate < params.debtReserveBalance`
 
 对于上述两种情况，我们都需要将担保品全部清算(即 `collateralToLiquidate = params.collateralReserveBalance`)，也需要以此修改 `debtToLiquidate` 的数值，我们会使用 `collateralToLiquidate` 重新计算 `debtToLiquidate` 的数值。完成上述计算后，我们需要确定调整后的 `debtToLiquidate` 与清算者指定的 `params.debtToCover` 进行比较。
 
