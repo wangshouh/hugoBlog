@@ -502,7 +502,7 @@ domainSeparator = hashStruct(eip712Domain)
 
 另一个示例可以参考我之前的博客[MetaMask一键登录设计]({{<ref "metamask-login" >}})。此博客使用了`EIP712`开发了一个链下登陆系统。
 
-对于`EIP712`标准，大多数钱包都进行了实现，此处我们主要介绍`MetaMask`钱包。该钱包提供了`signTypedData_v4`方法以支持`EIP712`，读者可自行阅读(文档)[https://docs.metamask.io/guide/signing-data.html#sign-typed-data-v4]
+对于`EIP712`标准，大多数钱包都进行了实现，此处我们主要介绍`MetaMask`钱包。该钱包提供了`signTypedData_v4`方法以支持`EIP712`，读者可自行阅读 [文档](https://docs.metamask.io/wallet/how-to/sign-data/#use-eth_signtypeddata_v4)
 
 ### 验证
 

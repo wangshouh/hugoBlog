@@ -439,7 +439,8 @@ function DOMAIN_SEPARATOR() external view returns (bytes32)
 此处我们选择`solmate`的`ERC20`[合约](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol)作为基准为大家解释相关代码。与`openzeppelin`提供的`ERC20`合约，`solmate`提供的合约原生支持`EIP2612`标准，而且`solmate`的合约在`gas`方面更有优势且实现更加简单。
 
 关于`EIP2612`的[代码](https://github.com/transmissions11/solmate/blob/main/src/tokens/ERC20.sol#L116)如下:
-```
+
+```solidity
 function permit(
     address owner,
     address spender,
@@ -492,7 +493,8 @@ function permit(
 > `nonce`在每一次交易后自增，其数据类型为`uint256`，用户不能实现如此多次的交易。
 
 在`DOMAIN_SEPARATOR`计算方面，此合约中与此相关的有以下部分:
-```
+
+```solidity
 constructor(
     string memory _name,
     string memory _symbol,
@@ -527,7 +529,8 @@ function computeDomainSeparator() internal view virtual returns (bytes32) {
 在合约初始化阶段选择当前的`chainId`进行初始化`DOMAIN_SEPARATOR`，但为了方便合约在不同链内复用，此处增加了`block.chainid == INITIAL_CHAIN_ID ? INITIAL_DOMAIN_SEPARATOR : computeDomainSeparator();`语句，利用三目表达式实现在不同的链内不同的`DOMAIN_SEPARATOR`。详细来说，此函数会首先检测目前的链是否为初始化时的链，如果是则返回初始化时已经计算好的`INITIAL_DOMAIN_SEPARATOR`，如果不是则利用当前的链ID重新计算`DOMAIN_SEPARATOR`。
 
 我们基于此合约开发了一个极为简单的`Deposit`存款合约，该合约较为简单，代码如下:
-```
+
+```solidity
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
