@@ -511,7 +511,8 @@ domainSeparator = hashStruct(eip712Domain)
 "\x19\x01" ‖ domainSeparator ‖ hashStruct(message)
 ```
 一般情况下，智能合约接收到的并不是完整的签名而是签名后的`v, r, s`数据和发送的结构体。故而我们需要先进行签名重建，一个简单的例子如下，你可以在[这里](https://github.com/wangshouh/upgradeContractLearn/blob/master/src/EIP-712/simple.sol)找到完整代码:
-```
+
+```solidity
 function verify(Mail mail, uint8 v, bytes32 r, bytes32 s) internal view returns (bool) {
 	// Note: we need to use `encodePacked` here instead of `encode`.
 	bytes32 digest = keccak256(abi.encodePacked(
@@ -622,7 +623,7 @@ contract ProductEIP712 is EIP712, IProduct {
 }
 ```
 上述代码主要实现了`EIP712Domain`的初始化。值得注意的是，`openzeppelin`提供的`EIP712Domain`仅提供以下属性:
-```
+```solidity
 bytes32 typeHash = keccak256(
 	"EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
 );
@@ -826,6 +827,8 @@ function testVerify() public {
 最后，在终端内输入`forge test`，结果如下:
 
 ![signTestResult.png](https://img.gopic.xyz/signTestResult.png)
+
+更加现代的方法是使用 [viem](https://viem.sh/) 内的 [signTypedData](https://viem.sh/docs/accounts/local/signTypedData) 函数，基本调用流程与上述过程基本一致，但读者需要自行初始化一个 node.js 或者 bun 项目，并安装`viem`库。另外，`viem` 的 EIP-712 签名机制本质上也是对一个更加底层的库 [ox](https://oxlib.sh/) 的封装，读者也可以使用该库实现 EIP-712 签名，具体使用方法可以参考 [TypedData 文档](https://oxlib.sh/api/TypedData)。
 
 ## EIP-1271
 
