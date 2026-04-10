@@ -249,7 +249,8 @@ $$
 $$
 上述 `@pre` 等同于不对输入进行任何约束，而 `@post` 内结合代码最终结果对输入进行了额外约束。对于冒泡排序，我们可以给出如下的代码与 function specifications(原谅我此处直接给出图片而不是手动输入 latex):
 
-<img src="https://img.gopic.xyz/BubbleSortFunctionSpec.png" alt="Bubble Function Spec" style="zoom:50%;" />
+![Bubble Function Spec](https://img.gopic.xyz/BubbleSortFunctionSpec.png)
+{style="zoom:50%;"}
 
 `@post` 内的 `sorted(a, l, u)` 是一个函数代表 `a` 列表从 `l` 到 `u` 的部分都已经进行了排序。实际上可以翻译为如下 FOL：
 $$
@@ -312,7 +313,8 @@ $$
 $$
 在 `initialize` 后，我们要求 $F$ 必须成立，而且在每一次在 `condition` 评估前，$F$ 也必须成立。下图展示了 `LinearSearch` 的 Loop invariant `@L`:
 
-<img src="https://img.gopic.xyz/LinearLoopInvariant.png" alt="LinearLoop Invariant" style="zoom:50%;" />
+![LinearSearch Loop Invariant](https://img.gopic.xyz/LinearLoopInvariant.png)
+{style="zoom:50%;"}
 
 在 Dafny 内，所有的循环也被要求使用 `invariant` 标注 loop invariant，具体可以参考 [Dafny Guide](https://dafny.org/latest/%20OnlineTutorial/guide) 内的 `Loop Invariants` 一节。   
 
@@ -325,7 +327,8 @@ $$
 
 在有了上述知识后，我们可以进行真正的形式化证明。我们的目标是证明 `LinearSearch` 算法的正确性。下图展示了包含所有 annotation 的 `LinearSearch` 代码(我们会在稍后的内容介绍 `BubbleSort` 的形式化证明，因为 BubbleSort 的 loop invariant 稍微复杂一些 )。在此处，我们再次给出 `LinearSearch` 的源代码:
 
-<img src="https://img.gopic.xyz/LinearLoopInvariant.png" alt="LinearLoop Invariant" style="zoom:50%;" />
+![LinearSearch Loop Invariant](https://img.gopic.xyz/LinearLoopInvariant.png)
+{style="zoom:50%;"}
 
 对于任何代码的 partially correct 分为两步:
 
@@ -382,11 +385,13 @@ $$
 
 我们可以使用下图表示 basic path 之间的关系，为了避免遗漏，我们一般使用深度优先(DFS)的方式逐条给出路径。
 
-<img src="https://img.gopic.xyz/BasicPathLinearSearch.png" alt="Basic Path LinearSearch" style="zoom:33%;" />
+![Basic Path LinearSearch](https://img.gopic.xyz/BasicPathLinearSearch.png)
+{style="zoom:33%;" }
 
 对于 BubbleSorted 的 basic path 会更加复杂，我们在此展示 BubbleSorted 的原始代码:
 
-<img src="https://img.gopic.xyz/BubbleSortFunctionSpec.png" alt="Bubble Function Spec" style="zoom:50%;" />
+![Bubble Sort Function Spec](https://img.gopic.xyz/BubbleSortFunctionSpec.png)
+{style="zoom:50%;" }
 
 我们可以看到此处包括两个 loop invariant，按照出现顺序，我们将其称为 $L\_1$ 和 $L\_2$。对于处于外层循环的 $L\_1$ 而言，此时程序的状态应该是:
 
@@ -407,7 +412,8 @@ $$
 
 最后，带有完整 loop invariants 的代码如下:
 
-<img src="https://img.gopic.xyz/BubbleSortWithLoopInvariants.png" alt="Bubble Sort With loop invariants" style="zoom:50%;" />
+![Bubble Sort With loop invariants](https://img.gopic.xyz/BubbleSortWithLoopInvariants.png)
+{style="zoom:50%;" }
 
 该部分展开的 basic path 路径较多，我们此处逐条给出，建议读者自己先尝试写一下，在核对笔者的答案:
 
@@ -473,7 +479,8 @@ rv := a;\\\\
 $$
 可视化展示所有的 path 如下:
 
-<img src="https://img.gopic.xyz/BasicPathBubbleSort.png" style="zoom:33%;" />
+![Basic Path BubbleSort](https://img.gopic.xyz/BasicPathBubbleSort.png)
+{style="zoom:33%;" }
 
 在上文中，我们始终没有处理带有函数调用的情况。在二分查找算法内，我们会使用递归方法进行调用自身实现二分查找，对于这种包含函数调用的情况，我们该如何编写 basic path?
 
@@ -598,7 +605,8 @@ rv := v_1;\\\\
 $$
 我们此处没有对输入的 $m+1$ 参数进行显性的约束，实际上根据 `@pre` 等约束条件可以很容易推导出 `m + 1` 是满足入参条件的。对于另一个 `if` 分支 $R\_2$ 的情况，读者可以自行编写，最终我们可以获得 6 条 basic path。
 
-<img src="https://img.gopic.xyz/BasicPathBinarySearch.png" alt="Binary Search Basic Path" style="zoom:33%;" />
+![Binary Search Basic Path](https://img.gopic.xyz/BasicPathBinarySearch.png)
+{style="zoom:33%;" }
 
 ## Verification Conditions
 

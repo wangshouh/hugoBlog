@@ -24,6 +24,14 @@ outputs:
         - RSS
         - JSON
 
+markup:
+  goldmark:
+    parser:
+      attribute:
+        block: true
+        title: true
+      wrapStandAloneImageWithinParagraph: false
+      
 menu:
     main:
         - name: Archive
