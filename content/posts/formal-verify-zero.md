@@ -82,7 +82,7 @@ sat
 
 `sat` 是 `(check-sat)` 的输出，而后续的内容是 `(get-model)` 的输出。我们可以看到当 A = false, B = false, C = false 时，命题 $F$ 成立。在 Propositional Logic 领域，我们一般会使用如下符号表示命题内的变量赋值:
 $$
-I: \{A \mapsto \mathrm{false}, B \mapsto \mathrm{false}, C \mapsto \mathrm{false}\}
+I: \\{A \mapsto \mathrm{false}, B \mapsto \mathrm{false}, C \mapsto \mathrm{false}\\}
 $$
 假如使用当前 $I$ 可以使得命题 $F$ 为 true，我们会使用 $I \models F$ 表示。实际上，命题 F 也是 valid 的，正如上文所述，我们只需要检查 $I \models \neg F$ 的 satisfiable 情况，我们只需要将之前代码中的 `(assert f)` 修改为 `(assert (not f))` 即可，获得的结果为 `unsat`，这说明实际上命题 $F$ 在任何 interpretation 下都是恒成立的。
 
@@ -144,7 +144,7 @@ $$
 
 一个较为知名的 thoery 是 theory of Peano arithmetic(实际上就是大名鼎鼎的皮亚诺公理体系)，数学符号为 $T\_{\mathrm{PA}}$。
 $$
-\Sigma_{\mathrm{PA}}: \{0, 1, +, \cdot, =\}
+\Sigma_{\mathrm{PA}}: \\{0, 1, +, \cdot, =\\}
 $$
 其中 $0, 1$ 都是常数，而加法($+$) 和乘法($\cdot$) 都是 binary function，而 $=$ 是 binary predicate。下图展示了所有的 axioms:
 
@@ -156,7 +156,7 @@ $$
 
 不幸的是，$T\_{\mathrm{PA}}$ 的 Satisfiability 和 validity都是 undecidable，这与哥德尔第一不完备定理有关。但是存在一些更加严格的 thory 是可以判定的，比如我们在计算机领域中最常使用的 theory of Presburger arithmetic  $T\_{\mathbb{N}}$
 $$
-\Sigma_{\mathbb{N}}: \{0, 1, +, =\}
+\Sigma_{\mathbb{N}}: \\{0, 1, +, =\\}
 $$
 注意此处没有乘法，对于整数乘法，熟悉数论的读者一定会想到丢番图方程以及希尔伯特第十问题，在皮亚诺算法系统内构建一个丢番图方程使得没有任何办法判定该方程是否有解，所以 $T\_{\mathbb{N}}$ 直接不允许进行乘法计算(此处的乘法计算实际上指不允许进行 $x \cdot x$ 或者 $x \cdot y$ 的计算，此处的 $x$ 和 $y$ 都是变量，我们仍可以进行 $2x$ 这种计算，因为 $2x = x + x$)。与 $T\_{\mathrm{PA}}$ 的公理系统类似，但是 $T\_{\mathbb{N}}$ 的公理系统不包含 `times zero` 和 `times successor` 两条涉及乘法的公理。
 
@@ -164,7 +164,7 @@ $$
 
 在 1929 年，Presburger 就已经证明了 $T\_{\mathbb{N}}$ 是可判定的。与 $T\_{\mathbb{N}}$ 密切相关的且在计算机领域中最常被使用的是 theory of integers ${T\_{\mathbb{Z}}}$：
 $$
-\Sigma_{\mathbb{Z}}: \{\dots, -2, -1, 0, 1, 2, \dots, -3 \cdot, -2 \cdot, 2 \cdot, 3 \cdot, +, -, = ,>\}
+\Sigma_{\mathbb{Z}}: \\{\dots, -2, -1, 0, 1, 2, \dots, -3 \cdot, -2 \cdot, 2 \cdot, 3 \cdot, +, -, = ,>\\}
 $$
 此处额外引入了 $-2$ 等负整数，$3 \cdot$ 表示的乘法，所以在 $T\_{\mathbb{Z}}$ 内，我们可以直接写 $2 \cdot x$ 类似的内容，还额外引入了 $=$ 和 $>$ 作为 binary predicates function。实际上，$T\_{\mathbb{Z}}$ 和 $T\_{\mathbb{N}}$ 之间的命题可以互相转换，所以 $T\_{\mathbb{Z}}$ 也是可判定的。更加具体说存在一种被称为 Cooper's Algorithm 可以判定 $T\_{\mathbb{Z}}$ 的 validity，但是计算机复杂度较高，我们会在本节末尾给出汇总。
 
@@ -172,7 +172,7 @@ $$
 
 一些与计算机领域更加密切相关的就是一些数据结构的 theory。比较著名的是 RDS(recursive data structures) 和 Array。在 RDS 中，最有名的是 $T\_{\mathrm{cons}}$，这是一种在函数式编程语言中常见的表示列表的数据类型。在 Elixir 和 Haskell 内的 `list` 都与本文介绍的 $T\_{\mathrm{cons}}$ 有关。$T\_{\mathrm{cons}}$ 的 signature 如下:
 $$
-\Sigma_{\mathrm{cons}}: \{\text{cons}, \text{car}, \text{cdr}, \text{atom}, =\}
+\Sigma_{\mathrm{cons}}: \\{\text{cons}, \text{car}, \text{cdr}, \text{atom}, =\\}
 $$
 其中 `cons` 是一个 binary function，比如 `cons(a, b)` 代表 `a` 和 `b` 可以拼接为一个列表。以下 Elixir 代码内的 `|` 可以视为 `cons` 函数，我们可以看到反复调用 `cons` 就可以构建一个列表:
 
@@ -195,7 +195,7 @@ iex> tail
 
 接下来，到了我们最常使用的且 z3 直接支持的一种数据类型的 theory，即 theory of arrays $T\_A$：
 $$
-\Sigma_A : \{\cdot[\cdot],\ \cdot\langle \cdot \triangleleft \cdot \rangle,\ =\},
+\Sigma_A : \\{\cdot[\cdot],\ \cdot\langle \cdot \triangleleft \cdot \rangle,\ =\\},
 $$
 其中 `a[i]` (即上述数学表达式内的 $\cdot[\cdot]$) 表达读取数组 $a$ 内的索引 $i$，实际上就是读操作，在 smt2 语言内使用 `(select a i)` 表示。而 $a\langle i\triangleleft v \rangle$ 表示将数组 a 的索引 i 的值修改为 v，实际上就是写操作，在 smt2 内使用 `(store a i v)`。而 `=` 则是顾名思义。$T\_A$ 具有以下 axioms:
 $$
@@ -283,9 +283,9 @@ $$
 \begin{array}{l}
 \texttt{while} \\\\
 \quad @F \\\\
-\quad (\langle \text{condition} \rangle) \{ \\\\
+\quad (\langle \text{condition} \rangle) \\{ \\\\
 \quad \langle \text{body} \rangle \\\\
-\}
+\\}
 \end{array}
 $$
 上述代码片段内的 `@F` 就是 loop invariant。我们可以看到我们额外标记的 $F$ 被插入到了每次 `condition` 评估前。在满足 $F \land \langle \text{condition} \rangle$ 情况下，我们会进入 `body` 代表的循环体，而在 $F \land \neg \langle \text{condition} \rangle$ 的条件下，我们会退出循环。考虑 `for` 循环:
@@ -293,9 +293,9 @@ $$
 \begin{array}{l}
 \texttt{for} \\\\
 \quad @F \\\\
-\quad (\langle \text{initialize} \rangle ;\langle \text{condition} \rangle; \langle \text{increment} \rangle) \{ \\\\
+\quad (\langle \text{initialize} \rangle ;\langle \text{condition} \rangle; \langle \text{increment} \rangle) \\{ \\\\
 \quad \langle \text{body} \rangle \\\\
-\}
+\\}
 \end{array}
 $$
 上述代码等同于以下 `while` 循环:
@@ -304,10 +304,10 @@ $$
 \langle \text{initialize} \rangle \\\\
 \texttt{while} \\\\
 \quad @F \\\\
-\quad (\langle \text{condition} \rangle) \{ \\\\
+\quad (\langle \text{condition} \rangle) \\{ \\\\
 \quad \langle \text{body} \rangle \\\\
 \quad \langle \text{increment} \rangle \\\\
-\}
+\\}
 \end{array}
 $$
 在 `initialize` 后，我们要求 $F$ 必须成立，而且在每一次在 `condition` 评估前，$F$ 也必须成立。下图展示了 `LinearSearch` 的 Loop invariant `@L`:
@@ -604,11 +604,11 @@ $$
 
 在上一节中，我们介绍了如何获得一段代码的 path，我们可以看到每一段 path 都是存在开始状态、动作和结束状态，我们一般使用 *Hoare triple* 表示:
 $$
-\{F\}S_1;\dots;S_n\{G\}
+\\{F\\}S_1;\dots;S_n\\{G\\}
 $$
 我们需要证明在初始状态 $F$ 的情况下，经过 $S\_1; \dots; S\_n$ 语句操作后，最终获得的状态为 $G$。在具体的证明过程中，我们会使用被称为 weakest precondition 的机制。
 
-weakest precondition $\mathrm{wp}(F,S)$ ，此处的 $F$ 指的是任意 FOL 表达式，而 $S$ 指程序语句。wp 的定义为如果程序状态 s 满足 $s \models \mathrm{wp}(F, S)$ 且此处的 $S$ 语句在状态 $s$ 操作后获得的状态 $s'$ 满足 $s' \models F$。换言之，假如结束状态满足 $F$，那么其前一个状态是满足 $\mathrm{wp}(F,S)$ 的。我们可以发现  $\mathrm{wp}(F,S)$ 提供了一种方法，允许我们将对 $\{F\}S\_1;\dots;S\_n\{G\}$ 的 correctness 证明转化为对单一命题的证明，方法是进行进行类似如下的调用:
+weakest precondition $\mathrm{wp}(F,S)$ ，此处的 $F$ 指的是任意 FOL 表达式，而 $S$ 指程序语句。wp 的定义为如果程序状态 s 满足 $s \models \mathrm{wp}(F, S)$ 且此处的 $S$ 语句在状态 $s$ 操作后获得的状态 $s'$ 满足 $s' \models F$。换言之，假如结束状态满足 $F$，那么其前一个状态是满足 $\mathrm{wp}(F,S)$ 的。我们可以发现  $\mathrm{wp}(F,S)$ 提供了一种方法，允许我们将对 $\\{F\\}S\_1;\dots;S\_n\\{G\\}$ 的 correctness 证明转化为对单一命题的证明，方法是进行进行类似如下的调用:
 $$
 \mathrm{wp}(\mathrm{wp}(\mathrm{wp}(\mathrm{wp}(G, S_n), S_{n-1}), \dots),F)
 $$
@@ -623,7 +623,7 @@ $$
 $$
 \mathrm{wp}(F, S_1; \dots; S_n) \iff \mathrm{wp}(\mathrm{wp}(F, S_n), S_1; \dots, S_{n-1})
 $$
-简单来说，我们会按照从后到前的顺序依次使用语句 $S$ 调用 wp 函数，此处的定义与上文的分析是一致的。对任意 basic path $\{F\}S\_1;\dots;S\_n\{G\}$ 而言，其 verification condition 为:
+简单来说，我们会按照从后到前的顺序依次使用语句 $S$ 调用 wp 函数，此处的定义与上文的分析是一致的。对任意 basic path $\\{F\\}S\_1;\dots;S\_n\\{G\\}$ 而言，其 verification condition 为:
 $$
 F \to \mathrm{wp}(G, S_1, \dots, S_n)
 $$
@@ -719,17 +719,17 @@ $$
 \mathrm{wp}&(G, S_1; S_2; S_3; S_4)\\\\
 &\iff \mathrm{wp}(\mathrm{wp}(G, S_4), S_1; S_2; S_3)\\\\
 &\iff \mathrm{wp}(\mathrm{wp}(G, rv := \texttt{true}), S_1; S_2; S_3)\\\\
-&\iff \mathrm{wp}(\mathrm{wp}(G\{rv \mapsto \texttt{true}\}), S_1; S_2; S_3)\\\\
-&\iff \mathrm{wp}(\mathrm{wp}(G\{rv \mapsto \texttt{true}\}, S_3), S_1; S_2)\\\\
-&\iff \mathrm{wp}(\mathrm{wp}(G\{rv \mapsto \texttt{true}\}, \texttt{assume }a[m] = e), S_1; S_2)\\\\
-&\iff \mathrm{wp}(a[m] = e \to G\{rv \mapsto \texttt{true}\}, S_1; S_2)\\\\
-&\iff \mathrm{wp}(\mathrm{wp}(a[m] = e \to G\{rv \mapsto \texttt{true}\}, S_2), S_1)\\\\
-&\iff \mathrm{wp}(\mathrm{wp}(a[m] = e \to G\{rv \mapsto \texttt{true}\}, m := (\ell + u)\ \texttt{div}\ 2), S_1)\\\\
-&\iff \mathrm{wp}((a[m] = e \to G\{rv \mapsto \texttt{true}\})\{m \mapsto (\ell + u)\ \texttt{div}\ 2\}, S_1)\\\\
-&\iff \mathrm{wp}((a[m] = e \to G\{rv \mapsto \texttt{true}\})\{m \mapsto (\ell + u)\ \texttt{div}\ 2\}, \texttt{assume } \ell \le u)\\\\
-&\iff \ell \le u \to (a[m] = e \to G\{rv \mapsto \texttt{true}\})\{m \mapsto (\ell + u)\ \texttt{div}\ 2\}\\\\
-&\iff \ell \le u \to (a[m] = e) \{m \mapsto (\ell + u)\ \texttt{div}\ 2\} \to  G\{rv \mapsto \texttt{true}, m \mapsto (\ell + u)\ \texttt{div}\ 2\}\\\\
-&\iff \ell \le u \to a[(\ell + u)\ \texttt{div}\ 2] = e \to G\{rv \mapsto \texttt{true}, m \mapsto (\ell + u)\ \texttt{div}\ 2\}\\\\
+&\iff \mathrm{wp}(\mathrm{wp}(G\\{rv \mapsto \texttt{true}\\}), S_1; S_2; S_3)\\\\
+&\iff \mathrm{wp}(\mathrm{wp}(G\\{rv \mapsto \texttt{true}\\}, S_3), S_1; S_2)\\\\
+&\iff \mathrm{wp}(\mathrm{wp}(G\\{rv \mapsto \texttt{true}\\}, \texttt{assume }a[m] = e), S_1; S_2)\\\\
+&\iff \mathrm{wp}(a[m] = e \to G\\{rv \mapsto \texttt{true}\\}, S_1; S_2)\\\\
+&\iff \mathrm{wp}(\mathrm{wp}(a[m] = e \to G\\{rv \mapsto \texttt{true}\\}, S_2), S_1)\\\\
+&\iff \mathrm{wp}(\mathrm{wp}(a[m] = e \to G\\{rv \mapsto \texttt{true}\\}, m := (\ell + u)\ \texttt{div}\ 2), S_1)\\\\
+&\iff \mathrm{wp}((a[m] = e \to G\\{rv \mapsto \texttt{true}\\})\\{m \mapsto (\ell + u)\ \texttt{div}\ 2\\}, S_1)\\\\
+&\iff \mathrm{wp}((a[m] = e \to G\\{rv \mapsto \texttt{true}\\})\\{m \mapsto (\ell + u)\ \texttt{div}\ 2\\}, \texttt{assume } \ell \le u)\\\\
+&\iff \ell \le u \to (a[m] = e \to G\\{rv \mapsto \texttt{true}\\})\\{m \mapsto (\ell + u)\ \texttt{div}\ 2\\}\\\\
+&\iff \ell \le u \to (a[m] = e) \\{m \mapsto (\ell + u)\ \texttt{div}\ 2\\} \to  G\\{rv \mapsto \texttt{true}, m \mapsto (\ell + u)\ \texttt{div}\ 2\\}\\\\
+&\iff \ell \le u \to a[(\ell + u)\ \texttt{div}\ 2] = e \to G\\{rv \mapsto \texttt{true}, m \mapsto (\ell + u)\ \texttt{div}\ 2\\}\\\\
 &\iff \ell \le u \to a[(\ell + u)\ \texttt{div}\ 2] = e \to \exists i. \ell \le i \le u \land a[i] = e
 \end{align*}
 $$
@@ -879,7 +879,7 @@ S_k;\\\\
 $$
 可以使用如下 VC:
 $$
-F \to wp(\kappa \prec \delta[\bar{x}_0], S_1; \cdots; S_k)\{\bar{x}_0 \mapsto \bar{x}\}
+F \to wp(\kappa \prec \delta[\bar{x}_0], S_1; \cdots; S_k)\\{\bar{x}_0 \mapsto \bar{x}\\}
 $$
 使用自然语言描述，就是为了证明在经过 $S\_1, \cdots, S\_k$ 语句后 $\kappa$ 的值相比于执行前的 $\delta$ 已经减少了。但是需要注意，我们在最开始 VC 推导时使用是 $\delta[\bar{x}\_0]$，在最后，我们需要进行重命名操作，将命题内的 $\bar{x}\_0$ 再替换为 $\bar{x}$。
 
